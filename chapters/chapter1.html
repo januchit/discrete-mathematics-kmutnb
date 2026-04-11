@@ -633,13 +633,27 @@
 </footer>
 
 <script>
+  // Scroll to top for all TOC links
+  const SCROLL_OFFSET = 80;
+  document.querySelectorAll('.ch-toc a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'instant' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
   // Sticky sidebar highlight
-  const sections = document.querySelectorAll('.ch-section');
+  const sections = document.querySelectorAll('.ch-section, .subsec');
   const tocLinks = document.querySelectorAll('.ch-toc a');
   window.addEventListener('scroll', () => {
     let current = '';
     sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+      if (s.id && window.scrollY >= s.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET - 10) current = s.id;
     });
     tocLinks.forEach(a => {
       a.classList.toggle('active', a.getAttribute('href') === '#' + current);

@@ -39,7 +39,6 @@
   background: white;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  overflow: hidden;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
   scrollbar-width: thin;
@@ -93,7 +92,9 @@
 
 .ch-section {
   margin-bottom: 56px;
+  scroll-margin-top: 80px;
 }
+
 
 /* SECTION HEADER */
 .section-header {
@@ -127,6 +128,7 @@
 
 .subsec {
   margin: 28px 0;
+  scroll-margin-top: 80px;
 }
 
 .subsec h3 {

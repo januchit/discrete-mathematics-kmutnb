@@ -24,6 +24,8 @@
 }
 
 html { scroll-behavior: smooth; }
+/* Ensure anchor targets not hidden under sticky header */
+:target { scroll-margin-top: 80px; }
 
 body {
   font-family: 'Sarabun', 'Inter', sans-serif;
