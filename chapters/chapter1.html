@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 1 – Speaking Mathematically | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>∑</text></svg>">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="../index.html" class="ch-nav-link">← หน้าหลัก</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 1</span>
+      <span class="ch-nav-divider">|</span>
+      <a href="chapter2.html" class="ch-nav-link">บทที่ 2 →</a>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#2563eb">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 1</div>
+      <div class="chapter-hero-icon">📐</div>
+      <h1 class="chapter-hero-title">Speaking Mathematically</h1>
+      <p class="chapter-hero-subtitle">ภาษาคณิตศาสตร์</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec11">1.1 Variables</a>
+          <ul>
+            <li><a href="#statements">ประเภทของประพจน์</a></li>
+            <li><a href="#universal-cond">Universal Conditional</a></li>
+            <li><a href="#univ-exist">Universal Existential</a></li>
+            <li><a href="#exist-univ">Existential Universal</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec12">1.2 The Language of Sets</a>
+          <ul>
+            <li><a href="#set-notation">สัญลักษณ์เซต</a></li>
+            <li><a href="#special-sets">เซตสำคัญ</a></li>
+            <li><a href="#set-builder">Set-Builder Notation</a></li>
+            <li><a href="#subsets">Subsets</a></li>
+            <li><a href="#cartesian">Cartesian Products</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec13">1.3 Relations and Functions</a>
+          <ul>
+            <li><a href="#relations">Relations</a></li>
+            <li><a href="#arrow-diag">Arrow Diagrams</a></li>
+            <li><a href="#functions">Functions</a></li>
+            <li><a href="#func-machine">Function Machines</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 1</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 1</h2>
+        <p>บทนี้แนะนำ <strong>ภาษาพื้นฐาน</strong> ที่ใช้ในคณิตศาสตร์ไม่ต่อเนื่อง เพื่อสร้างรากฐานสำหรับการศึกษาในบทต่อๆ ไป เนื้อหาครอบคลุม 3 ส่วนหลัก ได้แก่ <strong>ตัวแปร (Variables)</strong>, <strong>ภาษาของเซต (Language of Sets)</strong> และ <strong>ความสัมพันธ์และฟังก์ชัน (Relations and Functions)</strong></p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">📝</span>
+            <strong>1.1 Variables</strong>
+            <p>การใช้ตัวแปรและประเภทของประพจน์ทางคณิตศาสตร์</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">⊆</span>
+            <strong>1.2 The Language of Sets</strong>
+            <p>สัญลักษณ์เซต เซตย่อย และผลคูณคาร์ทีเชียน</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">↔</span>
+            <strong>1.3 Relations and Functions</strong>
+            <p>ความสัมพันธ์ เส้นทิศ และฟังก์ชันในรูปแบบเป็นทางการ</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1.1 -->
+    <section id="sec11" class="ch-section">
+      <div class="section-header" style="--ch-color:#2563eb">
+        <span class="sec-num">1.1</span>
+        <div>
+          <h2>Variables</h2>
+          <p>การใช้ตัวแปรในคณิตศาสตร์</p>
+        </div>
+      </div>
+
+      <p><strong>ตัวแปร (Variable)</strong> คือสัญลักษณ์ที่แทนจำนวนหรือวัตถุที่ยังไม่ระบุค่า การใช้ตัวแปรมี 3 บทบาทหลัก</p>
+
+      <div class="key-box">
+        <h4>บทบาทของตัวแปร</h4>
+        <ol>
+          <li><strong>Placeholder (ตัวแทนค่าที่ไม่รู้)</strong> — เช่น "Is there a number $x$ such that $x^2 + 1 = 0$?"</li>
+          <li><strong>Generality (ความทั่วไป)</strong> — เช่น "For all real numbers $n$, if $n > 2$ then $n^2 > 4$"</li>
+          <li><strong>Reference (การอ้างอิง)</strong> — ให้ชื่อชั่วคราวเพื่ออ้างอิงซ้ำในการอ้างเหตุผล</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <div class="example-header"><span>ตัวอย่าง 1.1.1</span> Writing Sentences Using Variables</div>
+        <p>จงเขียนประโยคต่อไปนี้ให้อยู่ในรูปแบบทางการโดยใช้ตัวแปร</p>
+        <p><em>a.</em> Are there numbers with the property that the sum of their squares equals the square of their sum?</p>
+        <p><em>b.</em> Given any real number, its square is nonnegative.</p>
+        <div class="solution">
+          <strong>วิธีทำ</strong>
+          <p><em>a.</em> Are there numbers $a$ and $b$ with the property that $a^2 + b^2 = (a+b)^2$?</p>
+          <p><em>b.</em> For all real numbers $r$, $r^2 \geq 0$.</p>
+        </div>
+      </div>
+
+      <div id="statements" class="subsec">
+        <h3>ประเภทของประพจน์ทางคณิตศาสตร์</h3>
+        <p>ประพจน์ทางคณิตศาสตร์ที่สำคัญมี 3 ประเภท</p>
+
+        <div class="def-grid">
+          <div class="def-card" style="border-color:#2563eb">
+            <div class="def-title" style="color:#2563eb">Universal Statement</div>
+            <div class="def-body">กล่าวว่าสมบัติหนึ่งเป็นจริงสำหรับ<strong>สมาชิกทุกตัว</strong>ในเซต<br>
+            <em>ตัวอย่าง:</em> "All positive numbers are greater than zero."</div>
+          </div>
+          <div class="def-card" style="border-color:#7c3aed">
+            <div class="def-title" style="color:#7c3aed">Conditional Statement</div>
+            <div class="def-body">กล่าวว่า<strong>ถ้า</strong>สิ่งหนึ่งเป็นจริง<strong>แล้ว</strong>สิ่งอื่นก็ต้องเป็นจริงด้วย<br>
+            <em>ตัวอย่าง:</em> "If 378 is divisible by 18, then 378 is divisible by 6."</div>
+          </div>
+          <div class="def-card" style="border-color:#059669">
+            <div class="def-title" style="color:#059669">Existential Statement</div>
+            <div class="def-body">กล่าวว่า<strong>มีอย่างน้อยหนึ่งสิ่ง</strong>ที่สมบัติเป็นจริง<br>
+            <em>ตัวอย่าง:</em> "There is a prime number that is even."</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="universal-cond" class="subsec">
+        <h3>Universal Conditional Statements</h3>
+        <p>ประพจน์ที่เป็นทั้ง Universal และ Conditional พร้อมกัน สามารถเขียนได้หลายรูปแบบที่สมมูลกัน</p>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง</span> การเขียน Universal Conditional ในรูปแบบต่างๆ</div>
+          <p>พิจารณาประพจน์: <strong>"For all animals $a$, if $a$ is a dog, then $a$ is a mammal."</strong></p>
+          <table class="eq-table">
+            <tr><th>รูปแบบ</th><th>ประพจน์</th></tr>
+            <tr><td>ดั้งเดิม</td><td>For all animals $a$, if $a$ is a dog, then $a$ is a mammal.</td></tr>
+            <tr><td>เน้น Conditional</td><td>If an animal is a dog, then the animal is a mammal.</td></tr>
+            <tr><td>เน้น Universal</td><td>For all dogs $a$, $a$ is a mammal.</td></tr>
+            <tr><td>ไม่มีตัวแปร</td><td>All dogs are mammals.</td></tr>
+          </table>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 1.1.2</span> Rewriting a Universal Conditional Statement</div>
+          <p>เติมช่องว่างเพื่อเขียนประพจน์ "For all real numbers $x$, if $x$ is nonzero then $x^2$ is positive" ในรูปแบบต่างๆ</p>
+          <div class="solution">
+            <p><em>a.</em> If a real number is nonzero, then its square <u>is positive</u>.</p>
+            <p><em>b.</em> For all nonzero real numbers $x$, <u>$x^2$ is positive</u>.</p>
+            <p><em>c.</em> If $x$ <u>is a nonzero real number</u>, then <u>$x^2$ is positive</u>.</p>
+            <p><em>d.</em> The square of any nonzero real number is <u>positive</u>.</p>
+            <p><em>e.</em> All nonzero real numbers have <u>positive squares</u>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="univ-exist" class="subsec">
+        <h3>Universal Existential Statements</h3>
+        <div class="info-box">
+          <p>ประพจน์ที่ส่วนแรกเป็น Universal (สำหรับทุกตัว) และส่วนที่สองเป็น Existential (มีบางสิ่งอยู่)</p>
+          <p><em>ตัวอย่าง:</em> "Every real number has an additive inverse."</p>
+          <p>สามารถเขียนใหม่เป็น: For all real numbers $r$, there is a real number $s$ such that $s + r = 0$.</p>
+        </div>
+      </div>
+
+      <div id="exist-univ" class="subsec">
+        <h3>Existential Universal Statements</h3>
+        <div class="info-box">
+          <p>ประพจน์ที่ส่วนแรกเป็น Existential และส่วนที่สองเป็น Universal</p>
+          <p><em>ตัวอย่าง:</em> "There is a positive integer that is less than or equal to every positive integer."</p>
+          <p>สามารถเขียนใหม่เป็น: There is a positive integer $m$ with the property that for all positive integers $n$, $m \leq n$.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1.2 -->
+    <section id="sec12" class="ch-section">
+      <div class="section-header" style="--ch-color:#0891b2">
+        <span class="sec-num">1.2</span>
+        <div>
+          <h2>The Language of Sets</h2>
+          <p>ภาษาของเซต</p>
+        </div>
+      </div>
+
+      <p>คำว่า <strong>เซต (Set)</strong> ถูกใช้เป็นศัพท์ทางคณิตศาสตร์อย่างเป็นทางการครั้งแรกในปี 1879 โดย <strong>Georg Cantor (1845–1918)</strong> ซึ่งนิยามเซตว่าเป็นเพียงกลุ่มของสมาชิก</p>
+
+      <div id="set-notation" class="subsec">
+        <h3>สัญลักษณ์เซต (Set Notation)</h3>
+
+        <div class="key-box">
+          <h4>สัญลักษณ์พื้นฐาน</h4>
+          <ul>
+            <li>$x \in S$ — $x$ เป็นสมาชิกของ $S$</li>
+            <li>$x \notin S$ — $x$ ไม่ได้เป็นสมาชิกของ $S$</li>
+            <li>$\{1, 2, 3\}$ — เซตที่มีสมาชิก 1, 2, 3 (Set-Roster Notation)</li>
+            <li>$\{1, 2, 3, \ldots, 100\}$ — เซตของจำนวนเต็ม 1 ถึง 100</li>
+            <li>$\{1, 2, 3, \ldots\}$ — เซตของจำนวนเต็มบวกทั้งหมด</li>
+          </ul>
+        </div>
+
+        <div class="highlight-box">
+          <strong>Axiom of Extension:</strong> เซตถูกกำหนดโดยสมาชิกของมันเท่านั้น ลำดับและการซ้ำของสมาชิกไม่มีผล<br>
+          ดังนั้น $\{1, 2, 3\} = \{3, 1, 2\} = \{1, 1, 2, 3, 3\}$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 1.2.1</span> Using the Set-Roster Notation</div>
+          <p>ให้ $A = \{1, 2, 3\}$, $B = \{3, 1, 2\}$, $C = \{1, 1, 2, 3, 3, 3\}$</p>
+          <div class="solution">
+            <p>$A$, $B$, $C$ มีสมาชิกเหมือนกันทุกประการ คือ 1, 2, 3 ดังนั้น $A = B = C$</p>
+            <p>สังเกตว่า $\{0\} \neq 0$ เพราะ $\{0\}$ เป็นเซตที่มีสมาชิกหนึ่งตัว ส่วน $0$ คือจำนวน</p>
+            <p>เซต $\{1, \{1\}\}$ มีสมาชิก <strong>2 ตัว</strong> คือ $1$ และ $\{1\}$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="special-sets" class="subsec">
+        <h3>เซตสำคัญทางคณิตศาสตร์</h3>
+        <table class="def-table">
+          <thead>
+            <tr><th>สัญลักษณ์</th><th>เซต</th><th>ตัวอย่างสมาชิก</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>$\mathbb{R}$</td>
+              <td>จำนวนจริงทั้งหมด (Real numbers)</td>
+              <td>$-2.5,\ 0,\ \sqrt{2},\ \pi$</td>
+            </tr>
+            <tr>
+              <td>$\mathbb{Z}$</td>
+              <td>จำนวนเต็มทั้งหมด (Integers) <em>(จาก Zahlen ในภาษาเยอรมัน)</em></td>
+              <td>$\ldots, -2, -1, 0, 1, 2, \ldots$</td>
+            </tr>
+            <tr>
+              <td>$\mathbb{Q}$</td>
+              <td>จำนวนตรรกยะทั้งหมด (Rational numbers)</td>
+              <td>$\frac{1}{2},\ -\frac{3}{4},\ 5$</td>
+            </tr>
+            <tr>
+              <td>$\mathbb{R}^+$</td>
+              <td>จำนวนจริงบวก</td>
+              <td>$0.1,\ 1,\ 3.14$</td>
+            </tr>
+            <tr>
+              <td>$\mathbb{Z}^+$</td>
+              <td>จำนวนเต็มบวก</td>
+              <td>$1, 2, 3, \ldots$</td>
+            </tr>
+            <tr>
+              <td>$\mathbb{Z}_{\text{nonneg}}$</td>
+              <td>จำนวนเต็มไม่ติดลบ</td>
+              <td>$0, 1, 2, 3, \ldots$</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="info-box" style="margin-top:16px">
+          <strong>ชื่อ Discrete Mathematics มาจากไหน?</strong><br>
+          เส้นจำนวนจริง (Real number line) เป็น <em>continuous</em> เพราะไม่มีช่องว่าง แต่จำนวนเต็ม $\mathbb{Z}$ เป็น <em>discrete</em> เพราะแต่ละตัวอยู่ห่างกัน — นี่คือที่มาของคำว่า "Discrete Mathematics"
+        </div>
+      </div>
+
+      <div id="set-builder" class="subsec">
+        <h3>Set-Builder Notation</h3>
+        <div class="def-formal">
+          <div class="def-label">นิยาม — Set-Builder Notation</div>
+          $$\{x \in S \mid P(x)\}$$
+          <p>อ่านว่า "the set of all $x$ in $S$ such that $P(x)$" หมายถึงเซตของสมาชิกทุกตัว $x$ ใน $S$ ที่ทำให้ $P(x)$ เป็นจริง</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 1.2.2</span> Using the Set-Builder Notation</div>
+          <table class="eq-table">
+            <tr><th>นิพจน์</th><th>ความหมาย</th></tr>
+            <tr>
+              <td>$\{x \in \mathbb{R} \mid -2 < x < 5\}$</td>
+              <td>ช่วงเปิด $(-2,\ 5)$ บนเส้นจำนวนจริง</td>
+            </tr>
+            <tr>
+              <td>$\{x \in \mathbb{Z} \mid -2 < x < 5\}$</td>
+              <td>$\{-1, 0, 1, 2, 3, 4\}$</td>
+            </tr>
+            <tr>
+              <td>$\{x \in \mathbb{Z}^+ \mid -2 < x < 5\}$</td>
+              <td>$\{1, 2, 3, 4\}$</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div id="subsets" class="subsec">
+        <h3>Subsets (เซตย่อย)</h3>
+        <div class="def-formal">
+          <div class="def-label">นิยาม — Subset</div>
+          <p>ถ้า $A$ และ $B$ เป็นเซต เรากล่าวว่า <strong>$A$ เป็นเซตย่อยของ $B$</strong> เขียนว่า $A \subseteq B$</p>
+          $$A \subseteq B \quad \Longleftrightarrow \quad \forall x,\ (x \in A \Rightarrow x \in B)$$
+          <p>$A$ เป็น <strong>proper subset</strong> ของ $B$ (เขียน $A \subsetneq B$) ถ้า $A \subseteq B$ และมีสมาชิกบางตัวใน $B$ ที่ไม่อยู่ใน $A$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 1.2.3</span> Subsets</div>
+          <p>ให้ $A = \mathbb{Z}^+$, $B = \{n \in \mathbb{Z} \mid 0 \leq n \leq 100\}$, $C = \{100, 200, 300, 400, 500\}$</p>
+          <div class="solution">
+            <ul>
+              <li>$B \subseteq A$ — <strong>เท็จ</strong> เพราะ $0 \in B$ แต่ $0 \notin A$ (0 ไม่ใช่จำนวนเต็มบวก)</li>
+              <li>$C \subsetneq A$ — <strong>จริง</strong> เพราะทุกตัวใน $C$ เป็นจำนวนเต็มบวก</li>
+              <li>$C \subseteq B$ — <strong>เท็จ</strong> เพราะ $200 \in C$ แต่ $200 \notin B$</li>
+              <li>$C \subseteq C$ — <strong>จริง</strong> เสมอ (ทุกเซตเป็นเซตย่อยของตัวเอง)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          <strong>ข้อควรระวัง:</strong> ความแตกต่างระหว่าง $\in$ และ $\subseteq$
+          <ul>
+            <li>$2 \in \{1, 2, 3\}$ — จริง (2 เป็นสมาชิก)</li>
+            <li>$\{2\} \subseteq \{1, 2, 3\}$ — จริง ({2} เป็นเซตย่อย)</li>
+            <li>$\{2\} \in \{1, 2, 3\}$ — <strong>เท็จ</strong> (เซต {2} ไม่ใช่สมาชิก)</li>
+            <li>$2 \subseteq \{1, 2, 3\}$ — <strong>เท็จ</strong> (จำนวน 2 ไม่ใช่เซต)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="cartesian" class="subsec">
+        <h3>Cartesian Products (ผลคูณคาร์ทีเชียน)</h3>
+
+        <div class="def-formal">
+          <div class="def-label">นิยาม — Ordered Pair & Cartesian Product</div>
+          <p><strong>Ordered pair</strong> $(a, b)$ คือคู่อันดับที่ $a$ คือสมาชิกตัวแรก และ $b$ คือสมาชิกตัวที่สอง โดย $(a,b) = (c,d)$ ก็ต่อเมื่อ $a = c$ และ $b = d$</p>
+          <p><strong>Cartesian product</strong> ของเซต $A$ และ $B$:</p>
+          $$A \times B = \{(a, b) \mid a \in A \text{ and } b \in B\}$$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 1.2.6</span> Cartesian Products</div>
+          <p>ให้ $A = \{1, 2, 3\}$ และ $B = \{u, v\}$</p>
+          <div class="solution">
+            <p>$A \times B = \{(1,u),(2,u),(3,u),(1,v),(2,v),(3,v)\}$ — มี $3 \times 2 = 6$ สมาชิก</p>
+            <p>$B \times A = \{(u,1),(u,2),(u,3),(v,1),(v,2),(v,3)\}$ — มี $2 \times 3 = 6$ สมาชิก</p>
+            <p>$B \times B = \{(u,u),(u,v),(v,u),(v,v)\}$ — มี $2 \times 2 = 4$ สมาชิก</p>
+            <p>$\mathbb{R} \times \mathbb{R}$ คือเซตของจุดทุกจุดในระนาบคาร์ทีเชียน (Cartesian plane)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1.3 -->
+    <section id="sec13" class="ch-section">
+      <div class="section-header" style="--ch-color:#be185d">
+        <span class="sec-num">1.3</span>
+        <div>
+          <h2>The Language of Relations and Functions</h2>
+          <p>ภาษาของความสัมพันธ์และฟังก์ชัน</p>
+        </div>
+      </div>
+
+      <div id="relations" class="subsec">
+        <h3>Relations (ความสัมพันธ์)</h3>
+        <div class="def-formal">
+          <div class="def-label">นิยาม — Relation</div>
+          <p>ให้ $A$ และ $B$ เป็นเซต <strong>ความสัมพันธ์ $R$ จาก $A$ ไป $B$</strong> คือ <strong>เซตย่อยของ $A \times B$</strong></p>
+          <p>สำหรับ $(x, y) \in A \times B$: เราเขียน $x\ R\ y$ ถ้า $(x, y) \in R$ และเขียน $x\not{R}\ y$ ถ้า $(x, y) \notin R$</p>
+          <ul>
+            <li><strong>Domain</strong> ของ $R$ คือเซต $A$</li>
+            <li><strong>Co-domain</strong> ของ $R$ คือเซต $B$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 1.3.1</span> A Relation as a Subset</div>
+          <p>ให้ $A = \{1,2\}$, $B = \{1,2,3\}$ และนิยามความสัมพันธ์ $R$ จาก $A$ ไป $B$ ดังนี้:</p>
+          $$(x, y) \in R \quad \Longleftrightarrow \quad \frac{x-y}{2} \in \mathbb{Z}$$
+          <div class="solution">
+            <p>ตรวจแต่ละคู่ใน $A \times B$:</p>
+            <table class="eq-table">
+              <tr><th>คู่อันดับ</th><th>$(x-y)/2$</th><th>เป็นจำนวนเต็ม?</th><th>อยู่ใน $R$?</th></tr>
+              <tr><td>$(1,1)$</td><td>$0/2 = 0$</td><td>ใช่</td><td>✓</td></tr>
+              <tr><td>$(1,2)$</td><td>$-1/2$</td><td>ไม่</td><td>✗</td></tr>
+              <tr><td>$(1,3)$</td><td>$-2/2 = -1$</td><td>ใช่</td><td>✓</td></tr>
+              <tr><td>$(2,1)$</td><td>$1/2$</td><td>ไม่</td><td>✗</td></tr>
+              <tr><td>$(2,2)$</td><td>$0/2 = 0$</td><td>ใช่</td><td>✓</td></tr>
+              <tr><td>$(2,3)$</td><td>$-1/2$</td><td>ไม่</td><td>✗</td></tr>
+            </table>
+            <p>ดังนั้น $R = \{(1,1),(1,3),(2,2)\}$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="arrow-diag" class="subsec">
+        <h3>Arrow Diagram (เส้นทิศ)</h3>
+        <p>วิธีแสดงความสัมพันธ์โดยการวาดลูกศรจาก $x$ ไปยัง $y$ ถ้า $(x,y) \in R$</p>
+
+        <div class="diagram-box">
+          <div class="arrow-demo">
+            <div class="arrow-set">
+              <strong>ตัวอย่าง:</strong> $A = \{1,2,3\}$, $B = \{1,3,5\}$, ความสัมพันธ์ $S$: "$x < y$"
+            </div>
+            <div class="arrow-visual">
+              <div class="av-col">
+                <div class="av-title">$A$</div>
+                <div class="av-node">1</div>
+                <div class="av-node">2</div>
+                <div class="av-node">3</div>
+              </div>
+              <div class="av-arrows">
+                <!-- arrows represented by Unicode -->
+                <div class="av-arrow" style="top:12%">⟶</div>
+                <div class="av-arrow" style="top:28%">⟶</div>
+                <div class="av-arrow" style="top:44%">⟶</div>
+                <div class="av-arrow" style="top:28%">⟶</div>
+                <div class="av-arrow" style="top:44%">⟶</div>
+                <div class="av-arrow" style="top:60%">⟶</div>
+              </div>
+              <div class="av-col">
+                <div class="av-title">$B$</div>
+                <div class="av-node">1</div>
+                <div class="av-node">3</div>
+                <div class="av-node">5</div>
+              </div>
+            </div>
+            <p style="font-size:13px;color:#64748b;margin-top:8px">จาก 1: ชี้ไป 3 และ 5 (เพราะ 1 &lt; 3 และ 1 &lt; 5)</p>
+            <p style="font-size:13px;color:#64748b">จาก 2: ชี้ไป 3 และ 5 | จาก 3: ชี้ไป 5 เท่านั้น</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="functions" class="subsec">
+        <h3>Functions (ฟังก์ชัน)</h3>
+
+        <div class="def-formal">
+          <div class="def-label">นิยาม — Function</div>
+          <p><strong>ฟังก์ชัน $F$ จาก $A$ ไป $B$</strong> คือความสัมพันธ์ที่มี domain $A$ และ co-domain $B$ และต้องเป็นไปตามเงื่อนไข:</p>
+          <ol>
+            <li><strong>(ทุกตัวมีคู่)</strong> สำหรับทุก $x \in A$ มี $y \in B$ บางตัวที่ $(x,y) \in F$</li>
+            <li><strong>(คู่ไม่ซ้ำ)</strong> สำหรับทุก $x \in A$ ถ้า $(x,y) \in F$ และ $(x,z) \in F$ แล้ว $y = z$</li>
+          </ol>
+          <p style="margin-top:12px">ถ้า $F$ คือฟังก์ชัน ค่าเดียวที่ $x$ สัมพันธ์กัน เรียกว่า $F(x)$ (อ่านว่า "F ของ x")</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 1.3.4</span> Functions and Relations on Finite Sets</div>
+          <p>ให้ $A = \{2,4,6\}$, $B = \{1,3,5\}$ พิจารณาว่าสิ่งต่อไปนี้เป็นฟังก์ชันหรือไม่</p>
+          <div class="solution">
+            <p><em>a.</em> $R = \{(2,5),(4,1),(4,3),(6,5)\}$</p>
+            <div class="verdict false">❌ ไม่ใช่ฟังก์ชัน — $(4,1)$ และ $(4,3)$ มีสมาชิกตัวแรกเหมือนกันแต่ตัวที่สองต่างกัน (ละเมิดเงื่อนไขข้อ 2)</div>
+
+            <p><em>b.</em> $S$: $(x,y) \in S$ หมายความว่า $y = x + 1$ (สำหรับ $x \in A$, $y \in B$)</p>
+            <div class="verdict false">❌ ไม่ใช่ฟังก์ชัน — $6 \in A$ แต่ $6+1=7 \notin B$ (ละเมิดเงื่อนไขข้อ 1)</div>
+
+            <p><em>c.</em> $T$: $T(2)=5$, $T(4)=1$, $T(6)=1$</p>
+            <div class="verdict true">✓ เป็นฟังก์ชัน — ทุกตัวใน $A$ มีคู่ และไม่มีสมาชิกใดมีค่ามากกว่าหนึ่ง (สังเกตว่า $T(4) = T(6) = 1$ ได้)</div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>Vertical Line Test:</strong> กราฟใดเป็นฟังก์ชันก็ต่อเมื่อเส้นแนวตั้งทุกเส้นตัดกราฟนั้นที่จุดมากที่สุด <strong>1 จุด</strong><br>
+          — วงกลม $x^2 + y^2 = 1$ <strong>ไม่ใช่ฟังก์ชัน</strong> (เส้นแนวตั้งบางเส้นตัด 2 จุด)<br>
+          — เส้นตรง $y = x - 1$ <strong>เป็นฟังก์ชัน</strong>
+        </div>
+      </div>
+
+      <div id="func-machine" class="subsec">
+        <h3>Function Machines และตัวอย่างฟังก์ชัน</h3>
+        <p>ฟังก์ชันสามารถมองเป็น "เครื่องจักร" ที่รับ input $x$ แล้วให้ output $f(x)$</p>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 1.3.6</span> Functions Defined by Formulas</div>
+          <div class="func-cards">
+            <div class="func-card">
+              <div class="func-name">Squaring function</div>
+              <div class="func-formula">$f: \mathbb{R} \to \mathbb{R}$</div>
+              <div class="func-rule">$f(x) = x^2$</div>
+              <div class="func-note">$f(3) = 9$, $f(-2) = 4$</div>
+            </div>
+            <div class="func-card">
+              <div class="func-name">Successor function</div>
+              <div class="func-formula">$g: \mathbb{Z} \to \mathbb{Z}$</div>
+              <div class="func-rule">$g(n) = n + 1$</div>
+              <div class="func-note">$g(5) = 6$, $g(-1) = 0$</div>
+            </div>
+            <div class="func-card">
+              <div class="func-name">Constant function</div>
+              <div class="func-formula">$h: \mathbb{Q} \to \mathbb{Z}$</div>
+              <div class="func-rule">$h(r) = 2$</div>
+              <div class="func-note">$h(\frac{1}{3}) = 2$, $h(100) = 2$</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 1.3.7</span> Equality of Functions</div>
+          <p>ให้ $f(x) = |x|$ และ $g(x) = \sqrt{x^2}$ สำหรับทุก $x \in \mathbb{R}$</p>
+          <div class="solution">
+            <p>เนื่องจาก $|x| = \sqrt{x^2}$ สำหรับทุกจำนวนจริง $x$ ดังนั้น $f = g$</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#c8983b">
+        <span class="sec-num">📋</span>
+        <div>
+          <h2>สรุปบทที่ 1</h2>
+          <p>Speaking Mathematically</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h4>1.1 Variables</h4>
+          <ul>
+            <li>ตัวแปรใช้แทนค่าที่ไม่รู้ เพื่อความทั่วไป หรือเพื่ออ้างอิง</li>
+            <li>Universal statement: "for all..."</li>
+            <li>Conditional statement: "if... then..."</li>
+            <li>Existential statement: "there exists..."</li>
+            <li>ประพจน์ผสม: Universal Conditional, Universal Existential, Existential Universal</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>1.2 The Language of Sets</h4>
+          <ul>
+            <li>$x \in S$, $x \notin S$, $\{x \in S \mid P(x)\}$</li>
+            <li>เซตสำคัญ: $\mathbb{R}, \mathbb{Z}, \mathbb{Q}$</li>
+            <li>$A \subseteq B$ ถ้าสมาชิกทุกตัวของ $A$ อยู่ใน $B$</li>
+            <li>$A \times B = \{(a,b) \mid a \in A,\ b \in B\}$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>1.3 Relations and Functions</h4>
+          <ul>
+            <li>Relation $R$ จาก $A$ ไป $B$ คือ subset ของ $A \times B$</li>
+            <li>Function คือ relation ที่ทุก $x \in A$ มีคู่เดียว</li>
+            <li>$F(x)$ คือค่าเดียวที่ $x$ สัมพันธ์กับ $F$</li>
+            <li>Arrow diagram: วาดลูกศรแสดงความสัมพันธ์</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#ea580c">
+        <span class="sec-num">✏️</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>จากหนังสือ Discrete Mathematics with Applications</p>
+        </div>
+      </div>
+
+      <div class="exercises-list">
+        <div class="exercise-item">
+          <span class="ex-num">1.1</span>
+          <div class="ex-content">
+            <strong>Exercise Set 1.1:</strong> ข้อ 1–6 (เขียนประโยคโดยใช้ตัวแปร), ข้อ 7 (เขียนใหม่โดยไม่ใช้ตัวแปร), ข้อ 8–13 (เติมช่องว่างใน Universal/Existential)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">1.2</span>
+          <div class="ex-content">
+            <strong>Exercise Set 1.2:</strong> ข้อ 1 (เซตเท่ากัน), ข้อ 5 (เซตเท่ากัน), ข้อ 8–9 (เซตย่อย), ข้อ 11–12 (Cartesian Products)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">1.3</span>
+          <div class="ex-content">
+            <strong>Exercise Set 1.3:</strong> ข้อ 1–4 (ความสัมพันธ์), ข้อ 5–12 (ฟังก์ชัน), ข้อ 13–16 (Arrow Diagrams)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER NAV -->
+    <div class="chapter-nav">
+      <span></span>
+      <a href="chapter2.html" class="nav-btn next-btn">บทที่ 2 — The Logic of Compound Statements →</a>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง — บทที่ 1: Speaking Mathematically</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล · ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ · มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 · เนื้อหาจาก <em>Discrete Mathematics with Applications</em> — Susanna S. Epp</p>
+</footer>
+
+<script>
+  // Sticky sidebar highlight
+  const sections = document.querySelectorAll('.ch-section');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('ch-sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

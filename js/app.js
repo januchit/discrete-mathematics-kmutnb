@@ -6,6 +6,7 @@ const courseData = {
       titleTH: "ภาษาคณิตศาสตร์",
       icon: "📐",
       color: "#2563eb",
+      contentPage: "chapters/chapter1.html",
       sections: [
         { num: "1.1", title: "Variables", desc: "การใช้ตัวแปรในคณิตศาสตร์ ความหมายและการประยุกต์ใช้" },
         { num: "1.2", title: "The Language of Sets", desc: "สัญลักษณ์และภาษาของเซต การแทนสมาชิกและเซตว่าง" },
@@ -236,14 +237,14 @@ function renderHome() {
         <h2 class="section-title">เนื้อหารายบท</h2>
         <div class="chapters-grid">
           ${courseData.chapters.map(ch => `
-            <div class="chapter-card" onclick="renderChapter(${ch.id})" style="--ch-color: ${ch.color}">
+            <div class="chapter-card" onclick="${ch.contentPage ? `window.location.href='${ch.contentPage}'` : `renderChapter(${ch.id})`}" style="--ch-color: ${ch.color}">
               <div class="chapter-card-header">
                 <span class="chapter-num">บทที่ ${ch.id}</span>
                 <span class="chapter-icon">${ch.icon}</span>
               </div>
               <h3 class="chapter-card-title-en">${ch.title}</h3>
               <p class="chapter-card-title-th">${ch.titleTH}</p>
-              <p class="chapter-card-sections">${ch.sections.length} หัวข้อย่อย</p>
+              <p class="chapter-card-sections">${ch.sections.length} หัวข้อย่อย${ch.contentPage ? ' · <span class="badge-ready">มีเนื้อหา</span>' : ''}</p>
               <div class="chapter-card-arrow">→</div>
             </div>
           `).join('')}
