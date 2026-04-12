@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 7 – Functions | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>𝑓</text></svg>">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+  <style>
+    /* Arrow diagram */
+    .arrow-diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .arrow-set {
+      background: #f5f3ff;
+      border: 2px solid #7c3aed;
+      border-radius: 50%;
+      padding: 16px 20px;
+      min-width: 90px;
+      text-align: center;
+    }
+    .arrow-set .set-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #5b21b6;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .arrow-set .set-elements {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.9;
+      color: #4c1d95;
+    }
+    .arrow-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .arrow-connector .fn-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #7c3aed;
+    }
+    .arrow-connector .arrow-line {
+      font-size: 28px;
+      color: #7c3aed;
+      line-height: 1;
+    }
+
+    /* Proof box */
+    .proof-box {
+      background: #faf5ff;
+      border: 2px solid #7c3aed;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 16px 0;
+    }
+    .proof-box .proof-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #5b21b6;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proof-step {
+      margin: 10px 0;
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+    .proof-step.assume { background: #f0fdf4; border-left: 4px solid #16a34a; }
+    .proof-step.derive { background: #eff6ff; border-left: 4px solid #2563eb; }
+    .proof-step.conclude { background: #fdf4ff; border-left: 4px solid #9333ea; }
+    .proof-step h5 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .proof-step.assume h5 { color: #15803d; }
+    .proof-step.derive h5 { color: #1d4ed8; }
+    .proof-step.conclude h5 { color: #7e22ce; }
+    .proof-step p { font-size: 14px; line-height: 1.7; margin: 4px 0; }
+
+    .qed { text-align: right; font-style: italic; color: #5b21b6; font-weight: 600; margin-top: 8px; }
+
+    /* Function property table */
+    .fn-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+    .fn-table th {
+      background: #7c3aed;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .fn-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    .fn-table tr:nth-child(even) td { background: #f5f3ff; }
+
+    /* Cantor diagram */
+    .cantor-grid {
+      background: #f5f3ff;
+      border: 2px solid #7c3aed;
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.9;
+      overflow-x: auto;
+      margin: 14px 0;
+    }
+    .cantor-grid .diagonal {
+      color: #dc2626;
+      font-weight: 700;
+    }
+
+    /* Bijection card */
+    .bij-card {
+      background: white;
+      border: 1px solid #c4b5fd;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 10px 0;
+      box-shadow: 0 2px 6px rgba(124,58,237,0.08);
+    }
+    .bij-card h5 { color: #5b21b6; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+
+    /* Zigzag diagram for N and Z */
+    .zigzag-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 12px 0;
+      text-align: center;
+    }
+    .zigzag-table th {
+      background: #5b21b6;
+      color: white;
+      padding: 8px 10px;
+    }
+    .zigzag-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .zigzag-table tr:nth-child(even) td { background: #f5f3ff; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="chapter6.html" class="ch-nav-link">← บทที่ 6</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 7</span>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#7c3aed">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 7</div>
+      <div class="chapter-hero-icon">f(x)</div>
+      <h1 class="chapter-hero-title">Functions</h1>
+      <p class="chapter-hero-subtitle">ฟังก์ชัน</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec71">7.1 Functions on General Sets</a>
+          <ul>
+            <li><a href="#fn-def">นิยามและสัญลักษณ์</a></li>
+            <li><a href="#fn-notation">Function Notation</a></li>
+            <li><a href="#fn-welldef">Well-Defined &amp; Equality</a></li>
+            <li><a href="#fn-examples">ตัวอย่างฟังก์ชัน</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec72">7.2 Injective, Surjective, Bijective</a>
+          <ul>
+            <li><a href="#injective">Injective (One-to-One)</a></li>
+            <li><a href="#surjective">Surjective (Onto)</a></li>
+            <li><a href="#bijective">Bijection &amp; Inverse</a></li>
+            <li><a href="#prove-props">การพิสูจน์ Properties</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec73">7.3 Composition of Functions</a>
+          <ul>
+            <li><a href="#comp-def">นิยาม Composition</a></li>
+            <li><a href="#comp-props">สมบัติ Composition</a></li>
+            <li><a href="#comp-inj-sur">Composition กับ Inj/Sur</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec74">7.4 Cardinality</a>
+          <ul>
+            <li><a href="#card-finite">Cardinality ของเซตจำกัด</a></li>
+            <li><a href="#card-infinite">เซตอนันต์ที่นับได้</a></li>
+            <li><a href="#cantor-diag">Cantor's Diagonal Argument</a></li>
+            <li><a href="#csb-theorem">Cantor–Schröder–Bernstein</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 7</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 7</h2>
+        <p>บทนี้ศึกษา <strong>ฟังก์ชัน (Functions)</strong> อย่างเป็นทางการในบริบทของคณิตศาสตร์ไม่ต่อเนื่อง ซึ่งเป็นรากฐานสำคัญของวิทยาการคอมพิวเตอร์ ตั้งแต่นิยามอย่างเคร่งครัด ไปจนถึงสมบัติ Injective/Surjective/Bijective การหา Inverse ฟังก์ชัน การ Compose ฟังก์ชัน และการวัด Cardinality ของเซตอนันต์ด้วยเครื่องมือของ Cantor</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">𝑓</span>
+            <strong>7.1 Functions</strong>
+            <p>นิยาม $f: A \to B$, domain, codomain, range, arrow diagram, well-defined</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">↔</span>
+            <strong>7.2 Inj / Sur / Bij</strong>
+            <p>One-to-one, Onto, Bijection, Inverse function $f^{-1}$, การพิสูจน์</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">∘</span>
+            <strong>7.3 Composition</strong>
+            <p>$(g \circ f)(x) = g(f(x))$, Associativity, Identity, Composition ของ Inj/Sur</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">∞</span>
+            <strong>7.4 Cardinality</strong>
+            <p>$|\mathbb{N}| = |\mathbb{Z}| = |\mathbb{Q}|$, Cantor's diagonal, $|\mathbb{R}| > |\mathbb{N}|$</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7.1 -->
+    <section id="sec71" class="ch-section">
+      <div class="section-header" style="--ch-color:#7c3aed">
+        <span class="sec-num">7.1</span>
+        <div>
+          <h2>Functions Defined on General Sets</h2>
+          <p>ฟังก์ชันบนเซตทั่วไป, นิยาม, สัญลักษณ์, Arrow Diagram</p>
+        </div>
+      </div>
+
+      <div id="fn-def" class="subsec">
+        <h3>นิยามอย่างเป็นทางการ</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: ฟังก์ชัน (Function)</h4>
+          <p>ให้ $A$ และ $B$ เป็นเซตที่ไม่ว่าง <strong>ฟังก์ชัน $f$ จาก $A$ ไป $B$</strong> เขียนว่า $f: A \to B$ คือความสัมพันธ์ที่กำหนดค่า $f(a) \in B$ ให้กับสมาชิก $a \in A$ แต่ละตัว <em>อย่างไม่กำกวม</em> (exactly one value)</p>
+          <ul>
+            <li><strong>Domain (โดเมน):</strong> เซต $A$ ซึ่งเป็นเซตต้นทาง</li>
+            <li><strong>Codomain (โคโดเมน):</strong> เซต $B$ ซึ่งเป็นเซตปลายทาง</li>
+            <li><strong>Range / Image (รูป):</strong> $\mathrm{range}(f) = \{f(a) \mid a \in A\} \subseteq B$ — เซตของค่าที่ $f$ รับจริง ๆ (อาจเป็นสับเซตแท้ของ $B$)</li>
+          </ul>
+          <p><strong>สัญลักษณ์:</strong> $f(a)$ อ่านว่า "$f$ ของ $a$" หรือ "image ของ $a$ ภายใต้ $f$"</p>
+        </div>
+
+        <p>Arrow diagram ช่วยให้เห็นภาพได้ชัดเจน: ลูกศรจากแต่ละสมาชิกของ $A$ ชี้ไปยังสมาชิกของ $B$ ที่เป็นค่าของฟังก์ชัน</p>
+
+        <div class="arrow-diagram">
+          <div class="arrow-set">
+            <div class="set-label">A (Domain)</div>
+            <div class="set-elements">1<br>2<br>3<br>4</div>
+          </div>
+          <div class="arrow-connector">
+            <div class="fn-label">$f$</div>
+            <div class="arrow-line">→</div>
+          </div>
+          <div class="arrow-set">
+            <div class="set-label">B (Codomain)</div>
+            <div class="set-elements">a<br>b<br>c<br>d</div>
+          </div>
+        </div>
+        <p style="text-align:center; font-size:13px; color:#5b21b6; margin-top:-8px;">ตัวอย่าง: $f(1)=a,\ f(2)=c,\ f(3)=b,\ f(4)=c$ — Range $= \{a, b, c\}$</p>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.1.1</span> ฟังก์ชันจากเซตจำกัด</div>
+          <p>ให้ $A = \{1, 2, 3\}$, $B = \{x, y, z, w\}$ และ $f$ นิยามโดย $f(1) = y$, $f(2) = w$, $f(3) = y$</p>
+          <div class="solution">
+            <ul>
+              <li>Domain $= A = \{1, 2, 3\}$</li>
+              <li>Codomain $= B = \{x, y, z, w\}$</li>
+              <li>Range $= \{y, w\}$ (เฉพาะค่าที่ถูก map ไปจริง)</li>
+            </ul>
+            <p>สังเกต: $x$ และ $z$ อยู่ใน $B$ แต่ไม่อยู่ใน Range</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="fn-notation" class="subsec">
+        <h3>Function Notation, Image และ Preimage</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Image และ Preimage</h4>
+          <p>ให้ $f: A \to B$ และ $a \in A$, $b \in B$</p>
+          <ul>
+            <li><strong>Image ของ $a$:</strong> ค่า $f(a) \in B$</li>
+            <li><strong>Preimage ของ $b$:</strong> เซต $f^{-1}(\{b\}) = \{a \in A \mid f(a) = b\}$ — สมาชิกทั้งหมดใน $A$ ที่ map ไปยัง $b$</li>
+          </ul>
+          <p>ถ้า $S \subseteq A$ แล้ว <strong>image ของ $S$</strong> คือ $f(S) = \{f(a) \mid a \in S\}$</p>
+          <p>ถ้า $T \subseteq B$ แล้ว <strong>preimage ของ $T$</strong> คือ $f^{-1}(T) = \{a \in A \mid f(a) \in T\}$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.1.2</span> Image และ Preimage ของเซต</div>
+          <p>ให้ $f: \mathbb{Z} \to \mathbb{Z}$ นิยามโดย $f(n) = n^2$</p>
+          <div class="solution">
+            <ul>
+              <li>$f(\{-2,-1,0,1,2\}) = \{0, 1, 4\}$ (image)</li>
+              <li>$f^{-1}(\{4\}) = \{-2, 2\}$ (preimage ของ 4)</li>
+              <li>$f^{-1}(\{3\}) = \emptyset$ (ไม่มีจำนวนเต็มที่ยกกำลัง 2 แล้วได้ 3)</li>
+              <li>Range $= \{0, 1, 4, 9, 16, \ldots\} = \{n^2 \mid n \in \mathbb{Z}\}$ ซึ่งเป็นสับเซตแท้ของ $\mathbb{Z}$</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="fn-welldef" class="subsec">
+        <h3>Well-Defined Functions และความเท่ากันของฟังก์ชัน</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Well-Defined Function</h4>
+          <p>ฟังก์ชัน $f: A \to B$ เป็น <strong>well-defined</strong> ก็ต่อเมื่อ: สำหรับทุก $a_1, a_2 \in A$ ถ้า $a_1 = a_2$ แล้ว $f(a_1) = f(a_2)$</p>
+          <p>กล่าวคือ สมาชิก $a$ แต่ละตัวต้องมีค่า $f(a)$ เพียงค่าเดียว (ไม่ใช่หลายค่า)</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.1.3</span> ฟังก์ชันที่ไม่ Well-Defined</div>
+          <p>นิยาม $g: \mathbb{Q} \to \mathbb{Z}$ โดย $g\!\left(\dfrac{p}{q}\right) = p$ (เอาตัวเศษ)</p>
+          <div class="solution">
+            <p>$g$ ไม่ well-defined เพราะ $\dfrac{1}{2} = \dfrac{2}{4}$ แต่ $g\!\left(\dfrac{1}{2}\right) = 1 \neq 2 = g\!\left(\dfrac{2}{4}\right)$</p>
+            <p>ค่าของ $g$ ขึ้นกับ <em>การเขียน</em> ของ $\dfrac{p}{q}$ ไม่ใช่ค่าของเศษส่วนเอง</p>
+          </div>
+        </div>
+
+        <div class="def-box">
+          <h4>นิยาม: ความเท่ากันของฟังก์ชัน (Equality of Functions)</h4>
+          <p>ฟังก์ชัน $f: A \to B$ และ $g: A \to B$ <strong>เท่ากัน</strong> (เขียน $f = g$) ก็ต่อเมื่อ $f(a) = g(a)$ สำหรับทุก $a \in A$</p>
+          <p>สำคัญ: Domain และ Codomain ต้องเหมือนกัน ด้วย</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.1.4</span> ฟังก์ชันที่ดูเหมือนกันแต่ไม่เท่ากัน</div>
+          <p>พิจารณา $f: \mathbb{R} \to \mathbb{R}$ โดย $f(x) = |x|$ และ $g: \mathbb{R} \to \mathbb{R}$ โดย $g(x) = \sqrt{x^2}$</p>
+          <div class="solution">
+            <p>สำหรับทุก $x \in \mathbb{R}$: $f(x) = |x| = \sqrt{x^2} = g(x)$ ดังนั้น $f = g$ ✓</p>
+            <p>แต่ถ้า $h: [0,\infty) \to \mathbb{R}$ นิยามโดย $h(x) = x$ แล้ว $f \neq h$ เพราะ Domain ต่างกัน</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="fn-examples" class="subsec">
+        <h3>ตัวอย่างฟังก์ชันสำคัญ</h3>
+
+        <table class="fn-table">
+          <thead>
+            <tr>
+              <th>ฟังก์ชัน</th>
+              <th>นิยาม</th>
+              <th>Domain → Codomain</th>
+              <th>ตัวอย่าง</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Floor ⌊·⌋</strong></td>
+              <td>$\lfloor x \rfloor =$ จำนวนเต็มที่มากที่สุด $\leq x$</td>
+              <td>$\mathbb{R} \to \mathbb{Z}$</td>
+              <td>$\lfloor 3.7 \rfloor = 3$, $\lfloor -1.2 \rfloor = -2$</td>
+            </tr>
+            <tr>
+              <td><strong>Ceiling ⌈·⌉</strong></td>
+              <td>$\lceil x \rceil =$ จำนวนเต็มที่น้อยที่สุด $\geq x$</td>
+              <td>$\mathbb{R} \to \mathbb{Z}$</td>
+              <td>$\lceil 3.2 \rceil = 4$, $\lceil -1.7 \rceil = -1$</td>
+            </tr>
+            <tr>
+              <td><strong>Absolute Value</strong></td>
+              <td>$|x| = x$ ถ้า $x \geq 0$; $|x| = -x$ ถ้า $x < 0$</td>
+              <td>$\mathbb{R} \to [0,\infty)$</td>
+              <td>$|{-5}| = 5$, $|3| = 3$</td>
+            </tr>
+            <tr>
+              <td><strong>Identity</strong></td>
+              <td>$\mathrm{id}_A(a) = a$</td>
+              <td>$A \to A$</td>
+              <td>$\mathrm{id}_\mathbb{R}(x) = x$</td>
+            </tr>
+            <tr>
+              <td><strong>Constant</strong></td>
+              <td>$f(a) = c$ สำหรับ $c$ คงที่</td>
+              <td>$A \to B$</td>
+              <td>$f(x) = 5$ สำหรับทุก $x$</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.1.5</span> Floor และ Ceiling บน Domain จำกัด</div>
+          <p>ให้ $A = \{x \in \mathbb{R} \mid 0 \leq x \leq 3\}$ และ $f: A \to \mathbb{Z}$ โดย $f(x) = \lfloor x \rfloor$</p>
+          <div class="solution">
+            <ul>
+              <li>$f(0) = 0$, $f(0.5) = 0$, $f(1) = 1$, $f(2.9) = 2$, $f(3) = 3$</li>
+              <li>Range $= \{0, 1, 2, 3\}$</li>
+              <li>$f^{-1}(\{2\}) = [2, 3)$ — interval ของ $x$ ที่ $\lfloor x \rfloor = 2$</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.1.6</span> ฟังก์ชันบน Domain จำนวนเต็ม</div>
+          <p>ให้ $f: \mathbb{Z} \to \mathbb{Z}$ นิยามโดย $f(n) = 2n + 3$</p>
+          <div class="solution">
+            <ul>
+              <li>$f(0) = 3$, $f(1) = 5$, $f(-1) = 1$, $f(5) = 13$</li>
+              <li>Range $= \{\ldots, -3, -1, 1, 3, 5, 7, \ldots\}$ = จำนวนคี่ทั้งหมด</li>
+              <li>$f^{-1}(\{7\}) = \{2\}$ เพราะ $2(2)+3 = 7$</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <strong>หมายเหตุสำคัญ:</strong> Range $\subsetneq$ Codomain ได้ — เช่น $f(n) = 2n+3$ มี Codomain $\mathbb{Z}$ แต่ Range เป็นแค่จำนวนคี่ จำนวนคู่ทั้งหมดไม่ถูก map ถึง
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7.2 -->
+    <section id="sec72" class="ch-section">
+      <div class="section-header" style="--ch-color:#7c3aed">
+        <span class="sec-num">7.2</span>
+        <div>
+          <h2>One-to-One (Injective), Onto (Surjective), Bijective</h2>
+          <p>สมบัติพื้นฐานของฟังก์ชันและฟังก์ชันผกผัน</p>
+        </div>
+      </div>
+
+      <div id="injective" class="subsec">
+        <h3>Injective (One-to-One)</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Injective Function (ฟังก์ชัน 1-1)</h4>
+          <p>$f: A \to B$ เป็น <strong>injective</strong> (หรือ <strong>one-to-one</strong>) ก็ต่อเมื่อ</p>
+          $$\forall a_1, a_2 \in A,\quad f(a_1) = f(a_2) \implies a_1 = a_2$$
+          <p>หรือรูป contrapositive ที่มักใช้พิสูจน์:</p>
+          $$a_1 \neq a_2 \implies f(a_1) \neq f(a_2)$$
+          <p><strong>ความหมาย:</strong> สมาชิกต่างกันใน $A$ จะถูก map ไปยังสมาชิกต่างกันใน $B$ — ไม่มี "การชน"</p>
+        </div>
+
+        <div class="arrow-diagram">
+          <div class="arrow-set">
+            <div class="set-label">A</div>
+            <div class="set-elements">1<br>2<br>3</div>
+          </div>
+          <div class="arrow-connector">
+            <div class="fn-label">injective</div>
+            <div class="arrow-line">→</div>
+          </div>
+          <div class="arrow-set">
+            <div class="set-label">B</div>
+            <div class="set-elements">a<br>b<br>c<br>d</div>
+          </div>
+        </div>
+        <p style="text-align:center; font-size:13px; color:#5b21b6; margin-top:-8px;">$f(1)=a,\ f(2)=c,\ f(3)=d$ — แต่ละ element ใน $A$ map ไปยัง element ต่างกันใน $B$</p>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.2.1</span> พิสูจน์ว่า $f(x) = 2x+1$ เป็น Injective บน $\mathbb{Z}$</div>
+          <p>ให้ $f: \mathbb{Z} \to \mathbb{Z}$ นิยามโดย $f(n) = 2n + 1$</p>
+          <div class="proof-box">
+            <div class="proof-title">🔍 การพิสูจน์</div>
+            <div class="proof-step assume">
+              <h5>สมมติ</h5>
+              <p>ให้ $n_1, n_2 \in \mathbb{Z}$ โดยที่ $f(n_1) = f(n_2)$</p>
+            </div>
+            <div class="proof-step derive">
+              <h5>คำนวณ</h5>
+              <p>$2n_1 + 1 = 2n_2 + 1$</p>
+              <p>$\Rightarrow 2n_1 = 2n_2$</p>
+              <p>$\Rightarrow n_1 = n_2$</p>
+            </div>
+            <div class="proof-step conclude">
+              <h5>สรุป</h5>
+              <p>เนื่องจาก $f(n_1) = f(n_2) \Rightarrow n_1 = n_2$ ดังนั้น $f$ เป็น injective ✓</p>
+            </div>
+            <div class="qed">∎</div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.2.2</span> พิสูจน์ว่า $g(n) = n^2$ ไม่ Injective บน $\mathbb{Z}$</div>
+          <div class="solution">
+            <p><strong>Counter-example:</strong> $g(-2) = 4 = g(2)$ แต่ $-2 \neq 2$</p>
+            <p>ดังนั้น $g$ <em>ไม่</em> injective เพราะสองสมาชิกต่างกัน ($-2$ และ $2$) map ไปยังค่าเดียวกัน</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="surjective" class="subsec">
+        <h3>Surjective (Onto)</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Surjective Function (Onto)</h4>
+          <p>$f: A \to B$ เป็น <strong>surjective</strong> (หรือ <strong>onto</strong>) ก็ต่อเมื่อ</p>
+          $$\forall b \in B,\ \exists a \in A \text{ such that } f(a) = b$$
+          <p><strong>ความหมาย:</strong> ทุกสมาชิกใน $B$ (Codomain) มี "preimage" อย่างน้อยหนึ่งตัวใน $A$ กล่าวคือ Range $=$ Codomain</p>
+        </div>
+
+        <div class="arrow-diagram">
+          <div class="arrow-set">
+            <div class="set-label">A</div>
+            <div class="set-elements">1<br>2<br>3<br>4</div>
+          </div>
+          <div class="arrow-connector">
+            <div class="fn-label">surjective</div>
+            <div class="arrow-line">→</div>
+          </div>
+          <div class="arrow-set">
+            <div class="set-label">B</div>
+            <div class="set-elements">a<br>b<br>c</div>
+          </div>
+        </div>
+        <p style="text-align:center; font-size:13px; color:#5b21b6; margin-top:-8px;">$f(1)=a,\ f(2)=b,\ f(3)=c,\ f(4)=b$ — ทุก element ใน $B$ ถูก map ถึง</p>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.2.3</span> พิสูจน์ว่า $f(n) = 2n+1$ บน $\mathbb{Z} \to \mathbb{Z}$ ไม่ Surjective</div>
+          <div class="solution">
+            <p>พิจารณา $b = 2 \in \mathbb{Z}$ (จำนวนคู่)</p>
+            <p>ต้องหา $n \in \mathbb{Z}$ ที่ $2n + 1 = 2$ กล่าวคือ $n = \dfrac{1}{2} \notin \mathbb{Z}$</p>
+            <p>ไม่มีจำนวนเต็ม $n$ ที่ $f(n) = 2$ ดังนั้น $f$ ไม่ surjective</p>
+            <p><strong>Range</strong> ของ $f$ คือจำนวนคี่ทั้งหมด ซึ่งเป็นสับเซตแท้ของ $\mathbb{Z}$</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.2.4</span> Surjective โดยเปลี่ยน Codomain</div>
+          <p>ให้ $f: \mathbb{Z} \to \mathbb{Z}_{\text{odd}}$ นิยามโดย $f(n) = 2n + 1$ (Codomain = จำนวนคี่)</p>
+          <div class="proof-box">
+            <div class="proof-title">🔍 พิสูจน์ Surjective</div>
+            <div class="proof-step assume">
+              <h5>ให้ $b$ เป็นจำนวนคี่ใดๆ</h5>
+              <p>เขียน $b = 2k+1$ สำหรับ $k \in \mathbb{Z}$ (นิยามของจำนวนคี่)</p>
+            </div>
+            <div class="proof-step derive">
+              <h5>หา Preimage</h5>
+              <p>กำหนด $a = k \in \mathbb{Z}$ แล้ว $f(a) = 2k + 1 = b$</p>
+            </div>
+            <div class="proof-step conclude">
+              <h5>สรุป</h5>
+              <p>สำหรับทุกจำนวนคี่ $b$ มี $a = k \in \mathbb{Z}$ ที่ $f(a) = b$ ดังนั้น $f$ เป็น surjective ✓</p>
+            </div>
+            <div class="qed">∎</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="bijective" class="subsec">
+        <h3>Bijection และ Inverse Function</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Bijection (การจับคู่แบบหนึ่งต่อหนึ่งและทั่วถึง)</h4>
+          <p>$f: A \to B$ เป็น <strong>bijection</strong> (หรือ <strong>bijective function</strong>) ก็ต่อเมื่อ $f$ เป็นทั้ง injective และ surjective</p>
+          <ul>
+            <li>แต่ละสมาชิกใน $B$ มี preimage ใน $A$ <strong>ตรงหนึ่งตัวพอดี</strong></li>
+            <li>เรียกอีกชื่อว่า <strong>one-to-one correspondence</strong></li>
+          </ul>
+        </div>
+
+        <div class="def-box">
+          <h4>นิยาม: Inverse Function (ฟังก์ชันผกผัน)</h4>
+          <p>ถ้า $f: A \to B$ เป็น bijection แล้ว <strong>inverse function</strong> $f^{-1}: B \to A$ นิยามโดย</p>
+          $$f^{-1}(b) = a \iff f(a) = b$$
+          <p><strong>ทฤษฎีบท:</strong> $f^{-1}$ มีอยู่ก็ต่อเมื่อ $f$ เป็น bijection เท่านั้น</p>
+          <p>และ: $(f^{-1} \circ f)(a) = a$ สำหรับทุก $a \in A$, และ $(f \circ f^{-1})(b) = b$ สำหรับทุก $b \in B$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.2.5</span> หา Inverse ของ $f(n) = 2n + 1$ บน $\mathbb{Z} \to \mathbb{Z}_{\text{odd}}$</div>
+          <div class="solution">
+            <p>เนื่องจาก $f$ เป็น bijection (injective จากตัวอย่าง 7.2.1, surjective จากตัวอย่าง 7.2.4)</p>
+            <p>หา $f^{-1}$: ให้ $b = 2n+1$ ดังนั้น $n = \dfrac{b-1}{2}$</p>
+            $$f^{-1}(b) = \frac{b-1}{2}, \quad b \in \mathbb{Z}_{\text{odd}}$$
+            <p>ตรวจสอบ: $f^{-1}(f(3)) = f^{-1}(7) = \dfrac{7-1}{2} = 3$ ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="prove-props" class="subsec">
+        <h3>วิธีการพิสูจน์ Injective / Surjective / Bijective</h3>
+
+        <table class="fn-table">
+          <thead>
+            <tr>
+              <th>สมบัติ</th>
+              <th>วิธีพิสูจน์ว่าเป็นจริง</th>
+              <th>วิธีแสดงว่าไม่เป็นจริง</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Injective</strong></td>
+              <td>สมมติ $f(a_1) = f(a_2)$ แล้วพิสูจน์ว่า $a_1 = a_2$</td>
+              <td>หา counter-example: $a_1 \neq a_2$ แต่ $f(a_1) = f(a_2)$</td>
+            </tr>
+            <tr>
+              <td><strong>Surjective</strong></td>
+              <td>ให้ $b \in B$ ใดๆ แล้วสร้าง $a \in A$ อย่างชัดเจนที่ $f(a) = b$</td>
+              <td>หา $b \in B$ ที่ไม่มี $a \in A$ ที่ $f(a) = b$</td>
+            </tr>
+            <tr>
+              <td><strong>Bijective</strong></td>
+              <td>พิสูจน์ทั้ง injective และ surjective</td>
+              <td>แสดงว่า injective หรือ surjective ล้มเหลว</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.2.6</span> ทดสอบ $f: \mathbb{R} \to \mathbb{R}$, $f(x) = x^3 - x$</div>
+          <div class="solution">
+            <p><strong>Injective?</strong> $f(0) = 0$ และ $f(1) = 1 - 1 = 0$ ดังนั้น $f(0) = f(1) = 0$ แต่ $0 \neq 1$ → <em>ไม่ injective</em></p>
+            <p><strong>Surjective?</strong> $f$ เป็น polynomial ที่ $\lim_{x \to \pm\infty} f(x) = \pm\infty$ และ $f$ ต่อเนื่อง → โดย IVT, ทุก $b \in \mathbb{R}$ มี preimage → <em>surjective</em></p>
+            <p><strong>Bijective?</strong> ไม่ bijective เพราะไม่ injective</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7.3 -->
+    <section id="sec73" class="ch-section">
+      <div class="section-header" style="--ch-color:#7c3aed">
+        <span class="sec-num">7.3</span>
+        <div>
+          <h2>Composition of Functions</h2>
+          <p>การประกอบฟังก์ชัน, Associativity, Identity</p>
+        </div>
+      </div>
+
+      <div id="comp-def" class="subsec">
+        <h3>นิยาม Composition</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Composition (การประกอบฟังก์ชัน)</h4>
+          <p>ให้ $f: A \to B$ และ $g: B \to C$ (Codomain ของ $f$ เป็น Domain ของ $g$) <strong>Composition</strong> $g \circ f: A \to C$ นิยามโดย</p>
+          $$(g \circ f)(x) = g(f(x)), \quad \forall x \in A$$
+          <p><strong>สังเกต:</strong> อ่าน $g \circ f$ ว่า "$g$ composed with $f$" หรือ "$g$ ของ $f$" — ทำ $f$ ก่อน แล้วจึงทำ $g$</p>
+        </div>
+
+        <div class="arrow-diagram">
+          <div class="arrow-set">
+            <div class="set-label">A</div>
+            <div class="set-elements">x</div>
+          </div>
+          <div class="arrow-connector">
+            <div class="fn-label">$f$</div>
+            <div class="arrow-line">→</div>
+          </div>
+          <div class="arrow-set">
+            <div class="set-label">B</div>
+            <div class="set-elements">f(x)</div>
+          </div>
+          <div class="arrow-connector">
+            <div class="fn-label">$g$</div>
+            <div class="arrow-line">→</div>
+          </div>
+          <div class="arrow-set">
+            <div class="set-label">C</div>
+            <div class="set-elements">g(f(x))</div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.3.1</span> คำนวณ Composition ของฟังก์ชัน</div>
+          <p>ให้ $f: \mathbb{R} \to \mathbb{R}$, $f(x) = 2x + 1$ และ $g: \mathbb{R} \to \mathbb{R}$, $g(x) = x^2$</p>
+          <div class="solution">
+            <p><strong>$g \circ f$:</strong> $(g \circ f)(x) = g(f(x)) = g(2x+1) = (2x+1)^2 = 4x^2 + 4x + 1$</p>
+            <p><strong>$f \circ g$:</strong> $(f \circ g)(x) = f(g(x)) = f(x^2) = 2x^2 + 1$</p>
+            <p><strong>ข้อสังเกต:</strong> $g \circ f \neq f \circ g$ — Composition ไม่ใช่ commutative โดยทั่วไป!</p>
+            <p>ตรวจสอบ: $(g \circ f)(2) = (2 \cdot 2 + 1)^2 = 25$; $(f \circ g)(2) = 2(4) + 1 = 9$ ✓</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.3.2</span> Composition ของฟังก์ชันบนเซตจำกัด</div>
+          <p>ให้ $A = \{1,2,3\}$, $B = \{a,b,c\}$, $C = \{x,y\}$</p>
+          <p>$f: A \to B$: $f(1)=a$, $f(2)=b$, $f(3)=a$</p>
+          <p>$g: B \to C$: $g(a)=x$, $g(b)=y$, $g(c)=x$</p>
+          <div class="solution">
+            <p>$(g \circ f)(1) = g(f(1)) = g(a) = x$</p>
+            <p>$(g \circ f)(2) = g(f(2)) = g(b) = y$</p>
+            <p>$(g \circ f)(3) = g(f(3)) = g(a) = x$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="comp-props" class="subsec">
+        <h3>สมบัติของ Composition</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Composition เป็น Associative</h4>
+          <p>ให้ $f: A \to B$, $g: B \to C$, $h: C \to D$ แล้ว</p>
+          $$h \circ (g \circ f) = (h \circ g) \circ f$$
+          <p><em>หลักฐาน:</em> สำหรับทุก $x \in A$: $(h \circ (g \circ f))(x) = h((g \circ f)(x)) = h(g(f(x)))$ และ $((h \circ g) \circ f)(x) = (h \circ g)(f(x)) = h(g(f(x)))$ ซึ่งเท่ากัน ∎</p>
+        </div>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Identity Function กับ Composition</h4>
+          <p>ให้ $f: A \to B$ และ $\mathrm{id}_A: A \to A$, $\mathrm{id}_B: B \to B$ เป็น identity functions แล้ว</p>
+          $$f \circ \mathrm{id}_A = f \qquad \text{และ} \qquad \mathrm{id}_B \circ f = f$$
+        </div>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Inverse กับ Composition</h4>
+          <p>ถ้า $f: A \to B$ เป็น bijection แล้ว</p>
+          $$f^{-1} \circ f = \mathrm{id}_A \qquad \text{และ} \qquad f \circ f^{-1} = \mathrm{id}_B$$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.3.3</span> ตรวจสอบ Inverse ด้วย Composition</div>
+          <p>ให้ $f: \mathbb{R} \to \mathbb{R}$, $f(x) = 3x - 2$ และ $f^{-1}(x) = \dfrac{x+2}{3}$</p>
+          <div class="solution">
+            <p>$(f^{-1} \circ f)(x) = f^{-1}(3x-2) = \dfrac{(3x-2)+2}{3} = \dfrac{3x}{3} = x$ ✓</p>
+            <p>$(f \circ f^{-1})(x) = f\!\left(\dfrac{x+2}{3}\right) = 3 \cdot \dfrac{x+2}{3} - 2 = x + 2 - 2 = x$ ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="comp-inj-sur" class="subsec">
+        <h3>Composition รักษาสมบัติ Injective และ Surjective</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Composition ของ Injections เป็น Injection</h4>
+          <p>ถ้า $f: A \to B$ และ $g: B \to C$ เป็น injective ทั้งคู่ แล้ว $g \circ f: A \to C$ เป็น injective</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">🔍 การพิสูจน์</div>
+          <div class="proof-step assume">
+            <h5>สมมติ</h5>
+            <p>ให้ $a_1, a_2 \in A$ โดยที่ $(g \circ f)(a_1) = (g \circ f)(a_2)$</p>
+            <p>กล่าวคือ $g(f(a_1)) = g(f(a_2))$</p>
+          </div>
+          <div class="proof-step derive">
+            <h5>ใช้สมบัติ Injective ของ $g$</h5>
+            <p>เนื่องจาก $g$ เป็น injective และ $g(f(a_1)) = g(f(a_2))$ ดังนั้น $f(a_1) = f(a_2)$</p>
+          </div>
+          <div class="proof-step conclude">
+            <h5>ใช้สมบัติ Injective ของ $f$</h5>
+            <p>เนื่องจาก $f$ เป็น injective และ $f(a_1) = f(a_2)$ ดังนั้น $a_1 = a_2$</p>
+            <p>เราได้พิสูจน์แล้วว่า $(g \circ f)(a_1) = (g \circ f)(a_2) \Rightarrow a_1 = a_2$ ดังนั้น $g \circ f$ เป็น injective ✓</p>
+          </div>
+          <div class="qed">∎</div>
+        </div>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Composition ของ Surjections เป็น Surjection</h4>
+          <p>ถ้า $f: A \to B$ และ $g: B \to C$ เป็น surjective ทั้งคู่ แล้ว $g \circ f: A \to C$ เป็น surjective</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">🔍 การพิสูจน์</div>
+          <div class="proof-step assume">
+            <h5>ให้ $c \in C$ ใดๆ</h5>
+            <p>ต้องการหา $a \in A$ ที่ $(g \circ f)(a) = c$</p>
+          </div>
+          <div class="proof-step derive">
+            <h5>ใช้สมบัติ Surjective ของ $g$</h5>
+            <p>เนื่องจาก $g: B \to C$ เป็น surjective, มี $b \in B$ ที่ $g(b) = c$</p>
+          </div>
+          <div class="proof-step conclude">
+            <h5>ใช้สมบัติ Surjective ของ $f$</h5>
+            <p>เนื่องจาก $f: A \to B$ เป็น surjective, มี $a \in A$ ที่ $f(a) = b$</p>
+            <p>ดังนั้น $(g \circ f)(a) = g(f(a)) = g(b) = c$ ✓</p>
+            <p>สรุป: $g \circ f$ เป็น surjective ✓</p>
+          </div>
+          <div class="qed">∎</div>
+        </div>
+
+        <div class="note-box">
+          <strong>ผลลัพธ์ร่วม:</strong> ถ้า $f$ และ $g$ เป็น bijection ทั้งคู่ แล้ว $g \circ f$ เป็น bijection ด้วย และ $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.3.4</span> Composition ของ Bijections</div>
+          <p>ให้ $f(x) = x + 1$ และ $g(x) = 2x$ บน $\mathbb{R}$</p>
+          <div class="solution">
+            <p>ทั้ง $f$ และ $g$ เป็น bijection บน $\mathbb{R}$</p>
+            <p>$(g \circ f)(x) = g(x+1) = 2(x+1) = 2x + 2$</p>
+            <p>Inverse: $(g \circ f)^{-1}(x) = \dfrac{x}{2} - 1 = f^{-1}(g^{-1}(x))$ ✓</p>
+            <p>ตรวจสอบ: $f^{-1}(x) = x-1$, $g^{-1}(x) = \dfrac{x}{2}$</p>
+            <p>$(f^{-1} \circ g^{-1})(x) = f^{-1}\!\left(\dfrac{x}{2}\right) = \dfrac{x}{2} - 1$ ✓</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7.4 -->
+    <section id="sec74" class="ch-section">
+      <div class="section-header" style="--ch-color:#7c3aed">
+        <span class="sec-num">7.4</span>
+        <div>
+          <h2>Cardinality with Applications</h2>
+          <p>ขนาดของเซต, Countable vs Uncountable, Cantor's Diagonal</p>
+        </div>
+      </div>
+
+      <div id="card-finite" class="subsec">
+        <h3>Cardinality ของเซตจำกัด</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Cardinality (Cardinality ของเซต)</h4>
+          <p><strong>Cardinality</strong> ของเซต $A$ (เขียน $|A|$) คือจำนวนสมาชิกของ $A$</p>
+          <ul>
+            <li>$|\emptyset| = 0$</li>
+            <li>$|\{a, b, c\}| = 3$</li>
+            <li>$|\{1, 2, \ldots, n\}| = n$</li>
+          </ul>
+          <p><strong>เซตสองเซตมี Cardinality เท่ากัน</strong> ($|A| = |B|$) ก็ต่อเมื่อมี bijection $f: A \to B$</p>
+          <p>นิยามนี้ทำงานได้กับเซตอนันต์ด้วย — เป็นรากฐานของ Cardinality ของเซตอนันต์</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 7.4.1</span> Cardinality ของเซตจำกัด</div>
+          <div class="solution">
+            <ul>
+              <li>$|\{2, 4, 6, 8, 10\}| = 5$</li>
+              <li>$|2^{\{1,2,3\}}| = 2^3 = 8$ (Power set ของ 3 สมาชิก)</li>
+              <li>สำหรับเซตจำกัด $A$ และ $B$: $|A \cup B| = |A| + |B| - |A \cap B|$ (Inclusion-Exclusion)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="card-infinite" class="subsec">
+        <h3>เซตอนันต์: Countable vs Uncountable</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Countably Infinite</h4>
+          <p>เซต $A$ เป็น <strong>countably infinite</strong> (อนันต์นับได้) ก็ต่อเมื่อมี bijection $f: \mathbb{N} \to A$ กล่าวคือ $|A| = |\mathbb{N}|$</p>
+          <p>เซตที่เป็น finite หรือ countably infinite เรียกรวมว่า <strong>countable</strong></p>
+          <p>เซตที่ไม่ countable เรียกว่า <strong>uncountable</strong></p>
+        </div>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: $|\mathbb{N}| = |\mathbb{Z}|$</h4>
+          <p>เซตจำนวนธรรมชาติ $\mathbb{N} = \{0, 1, 2, 3, \ldots\}$ และเซตจำนวนเต็ม $\mathbb{Z} = \{\ldots, -2, -1, 0, 1, 2, \ldots\}$ มี cardinality เท่ากัน</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">🔍 การพิสูจน์ด้วย Bijection แบบ Zigzag</div>
+          <p>สร้างการนับ $\mathbb{Z}$ โดยเรียงสลับ: $0, 1, -1, 2, -2, 3, -3, \ldots$</p>
+          <p>นิยาม $f: \mathbb{N} \to \mathbb{Z}$ โดย</p>
+          $$f(n) = \begin{cases} \dfrac{n}{2} & \text{ถ้า } n \text{ เป็นเลขคู่} \\[6pt] -\dfrac{n+1}{2} & \text{ถ้า } n \text{ เป็นเลขคี่} \end{cases}$$
+          <div class="qed">∎</div>
+        </div>
+
+        <table class="zigzag-table">
+          <thead>
+            <tr>
+              <th>$n \in \mathbb{N}$</th>
+              <th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>$f(n) \in \mathbb{Z}$</td>
+              <td>0</td><td>−1</td><td>1</td><td>−2</td><td>2</td><td>−3</td><td>3</td><td>−4</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:13px; color:#5b21b6;">ฟังก์ชัน $f$ เป็น bijection: ทุกจำนวนเต็มถูกนับถึงครบทุกตัว</p>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: $|\mathbb{N}| = |\mathbb{Q}|$</h4>
+          <p>เซตจำนวนตรรกยะ $\mathbb{Q}$ เป็น countably infinite แม้ว่าจะดู "หนาแน่น" กว่า $\mathbb{N}$ มาก</p>
+          <p><em>แนวคิดการพิสูจน์:</em> จัดเรียงจำนวนตรรกยะบวกในรูป grid (แถวที่ $m$ คือตัวส่วน $m$, คอลัมน์ที่ $n$ คือตัวเศษ $n$) แล้วนับตาม diagonal zigzag — วิธีนี้เรียกว่า <strong>Cantor's enumeration of rationals</strong></p>
+        </div>
+
+        <div class="note-box">
+          <strong>สรุป Countability:</strong>
+          $|\mathbb{N}| = |\mathbb{Z}| = |\mathbb{Q}|$ — เซตทั้งสามนี้มี Cardinality เท่ากัน เรียก Cardinality นี้ว่า $\aleph_0$ (อ่านว่า "aleph-naught" หรือ "aleph-zero")
+        </div>
+      </div>
+
+      <div id="cantor-diag" class="subsec">
+        <h3>Cantor's Diagonal Argument: $|\mathbb{R}| > |\mathbb{N}|$</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: $\mathbb{R}$ เป็น Uncountable</h4>
+          <p>เซตจำนวนจริง $\mathbb{R}$ เป็น uncountable กล่าวคือ $|\mathbb{R}| > |\mathbb{N}|$ ไม่มี bijection จาก $\mathbb{N}$ ไป $\mathbb{R}$</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">🔍 Cantor's Diagonal Argument (พิสูจน์โดย Contradiction)</div>
+          <div class="proof-step assume">
+            <h5>สมมติ Contradiction</h5>
+            <p>สมมติว่า $\mathbb{R}$ เป็น countable กล่าวคือมี bijection $f: \mathbb{N} \to [0,1)$ (เพียงพอที่จะพิจารณา interval $[0,1)$)</p>
+            <p>ดังนั้นเราสามารถจัดเรียงจำนวนจริงใน $[0,1)$ เป็น list ได้:</p>
+            $$r_0 = 0.d_{00}\,d_{01}\,d_{02}\,d_{03}\,\cdots$$
+            $$r_1 = 0.d_{10}\,d_{11}\,d_{12}\,d_{13}\,\cdots$$
+            $$r_2 = 0.d_{20}\,d_{21}\,d_{22}\,d_{23}\,\cdots$$
+            $$\vdots$$
+          </div>
+          <div class="proof-step derive">
+            <h5>สร้าง Diagonal Number</h5>
+            <p>สร้างจำนวน $s = 0.s_0 s_1 s_2 s_3 \cdots$ โดย</p>
+            $$s_n = \begin{cases} 5 & \text{ถ้า } d_{nn} \neq 5 \\ 6 & \text{ถ้า } d_{nn} = 5 \end{cases}$$
+            <p>กล่าวคือ เลข $s_n$ ถูกเลือกให้แตกต่างจากเลขบน "Diagonal" $d_{nn}$</p>
+          </div>
+          <div class="proof-step conclude">
+            <h5>Contradiction</h5>
+            <p>$s \in [0,1)$ เป็นจำนวนจริง แต่ $s \neq r_n$ สำหรับทุก $n$ เพราะ $s$ และ $r_n$ ต่างกันที่ตำแหน่งที่ $n$ (ทศนิยมตำแหน่งที่ $n$ คือ $s_n \neq d_{nn}$)</p>
+            <p>ดังนั้น $s$ ไม่อยู่ใน list ซึ่งขัดแย้งกับสมมติว่า $f$ เป็น bijection (surjection)</p>
+            <p><strong>สรุป:</strong> $\mathbb{R}$ เป็น uncountable ✓</p>
+          </div>
+          <div class="qed">∎</div>
+        </div>
+
+        <div class="cantor-grid">
+          <p style="font-family: inherit; margin-bottom:8px; font-weight:700; color:#5b21b6;">ตัวอย่าง Diagonal Argument:</p>
+          $r_0 = 0.$<span class="diagonal">4</span>2178…<br>
+          $r_1 = 0.3$<span class="diagonal">7</span>041…<br>
+          $r_2 = 0.91$<span class="diagonal">2</span>56…<br>
+          $r_3 = 0.083$<span class="diagonal">3</span>9…<br>
+          $r_4 = 0.5602$<span class="diagonal">1</span>…<br>
+          <p style="font-family: inherit; margin-top: 10px;">Diagonal digits (แดง): 4, 7, 2, 3, 1 → เลือก $s_n$ ต่างกัน → $s = 0.58546\ldots$</p>
+          <p style="font-family: inherit;">$s \neq r_n$ สำหรับทุก $n$ เพราะต่างกันที่ตำแหน่งที่ $n$</p>
+        </div>
+
+        <div class="note-box">
+          <strong>ความหมาย:</strong> Cardinality ของ $\mathbb{R}$ ใหญ่กว่า $|\mathbb{N}| = \aleph_0$ อย่างแท้จริง เรียก $|\mathbb{R}| = \mathfrak{c}$ ("continuum") ทฤษฎีนี้แสดงว่า "ระดับ" ของอนันต์มีหลายระดับ — สิ่งที่ Cantor ค้นพบเป็นครั้งแรกในปี ค.ศ. 1874
+        </div>
+      </div>
+
+      <div id="csb-theorem" class="subsec">
+        <h3>Cantor–Schröder–Bernstein Theorem</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Cantor–Schröder–Bernstein (CSB)</h4>
+          <p>ถ้ามี injections $f: A \to B$ และ $g: B \to A$ แล้วมี bijection $h: A \to B$</p>
+          <p>เขียนในรูป Cardinality: ถ้า $|A| \leq |B|$ และ $|B| \leq |A|$ แล้ว $|A| = |B|$</p>
+          <p><em>(ทฤษฎีบทนี้ใช้พิสูจน์ที่ยากกว่า — แสดงเพียง statement เท่านั้น)</em></p>
+        </div>
+
+        <div class="bij-card">
+          <h5>การประยุกต์ CSB</h5>
+          <p>ทฤษฎีบท CSB ใช้เพื่อพิสูจน์ความเท่ากันของ Cardinality โดยไม่ต้องสร้าง bijection โดยตรง ซึ่งมักยาก แต่แค่ต้องหา injection ทั้งสองทิศทาง ซึ่งง่ายกว่า</p>
+        </div>
+
+        <div class="bij-card">
+          <h5>ตัวอย่าง: $|(0,1)| = |\mathbb{R}|$</h5>
+          <p>ใช้ CSB: $f: (0,1) \hookrightarrow \mathbb{R}$ คือ identity (injection ชัดเจน) และ $g: \mathbb{R} \hookrightarrow (0,1)$ คือ $g(x) = \dfrac{1}{\pi}\arctan(x) + \dfrac{1}{2}$ (injection เพราะ $\arctan$ เป็น strictly increasing) ดังนั้น $|(0,1)| = |\mathbb{R}|$</p>
+        </div>
+
+        <div class="bij-card">
+          <h5>Hierarchy ของ Cardinality ของเซตทั่วไป</h5>
+          <p>สำหรับเซต $A$ ใดๆ เสมอมี $|A| < |2^A|$ (Cantor's Theorem) ดังนั้นไม่มี "Cardinality สูงสุด":</p>
+          $$|\mathbb{N}| < |\mathcal{P}(\mathbb{N})| < |\mathcal{P}(\mathcal{P}(\mathbb{N}))| < \cdots$$
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#6d28d9">
+        <span class="sec-num">📋</span>
+        <div>
+          <h2>สรุปบทที่ 7</h2>
+          <p>Functions: ฟังก์ชัน, สมบัติ, Composition, Cardinality</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h4>7.1 Functions</h4>
+          <ul>
+            <li>$f: A \to B$ — ทุก $a \in A$ มีค่า $f(a) \in B$ อย่างไม่กำกวม</li>
+            <li>Domain $A$, Codomain $B$, Range $\subseteq B$</li>
+            <li>Image ของ $a$: $f(a)$; Preimage ของ $b$: $f^{-1}(\{b\})$</li>
+            <li>Well-defined: $a_1 = a_2 \Rightarrow f(a_1) = f(a_2)$</li>
+            <li>Equality: $f = g \iff f(a) = g(a)$ สำหรับทุก $a \in A$</li>
+            <li>Floor, Ceiling, Absolute value, Identity, Constant</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>7.2 Inj / Sur / Bij</h4>
+          <ul>
+            <li><strong>Injective:</strong> $f(a_1) = f(a_2) \Rightarrow a_1 = a_2$ (ไม่ชน)</li>
+            <li><strong>Surjective:</strong> $\forall b \in B,\ \exists a \in A$ ที่ $f(a) = b$ (คลุมทั้ง $B$)</li>
+            <li><strong>Bijective:</strong> inj + sur → matching 1-1 สมบูรณ์</li>
+            <li>$f^{-1}$ มีอยู่ $\iff$ $f$ เป็น bijection</li>
+            <li>$f \circ f^{-1} = \mathrm{id}_B$, $f^{-1} \circ f = \mathrm{id}_A$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>7.3 Composition</h4>
+          <ul>
+            <li>$(g \circ f)(x) = g(f(x))$ — ทำ $f$ ก่อน</li>
+            <li>Associative: $h \circ (g \circ f) = (h \circ g) \circ f$</li>
+            <li>ไม่ Commutative: $g \circ f \neq f \circ g$ โดยทั่วไป</li>
+            <li>Inj $\circ$ Inj = Inj; Sur $\circ$ Sur = Sur</li>
+            <li>Bij $\circ$ Bij = Bij; $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>7.4 Cardinality</h4>
+          <ul>
+            <li>$|A| = |B| \iff$ มี bijection $A \to B$</li>
+            <li>$|\mathbb{N}| = |\mathbb{Z}| = |\mathbb{Q}| = \aleph_0$ (countable)</li>
+            <li>$|\mathbb{R}| = \mathfrak{c} > \aleph_0$ (uncountable)</li>
+            <li>Cantor Diagonal: $\mathbb{R}$ ไม่สามารถนับได้</li>
+            <li>CSB Theorem: inj สองทาง $\Rightarrow$ bijection</li>
+            <li>$|A| < |2^A|$ สำหรับเซต $A$ ใดๆ</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#ea580c">
+        <span class="sec-num">✏️</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>จากหนังสือ Discrete Mathematics with Applications</p>
+        </div>
+      </div>
+
+      <div class="exercises-list">
+        <div class="exercise-item">
+          <span class="ex-num">7.1</span>
+          <div class="ex-content">
+            <strong>Functions and Notation:</strong> ให้ $A = \{1, 2, 3, 4, 5\}$ และ $B = \{a, b, c, d\}$ และ $f: A \to B$ นิยามโดย $f(1)=a$, $f(2)=b$, $f(3)=b$, $f(4)=c$, $f(5)=d$ (1) หา Range ของ $f$ (2) หา $f^{-1}(\{b\})$ (3) ฟังก์ชัน $g: A \to B$ นิยามโดยตารางเป็น well-defined หรือไม่ ถ้า $g(1)=a$, $g(1)=b$ (คนละค่า)? (4) ให้ $h(x) = \lfloor 2x \rfloor$ บน $[0, 2]$ — หา Range ของ $h$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">7.2</span>
+          <div class="ex-content">
+            <strong>Injective และ Surjective:</strong> พิจารณาฟังก์ชันต่อไปนี้บน $\mathbb{Z} \to \mathbb{Z}$ แต่ละข้อ พิสูจน์หรือหา counter-example: (1) $f(n) = 3n - 5$ — injective? surjective? (2) $g(n) = n^2 - 4$ — injective? surjective? (3) $h(n) = \lfloor n/2 \rfloor$ — injective? surjective? (4) ระบุว่าฟังก์ชันใดเป็น bijection และหา inverse ถ้ามี
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">7.3</span>
+          <div class="ex-content">
+            <strong>Inverse Function:</strong> ให้ $f: \mathbb{R} \to \mathbb{R}$ โดย $f(x) = \dfrac{3x - 1}{2}$ (1) พิสูจน์ว่า $f$ เป็น bijection (2) หา $f^{-1}(x)$ (3) ตรวจสอบว่า $(f \circ f^{-1})(x) = x$ และ $(f^{-1} \circ f)(x) = x$ (4) หา $(f \circ f)(x)$ และ $(f^{-1} \circ f^{-1})(x)$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">7.4</span>
+          <div class="ex-content">
+            <strong>Composition:</strong> ให้ $f(x) = x^2 + 1$, $g(x) = 2x - 3$, $h(x) = \sqrt{x}$ (ที่ Domain $[0,\infty)$) (1) คำนวณ $(g \circ f)(x)$ และ $(f \circ g)(x)$ (2) คำนวณ $(h \circ f)(x)$ — ระบุ Domain ที่เหมาะสม (3) พิสูจน์ว่า $g \circ f$ เป็น injective โดยใช้ทฤษฎีบทที่เรียน (ระบุสมบัติของ $f$ และ $g$ ก่อน) (4) หา $(g \circ f)^{-1}(x)$ ถ้า $f$ และ $g$ เป็น bijection
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">7.5</span>
+          <div class="ex-content">
+            <strong>Countability:</strong> (1) แสดงว่าเซตจำนวนคู่ $2\mathbb{Z} = \{\ldots, -4, -2, 0, 2, 4, \ldots\}$ เป็น countably infinite โดยสร้าง bijection $f: \mathbb{N} \to 2\mathbb{Z}$ อย่างชัดเจน (2) แสดงว่าเซต $\{1/n \mid n \in \mathbb{N}, n \geq 1\}$ เป็น countable (3) ถ้า $A$ และ $B$ เป็น countable แล้ว $A \cup B$ เป็น countable หรือไม่? อธิบาย
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">7.6</span>
+          <div class="ex-content">
+            <strong>Cantor's Diagonal Argument:</strong> (1) อธิบาย Cantor's Diagonal Argument ในแบบของตัวเอง — ทำไมจึงพิสูจน์ว่า $\mathbb{R}$ เป็น uncountable? (2) แสดงว่า interval $(0, 1)$ เป็น uncountable (hint: ใช้ argument เดียวกัน) (3) ถ้า $A$ เป็น uncountable และ $A \subseteq B$ แล้ว $B$ เป็น uncountable หรือไม่? พิสูจน์หรือ disprove (4) ใช้ Cantor's Theorem อธิบายว่าทำไม $|\mathcal{P}(\mathbb{N})| > |\mathbb{N}|$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER NAV -->
+    <div class="chapter-nav">
+      <a href="chapter6.html" class="nav-btn prev-btn">← บทที่ 6</a>
+      <a href="../index.html" class="nav-btn next-btn">กลับหน้าหลัก →</a>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง — บทที่ 7: Functions</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล · ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ · มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 · เนื้อหาจาก <em>Discrete Mathematics with Applications</em> — Susanna S. Epp</p>
+</footer>
+
+<script>
+  // Scroll to top for all TOC links
+  const SCROLL_OFFSET = 80;
+  document.querySelectorAll('.ch-toc a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'instant' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
+  // Sticky sidebar highlight
+  const sections = document.querySelectorAll('.ch-section, .subsec');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (s.id && window.scrollY >= s.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET - 10) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('ch-sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

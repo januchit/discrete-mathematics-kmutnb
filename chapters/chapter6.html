@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 6 – Set Theory | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⊆</text></svg>">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+  <style>
+    .set-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+    .set-table th { background: #0891b2; color: white; padding: 10px 14px; text-align: center; }
+    .set-table td { padding: 9px 14px; border-bottom: 1px solid #e2e8f0; text-align: center; font-family: 'JetBrains Mono', monospace; }
+    .set-table tr:nth-child(even) td { background: #ecfeff; }
+    .set-table td:first-child { text-align: left; font-family: inherit; font-weight: 500; }
+
+    .law-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+    .law-table th { background: #0e7490; color: white; padding: 10px 14px; text-align: left; }
+    .law-table td { padding: 9px 14px; border-bottom: 1px solid #cffafe; vertical-align: top; }
+    .law-table tr:nth-child(even) td { background: #f0fdff; }
+    .law-table td:first-child { font-weight: 600; color: #0e7490; width: 140px; }
+
+    .proof-box {
+      background: #f0fdff;
+      border: 2px solid #0891b2;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 16px 0;
+    }
+    .proof-box .proof-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #0e7490;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proof-step {
+      margin: 10px 0;
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+    .proof-step.setup { background: #f0fdf4; border-left: 4px solid #16a34a; }
+    .proof-step.forward { background: #eff6ff; border-left: 4px solid #2563eb; }
+    .proof-step.backward { background: #fdf4ff; border-left: 4px solid #9333ea; }
+    .proof-step.conclude { background: #fff7ed; border-left: 4px solid #ea580c; }
+    .proof-step h5 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .proof-step.setup h5 { color: #15803d; }
+    .proof-step.forward h5 { color: #1d4ed8; }
+    .proof-step.backward h5 { color: #7e22ce; }
+    .proof-step.conclude h5 { color: #c2410c; }
+    .proof-step p { font-size: 14px; line-height: 1.7; margin: 4px 0; }
+
+    .qed { text-align: right; font-style: italic; color: #0e7490; font-weight: 600; margin-top: 8px; }
+
+    .venn-desc {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 14px 0;
+    }
+    .venn-card {
+      background: white;
+      border: 1px solid #a5f3fc;
+      border-radius: 10px;
+      padding: 14px 18px;
+      box-shadow: 0 2px 6px rgba(8,145,178,0.08);
+    }
+    .venn-card h5 { color: #0891b2; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .venn-card p { font-size: 13px; line-height: 1.6; margin: 0; }
+
+    .common-sets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .cs-card {
+      background: white;
+      border: 2px solid #a5f3fc;
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(8,145,178,0.07);
+    }
+    .cs-card .cs-sym { font-size: 26px; font-weight: 700; color: #0891b2; display: block; }
+    .cs-card .cs-name { font-size: 12px; color: #374151; margin-top: 4px; line-height: 1.4; }
+
+    @media (max-width: 600px) {
+      .venn-desc { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="chapter5.html" class="ch-nav-link">← บทที่ 5</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 6</span>
+      <span class="ch-nav-divider">|</span>
+      <a href="chapter7.html" class="ch-nav-link">บทที่ 7 →</a>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#0891b2">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 6</div>
+      <div class="chapter-hero-icon">⊆</div>
+      <h1 class="chapter-hero-title">Set Theory</h1>
+      <p class="chapter-hero-subtitle">ทฤษฎีเซต</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec61">6.1 Definitions &amp; Element Method</a>
+          <ul>
+            <li><a href="#set-def">นิยามเซตและสัญลักษณ์</a></li>
+            <li><a href="#subset-equal">Subset และ Equality</a></li>
+            <li><a href="#common-sets">Common Sets: ℕ, ℤ, ℚ, ℝ, ∅</a></li>
+            <li><a href="#notation">Set-Roster vs Set-Builder</a></li>
+            <li><a href="#element-method">Element Method of Proof</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec62">6.2 Set Operations</a>
+          <ul>
+            <li><a href="#operations">Union, Intersection, Difference, Complement</a></li>
+            <li><a href="#venn">Venn Diagrams</a></li>
+            <li><a href="#powerset-cartesian">Power Set &amp; Cartesian Product</a></li>
+            <li><a href="#demorgan">De Morgan's Laws</a></li>
+            <li><a href="#set-algebra">Set Algebra Laws</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec63">6.3 Disproofs and Algebraic Proofs</a>
+          <ul>
+            <li><a href="#disproof">Disproof by Counterexample</a></li>
+            <li><a href="#alg-proof">Algebraic Proof</a></li>
+            <li><a href="#incl-excl">Inclusion-Exclusion Principle</a></li>
+            <li><a href="#partition">Partition of a Set</a></li>
+            <li><a href="#indexed">Indexed Families of Sets</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec64">6.4 Russell's Paradox &amp; Halting Problem</a>
+          <ul>
+            <li><a href="#russell">Russell's Paradox</a></li>
+            <li><a href="#zfc">Axiomatic Set Theory (ZFC)</a></li>
+            <li><a href="#halting">The Halting Problem</a></li>
+            <li><a href="#cantor">Cantor's Theorem</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 6</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 6</h2>
+        <p>บทนี้แนะนำ <strong>ทฤษฎีเซต (Set Theory)</strong> ซึ่งเป็นภาษากลางของคณิตศาสตร์สมัยใหม่ทั้งหมด เราจะศึกษานิยามและสัญลักษณ์ของเซต การดำเนินการบนเซต การพิสูจน์ความสัมพันธ์ระหว่างเซต และปิดท้ายด้วยหัวข้อขั้นสูง ได้แก่ <strong>Russell's Paradox</strong> และ <strong>Halting Problem</strong> ซึ่งแสดงให้เห็นขีดจำกัดเชิงตรรกะของระบบคณิตศาสตร์และการคำนวณ</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">∈</span>
+            <strong>6.1 Definitions</strong>
+            <p>นิยามเซต, $\in$, $\subseteq$, $\subset$, เซตสามัญ, Element Method of Proof</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">∪</span>
+            <strong>6.2 Set Operations</strong>
+            <p>Union, Intersection, Difference, Complement, Power Set, Cartesian Product, De Morgan's Laws</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">≠</span>
+            <strong>6.3 Disproofs</strong>
+            <p>Counterexample, Algebraic Proof, Inclusion-Exclusion, Partition, Indexed Families</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">∞</span>
+            <strong>6.4 Paradoxes</strong>
+            <p>Russell's Paradox, ZFC, Halting Problem, Cantor's Theorem</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6.1 -->
+    <section id="sec61" class="ch-section">
+      <div class="section-header" style="--ch-color:#0891b2">
+        <span class="sec-num">6.1</span>
+        <div>
+          <h2>Set Theory: Definitions and the Element Method of Proof</h2>
+          <p>นิยามเซต สัญลักษณ์ ความสัมพันธ์ระหว่างเซต และวิธีพิสูจน์ด้วย Element Method</p>
+        </div>
+      </div>
+
+      <div id="set-def" class="subsec">
+        <h3>นิยามเซตและสัญลักษณ์</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Set (เซต)</h4>
+          <p><strong>เซต (set)</strong> คือกลุ่มของสิ่งที่ชัดเจน (well-defined collection) เรียกสมาชิกแต่ละตัวว่า <strong>element</strong> หรือ <strong>member</strong></p>
+          <ul>
+            <li>ใช้ตัวพิมพ์ใหญ่แทนเซต: $A, B, C, \ldots$</li>
+            <li>ใช้ตัวพิมพ์เล็กแทนสมาชิก: $a, b, x, \ldots$</li>
+            <li><strong>$x \in A$</strong> อ่านว่า "$x$ เป็นสมาชิกของ $A$" (x is an element of A)</li>
+            <li><strong>$x \notin A$</strong> อ่านว่า "$x$ ไม่เป็นสมาชิกของ $A$"</li>
+          </ul>
+          <p>เซตถูกนิยามโดย <em>สมาชิก</em> ของมัน ไม่ใช่ลำดับหรือการซ้ำ: $\{1, 2, 3\} = \{3, 1, 2\} = \{1, 1, 2, 3\}$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.1.1</span> การใช้สัญลักษณ์ $\in$ และ $\notin$</div>
+          <p>ให้ $A = \{1, 2, 3, 4, 5\}$</p>
+          <div class="solution">
+            <ul>
+              <li>$3 \in A$ — จริง เพราะ $3$ เป็นสมาชิกของ $A$</li>
+              <li>$7 \notin A$ — จริง เพราะ $7$ ไม่อยู่ใน $A$</li>
+              <li>$\{2, 3\} \notin A$ — $\{2,3\}$ เป็น <em>subset</em> ของ $A$ แต่ไม่เป็น <em>element</em> ของ $A$</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>ข้อควรระวัง:</strong> อย่าสับสนระหว่าง $\in$ (membership) กับ $\subseteq$ (subset): $2 \in \{1, 2, 3\}$ แต่ $\{2\} \subseteq \{1, 2, 3\}$
+        </div>
+      </div>
+
+      <div id="subset-equal" class="subsec">
+        <h3>Subset และ Equality of Sets</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Subset (เซตย่อย) และ Proper Subset</h4>
+          <p>ให้ $A$ และ $B$ เป็นเซต</p>
+          <ul>
+            <li><strong>$A \subseteq B$</strong> (A is a subset of B) หมายถึง: สมาชิกทุกตัวของ $A$ เป็นสมาชิกของ $B$
+              $$A \subseteq B \iff \forall x,\ (x \in A \Rightarrow x \in B)$$
+            </li>
+            <li><strong>$A \not\subseteq B$</strong> หมายถึง: มีสมาชิกบางตัวของ $A$ ที่ไม่อยู่ใน $B$
+              $$A \not\subseteq B \iff \exists x \text{ s.t. } x \in A \text{ และ } x \notin B$$
+            </li>
+            <li><strong>$A \subset B$</strong> (A is a proper subset of B) หมายถึง: $A \subseteq B$ และ $A \neq B$</li>
+          </ul>
+        </div>
+
+        <div class="def-box">
+          <h4>นิยาม: Equality of Sets (ความเท่ากันของเซต)</h4>
+          <p>เซต $A$ และ $B$ <strong>เท่ากัน</strong> (เขียน $A = B$) ก็ต่อเมื่อมีสมาชิกชุดเดียวกันทุกประการ:</p>
+          $$A = B \iff A \subseteq B \text{ และ } B \subseteq A$$
+          <p>หรือเทียบเท่า: $A = B \iff \forall x,\ (x \in A \Leftrightarrow x \in B)$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.1.2</span> Subset และ Proper Subset</div>
+          <p>ให้ $A = \{1, 2\}$, $B = \{1, 2, 3\}$, $C = \{2, 1\}$</p>
+          <div class="solution">
+            <ul>
+              <li>$A \subseteq B$ — จริง (1 และ 2 อยู่ใน $B$)</li>
+              <li>$A \subset B$ — จริง ($A \subseteq B$ และ $A \neq B$ เพราะ $3 \in B$ แต่ $3 \notin A$)</li>
+              <li>$B \not\subseteq A$ — จริง (เพราะ $3 \in B$ แต่ $3 \notin A$)</li>
+              <li>$A = C$ — จริง (มีสมาชิกเหมือนกัน: $\{1,2\} = \{2,1\}$)</li>
+              <li>$\emptyset \subseteq A$ — จริงเสมอ (เซตว่างเป็น subset ของทุกเซต)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Properties of Subsets</h4>
+          <ol>
+            <li><strong>Reflexive:</strong> $A \subseteq A$ สำหรับทุกเซต $A$</li>
+            <li><strong>Transitive:</strong> ถ้า $A \subseteq B$ และ $B \subseteq C$ แล้ว $A \subseteq C$</li>
+            <li><strong>Empty set:</strong> $\emptyset \subseteq A$ สำหรับทุกเซต $A$</li>
+          </ol>
+        </div>
+      </div>
+
+      <div id="common-sets" class="subsec">
+        <h3>Common Sets: ℕ, ℤ, ℚ, ℝ, ∅</h3>
+
+        <div class="common-sets-grid">
+          <div class="cs-card">
+            <span class="cs-sym">ℕ</span>
+            <div class="cs-name">Natural Numbers<br>$\{1, 2, 3, \ldots\}$<br>(บางตำรานับ 0 ด้วย)</div>
+          </div>
+          <div class="cs-card">
+            <span class="cs-sym">ℤ</span>
+            <div class="cs-name">Integers<br>$\{\ldots, -2, -1, 0, 1, 2, \ldots\}$</div>
+          </div>
+          <div class="cs-card">
+            <span class="cs-sym">ℚ</span>
+            <div class="cs-name">Rational Numbers<br>$\left\{\dfrac{p}{q} \mid p,q \in \mathbb{Z},\ q \neq 0\right\}$</div>
+          </div>
+          <div class="cs-card">
+            <span class="cs-sym">ℝ</span>
+            <div class="cs-name">Real Numbers<br>จำนวนจริงทั้งหมด บนเส้นจำนวน</div>
+          </div>
+          <div class="cs-card">
+            <span class="cs-sym">ℂ</span>
+            <div class="cs-name">Complex Numbers<br>$\{a + bi \mid a,b \in \mathbb{R}\}$</div>
+          </div>
+          <div class="cs-card">
+            <span class="cs-sym">∅</span>
+            <div class="cs-name">Empty Set<br>เซตที่ไม่มีสมาชิก เขียนเป็น $\{\}$ หรือ $\emptyset$</div>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <strong>ลำดับชั้น:</strong> $\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R} \subset \mathbb{C}$ — เซตแต่ละตัวเป็น proper subset ของเซตถัดไป
+        </div>
+
+        <div class="warning-box">
+          <strong>ข้อควรระวัง — Empty Set:</strong> $\emptyset \neq \{\emptyset\}$: เซตว่างมี 0 สมาชิก แต่ $\{\emptyset\}$ เป็นเซตที่มี 1 สมาชิก (ซึ่งสมาชิกนั้นคือเซตว่าง)
+        </div>
+      </div>
+
+      <div id="notation" class="subsec">
+        <h3>Set-Roster vs Set-Builder Notation</h3>
+
+        <table class="set-table">
+          <thead>
+            <tr>
+              <th>รูปแบบ</th>
+              <th>ชื่อ</th>
+              <th>ตัวอย่าง</th>
+              <th>ใช้เมื่อ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>$\{1, 2, 3, 4, 5\}$</td>
+              <td>Set-Roster Notation</td>
+              <td>$\{2, 4, 6, 8, 10\}$</td>
+              <td>เซตมีสมาชิกน้อย หรือแจกแจงได้</td>
+            </tr>
+            <tr>
+              <td>$\{x \mid P(x)\}$</td>
+              <td>Set-Builder Notation</td>
+              <td>$\{x \in \mathbb{Z} \mid x > 0\}$</td>
+              <td>เซตใหญ่หรืออนันต์ นิยามด้วยคุณสมบัติ</td>
+            </tr>
+            <tr>
+              <td>$\{1, 2, 3, \ldots\}$</td>
+              <td>Ellipsis Notation</td>
+              <td>$\{2, 4, 6, \ldots\}$</td>
+              <td>รูปแบบชัดเจน สมาชิกอาจอนันต์</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.1.3</span> การแปลงระหว่างรูปแบบ</div>
+          <div class="solution">
+            <table class="set-table">
+              <thead><tr><th>Set-Builder</th><th>Set-Roster / คำอธิบาย</th></tr></thead>
+              <tbody>
+                <tr><td>$\{n \in \mathbb{Z} \mid -2 \leq n \leq 3\}$</td><td>$\{-2, -1, 0, 1, 2, 3\}$</td></tr>
+                <tr><td>$\{x \in \mathbb{R} \mid x^2 = 4\}$</td><td>$\{-2, 2\}$</td></tr>
+                <tr><td>$\{n \in \mathbb{N} \mid 2 \mid n\}$</td><td>$\{2, 4, 6, 8, \ldots\}$ (จำนวนคู่บวก)</td></tr>
+                <tr><td>$\{n \in \mathbb{Z} \mid 6 \mid n\}$</td><td>$\{\ldots, -12, -6, 0, 6, 12, \ldots\}$</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="element-method" class="subsec">
+        <h3>Element Method of Proof</h3>
+
+        <div class="thm-box">
+          <h4>วิธีพิสูจน์ $A \subseteq B$ ด้วย Element Method</h4>
+          <p>เพื่อพิสูจน์ว่า $A \subseteq B$ ทำตามขั้นตอน:</p>
+          <ol>
+            <li>ให้ (suppose) $x$ เป็นสมาชิกที่ <strong>สุ่มเลือก (arbitrary)</strong> ของ $A$ — กล่าวคือ สมมติ $x \in A$</li>
+            <li>แสดงว่า $x \in B$ โดยใช้นิยามของ $A$, $B$ และการอนุมานเชิงตรรกะ</li>
+            <li>สรุปว่า $A \subseteq B$</li>
+          </ol>
+          <p><em>หมายเหตุ: ต้องเลือก $x$ แบบ arbitrary (ไม่เฉพาะเจาะจง) เพื่อให้การพิสูจน์ครอบคลุมสมาชิกทุกตัวของ $A$</em></p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.1.4</span> พิสูจน์: $\{n \in \mathbb{Z} \mid 6 \mid n\} \subseteq \{n \in \mathbb{Z} \mid 2 \mid n\}$</div>
+          <p>ให้ $A = \{n \in \mathbb{Z} \mid 6 \mid n\}$ (เซตของจำนวนเต็มที่หาร 6 ลงตัว) และ $B = \{n \in \mathbb{Z} \mid 2 \mid n\}$ (เซตของจำนวนเต็มที่หาร 2 ลงตัว) พิสูจน์ว่า $A \subseteq B$</p>
+          <div class="solution">
+            <div class="proof-box">
+              <div class="proof-title">🔬 บทพิสูจน์ (Element Method)</div>
+              <div class="proof-step setup">
+                <h5>ให้ $x$ เป็น arbitrary element ของ $A$</h5>
+                <p>สมมติ $x \in A$ กล่าวคือ $x \in \mathbb{Z}$ และ $6 \mid x$</p>
+              </div>
+              <div class="proof-step forward">
+                <h5>แสดงว่า $x \in B$</h5>
+                <p>เนื่องจาก $6 \mid x$ ดังนั้นมีจำนวนเต็ม $k$ ที่ทำให้ $x = 6k$</p>
+                <p>เขียนใหม่: $x = 6k = 2 \cdot (3k)$</p>
+                <p>เนื่องจาก $3k \in \mathbb{Z}$ (เพราะ $k \in \mathbb{Z}$) ดังนั้น $2 \mid x$</p>
+                <p>ดังนั้น $x \in B$ ตามนิยามของ $B$ ✓</p>
+              </div>
+              <div class="proof-step conclude">
+                <h5>สรุป</h5>
+                <p>เนื่องจาก $x$ เป็น arbitrary element ของ $A$ ที่เราแสดงได้ว่า $x \in B$ จึงสรุปว่า $A \subseteq B$</p>
+              </div>
+              <div class="qed">∎</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.1.5</span> พิสูจน์: $\{n \in \mathbb{Z} \mid 6 \mid n\} \subseteq \{n \in \mathbb{Z} \mid 3 \mid n\}$</div>
+          <div class="solution">
+            <div class="proof-box">
+              <div class="proof-title">🔬 บทพิสูจน์</div>
+              <div class="proof-step setup">
+                <h5>สมมติ $x \in A$</h5>
+                <p>$6 \mid x$ ดังนั้น $x = 6k$ สำหรับจำนวนเต็ม $k$ บางค่า</p>
+              </div>
+              <div class="proof-step forward">
+                <h5>แสดงว่า $3 \mid x$</h5>
+                <p>$x = 6k = 3 \cdot (2k)$ และ $2k \in \mathbb{Z}$ ดังนั้น $3 \mid x$ ✓</p>
+              </div>
+              <div class="qed">∎</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6.2 -->
+    <section id="sec62" class="ch-section">
+      <div class="section-header" style="--ch-color:#0891b2">
+        <span class="sec-num">6.2</span>
+        <div>
+          <h2>Properties of Sets — Set Operations</h2>
+          <p>การดำเนินการบนเซต, Power Set, Cartesian Product, De Morgan's Laws, Set Algebra</p>
+        </div>
+      </div>
+
+      <div id="operations" class="subsec">
+        <h3>Union, Intersection, Difference, Complement</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Set Operations (การดำเนินการบนเซต)</h4>
+          <p>ให้ $A$ และ $B$ เป็นเซตย่อยของ Universal Set $U$</p>
+          <table class="set-table" style="margin-top: 12px;">
+            <thead>
+              <tr><th>ชื่อ</th><th>สัญลักษณ์</th><th>นิยาม</th><th>ตัวอย่าง ($A=\{1,2,3\}$, $B=\{2,3,4\}$)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Union (ยูเนียน)</td><td>$A \cup B$</td><td>$\{x \mid x \in A\ \text{or}\ x \in B\}$</td><td>$\{1,2,3,4\}$</td></tr>
+              <tr><td>Intersection (อินเทอร์เซกชัน)</td><td>$A \cap B$</td><td>$\{x \mid x \in A\ \text{and}\ x \in B\}$</td><td>$\{2,3\}$</td></tr>
+              <tr><td>Difference (ผลต่าง)</td><td>$A - B$ หรือ $A \setminus B$</td><td>$\{x \mid x \in A\ \text{and}\ x \notin B\}$</td><td>$\{1\}$</td></tr>
+              <tr><td>Complement (คอมพลีเมนต์)</td><td>$A^c$ หรือ $\overline{A}$</td><td>$\{x \in U \mid x \notin A\}$</td><td>ขึ้นอยู่กับ $U$</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.2.1</span> การดำเนินการเซต</div>
+          <p>ให้ $U = \{1, 2, 3, 4, 5, 6, 7, 8\}$, $A = \{1, 2, 3, 4\}$, $B = \{3, 4, 5, 6\}$</p>
+          <div class="solution">
+            <table class="set-table">
+              <thead><tr><th>การดำเนินการ</th><th>ผลลัพธ์</th></tr></thead>
+              <tbody>
+                <tr><td>$A \cup B$</td><td>$\{1, 2, 3, 4, 5, 6\}$</td></tr>
+                <tr><td>$A \cap B$</td><td>$\{3, 4\}$</td></tr>
+                <tr><td>$A - B$</td><td>$\{1, 2\}$</td></tr>
+                <tr><td>$B - A$</td><td>$\{5, 6\}$</td></tr>
+                <tr><td>$A^c$</td><td>$\{5, 6, 7, 8\}$</td></tr>
+                <tr><td>$B^c$</td><td>$\{1, 2, 7, 8\}$</td></tr>
+                <tr><td>$(A \cup B)^c$</td><td>$\{7, 8\}$</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="def-box">
+          <h4>นิยาม: Disjoint Sets (เซตที่แยกกัน)</h4>
+          <p>เซต $A$ และ $B$ เป็น <strong>disjoint</strong> ถ้า $A \cap B = \emptyset$ กล่าวคือไม่มีสมาชิกร่วมกัน</p>
+          <p><strong>ตัวอย่าง:</strong> $\{1, 3, 5\}$ และ $\{2, 4, 6\}$ เป็น disjoint</p>
+        </div>
+      </div>
+
+      <div id="venn" class="subsec">
+        <h3>Venn Diagrams</h3>
+
+        <p>แผนภาพ Venn ใช้แสดงความสัมพันธ์ระหว่างเซตด้วยภาพวงกลมที่ซ้อนทับกัน แต่ละพื้นที่แทนเซตที่ต่างกัน:</p>
+
+        <div class="venn-desc">
+          <div class="venn-card">
+            <h5>$A \cup B$ — Union</h5>
+            <p>พื้นที่ <em>ทั้งหมด</em> ที่ถูกวงกลม $A$ หรือวงกลม $B$ ครอบคลุม รวมทั้งส่วนที่ซ้อนทับ</p>
+          </div>
+          <div class="venn-card">
+            <h5>$A \cap B$ — Intersection</h5>
+            <p>เฉพาะ <em>ส่วนที่ทับซ้อน</em> ของวงกลม $A$ และวงกลม $B$</p>
+          </div>
+          <div class="venn-card">
+            <h5>$A - B$ — Difference</h5>
+            <p>ส่วนของวงกลม $A$ <em>ที่ไม่ซ้อนทับ</em> กับวงกลม $B$ (วงกลม $A$ ลบส่วน intersection)</p>
+          </div>
+          <div class="venn-card">
+            <h5>$A^c$ — Complement</h5>
+            <p>พื้นที่ทั้งหมดใน Universal Set $U$ <em>ที่อยู่นอก</em> วงกลม $A$</p>
+          </div>
+          <div class="venn-card">
+            <h5>$(A \cup B)^c$</h5>
+            <p>พื้นที่ใน $U$ <em>นอกทั้ง</em> วงกลม $A$ และวงกลม $B$ ทั้งสอง</p>
+          </div>
+          <div class="venn-card">
+            <h5>$A \cap B^c = A - B$</h5>
+            <p>ส่วนใน $A$ ที่ไม่อยู่ใน $B$ — แสดงว่า Difference เขียนด้วย Intersection และ Complement ได้</p>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <strong>ประโยชน์ของ Venn Diagrams:</strong> ช่วยให้เห็น <em>ภาพ</em> ของความสัมพันธ์ระหว่างเซต แต่ Venn Diagram ไม่ใช่การพิสูจน์ทางคณิตศาสตร์ — ต้องพิสูจน์อย่างเป็นทางการด้วย Element Method หรือ Algebraic Proof
+        </div>
+      </div>
+
+      <div id="powerset-cartesian" class="subsec">
+        <h3>Power Set และ Cartesian Product</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Power Set $\mathcal{P}(A)$</h4>
+          <p><strong>Power set</strong> (เพาเวอร์เซต) ของเซต $A$ คือเซตของ <em>subset ทั้งหมด</em> ของ $A$:</p>
+          $$\mathcal{P}(A) = \{S \mid S \subseteq A\}$$
+          <p>ถ้า $|A| = n$ (A มี $n$ สมาชิก) แล้ว $|\mathcal{P}(A)| = 2^n$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.2.2</span> Power Set</div>
+          <p>ให้ $A = \{1, 2, 3\}$ จงหา $\mathcal{P}(A)$</p>
+          <div class="solution">
+            $$\mathcal{P}(A) = \{\emptyset,\ \{1\},\ \{2\},\ \{3\},\ \{1,2\},\ \{1,3\},\ \{2,3\},\ \{1,2,3\}\}$$
+            <p>$|A| = 3$ ดังนั้น $|\mathcal{P}(A)| = 2^3 = 8$ ✓</p>
+            <p><em>สังเกตว่า $\emptyset \in \mathcal{P}(A)$ และ $A \in \mathcal{P}(A)$ เสมอ</em></p>
+          </div>
+        </div>
+
+        <div class="def-box">
+          <h4>นิยาม: Cartesian Product $A \times B$</h4>
+          <p><strong>Cartesian product</strong> (ผลคูณคาร์ทีเซียน) ของเซต $A$ และ $B$ คือเซตของ <em>ordered pairs</em> ทั้งหมด:</p>
+          $$A \times B = \{(a, b) \mid a \in A \text{ และ } b \in B\}$$
+          <p>ถ้า $|A| = m$ และ $|B| = n$ แล้ว $|A \times B| = mn$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.2.3</span> Cartesian Product</div>
+          <p>ให้ $A = \{1, 2\}$ และ $B = \{a, b, c\}$</p>
+          <div class="solution">
+            $$A \times B = \{(1,a),\ (1,b),\ (1,c),\ (2,a),\ (2,b),\ (2,c)\}$$
+            <p>$|A \times B| = 2 \times 3 = 6$ ✓</p>
+            <p><strong>ข้อสังเกต:</strong> โดยทั่วไป $A \times B \neq B \times A$ (เพราะ $(1,a) \neq (a,1)$)</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="demorgan" class="subsec">
+        <h3>De Morgan's Laws สำหรับเซต</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: De Morgan's Laws for Sets</h4>
+          <p>ให้ $A$ และ $B$ เป็น subset ของ Universal Set $U$</p>
+          <ol>
+            <li>$(A \cup B)^c = A^c \cap B^c$</li>
+            <li>$(A \cap B)^c = A^c \cup B^c$</li>
+          </ol>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.2.4</span> พิสูจน์ $(A \cup B)^c = A^c \cap B^c$ ด้วย Element Method</div>
+          <div class="solution">
+            <p>ต้องพิสูจน์สองทิศทาง: $(\subseteq)$ และ $(\supseteq)$</p>
+            <div class="proof-box">
+              <div class="proof-title">🔬 บทพิสูจน์</div>
+              <div class="proof-step forward">
+                <h5>($\subseteq$): แสดงว่า $(A \cup B)^c \subseteq A^c \cap B^c$</h5>
+                <p>ให้ $x \in (A \cup B)^c$ กล่าวคือ $x \notin A \cup B$</p>
+                <p>ดังนั้น $x \notin A$ และ $x \notin B$</p>
+                <p>จึงได้ $x \in A^c$ และ $x \in B^c$</p>
+                <p>ดังนั้น $x \in A^c \cap B^c$ ✓</p>
+              </div>
+              <div class="proof-step backward">
+                <h5>($\supseteq$): แสดงว่า $A^c \cap B^c \subseteq (A \cup B)^c$</h5>
+                <p>ให้ $x \in A^c \cap B^c$ กล่าวคือ $x \in A^c$ และ $x \in B^c$</p>
+                <p>ดังนั้น $x \notin A$ และ $x \notin B$</p>
+                <p>จึงได้ $x \notin A \cup B$ (เพราะ $A \cup B$ ต้องการว่า $x \in A$ หรือ $x \in B$)</p>
+                <p>ดังนั้น $x \in (A \cup B)^c$ ✓</p>
+              </div>
+              <div class="proof-step conclude">
+                <h5>สรุป</h5>
+                <p>เนื่องจากพิสูจน์ได้ทั้งสองทิศทาง จึงสรุปว่า $(A \cup B)^c = A^c \cap B^c$ ∎</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="set-algebra" class="subsec">
+        <h3>Set Algebra Laws</h3>
+
+        <table class="law-table">
+          <thead>
+            <tr><th>ชื่อกฎ</th><th>Union</th><th>Intersection</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Commutative</td>
+              <td>$A \cup B = B \cup A$</td>
+              <td>$A \cap B = B \cap A$</td>
+            </tr>
+            <tr>
+              <td>Associative</td>
+              <td>$(A \cup B) \cup C = A \cup (B \cup C)$</td>
+              <td>$(A \cap B) \cap C = A \cap (B \cap C)$</td>
+            </tr>
+            <tr>
+              <td>Distributive</td>
+              <td>$A \cup (B \cap C) = (A \cup B) \cap (A \cup C)$</td>
+              <td>$A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$</td>
+            </tr>
+            <tr>
+              <td>Identity</td>
+              <td>$A \cup \emptyset = A$</td>
+              <td>$A \cap U = A$</td>
+            </tr>
+            <tr>
+              <td>Complement</td>
+              <td>$A \cup A^c = U$</td>
+              <td>$A \cap A^c = \emptyset$</td>
+            </tr>
+            <tr>
+              <td>Double Complement</td>
+              <td colspan="2">$(A^c)^c = A$</td>
+            </tr>
+            <tr>
+              <td>Idempotent</td>
+              <td>$A \cup A = A$</td>
+              <td>$A \cap A = A$</td>
+            </tr>
+            <tr>
+              <td>Domination</td>
+              <td>$A \cup U = U$</td>
+              <td>$A \cap \emptyset = \emptyset$</td>
+            </tr>
+            <tr>
+              <td>Absorption</td>
+              <td>$A \cup (A \cap B) = A$</td>
+              <td>$A \cap (A \cup B) = A$</td>
+            </tr>
+            <tr>
+              <td>De Morgan's</td>
+              <td>$(A \cup B)^c = A^c \cap B^c$</td>
+              <td>$(A \cap B)^c = A^c \cup B^c$</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.2.5</span> พิสูจน์ Distributive Law: $A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$</div>
+          <div class="solution">
+            <div class="proof-box">
+              <div class="proof-title">🔬 บทพิสูจน์ด้วย Element Method</div>
+              <div class="proof-step forward">
+                <h5>($\subseteq$): ให้ $x \in A \cap (B \cup C)$</h5>
+                <p>$\Rightarrow x \in A$ และ $x \in B \cup C$</p>
+                <p>$\Rightarrow x \in A$ และ ($x \in B$ หรือ $x \in C$)</p>
+                <p><strong>กรณีที่ 1:</strong> $x \in A$ และ $x \in B$ $\Rightarrow$ $x \in A \cap B$ $\Rightarrow$ $x \in (A \cap B) \cup (A \cap C)$ ✓</p>
+                <p><strong>กรณีที่ 2:</strong> $x \in A$ และ $x \in C$ $\Rightarrow$ $x \in A \cap C$ $\Rightarrow$ $x \in (A \cap B) \cup (A \cap C)$ ✓</p>
+              </div>
+              <div class="proof-step backward">
+                <h5>($\supseteq$): ให้ $x \in (A \cap B) \cup (A \cap C)$</h5>
+                <p>$\Rightarrow$ $x \in A \cap B$ หรือ $x \in A \cap C$</p>
+                <p><strong>กรณีที่ 1:</strong> $x \in A \cap B$ $\Rightarrow$ $x \in A$ และ $x \in B$ $\Rightarrow$ $x \in A$ และ $x \in B \cup C$ $\Rightarrow$ $x \in A \cap (B \cup C)$ ✓</p>
+                <p><strong>กรณีที่ 2:</strong> $x \in A \cap C$ $\Rightarrow$ $x \in A$ และ $x \in C$ $\Rightarrow$ $x \in A$ และ $x \in B \cup C$ $\Rightarrow$ $x \in A \cap (B \cup C)$ ✓</p>
+              </div>
+              <div class="qed">∎ (พิสูจน์ทั้งสองทิศทางแล้ว จึงได้ equality)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6.3 -->
+    <section id="sec63" class="ch-section">
+      <div class="section-header" style="--ch-color:#0891b2">
+        <span class="sec-num">6.3</span>
+        <div>
+          <h2>Disproofs and Algebraic Proofs</h2>
+          <p>การหักล้าง, การพิสูจน์เชิงพีชคณิต, Inclusion-Exclusion, Partition, Indexed Families</p>
+        </div>
+      </div>
+
+      <div id="disproof" class="subsec">
+        <h3>Disproof by Counterexample (การหักล้างด้วยตัวอย่างค้าน)</h3>
+
+        <div class="def-box">
+          <h4>แนวคิด: Disproof</h4>
+          <p>เพื่อหักล้าง (disprove) ว่า $A \subseteq B$ หรือ $A = B$ สำหรับทุกเซต ต้องหา <strong>ตัวอย่างค้าน (counterexample)</strong> ที่แสดงว่าประพจน์ไม่เป็นจริง</p>
+          <ul>
+            <li>หักล้าง $A \subseteq B$: หาเซต $A, B$ ที่ $A \not\subseteq B$</li>
+            <li>หักล้าง $A \cup C = B \cup C \Rightarrow A = B$: หาตัวอย่างที่ $A \cup C = B \cup C$ แต่ $A \neq B$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.3.1</span> หักล้างว่า $(A - B) \cup (B - A) = A \cup B$ ไม่เป็นจริงเสมอ</div>
+          <div class="solution">
+            <p>จริงๆ แล้วประพจน์นี้ <em>เป็นจริง</em> เสมอ — $(A - B) \cup (B - A)$ เรียกว่า <strong>symmetric difference</strong> $A \triangle B$ และเท่ากับ $(A \cup B) - (A \cap B)$ ไม่ใช่ $A \cup B$ โดยทั่วไป</p>
+            <p><strong>Counterexample:</strong> ให้ $A = \{1, 2\}$, $B = \{2, 3\}$</p>
+            <ul>
+              <li>$(A - B) \cup (B - A) = \{1\} \cup \{3\} = \{1, 3\}$</li>
+              <li>$A \cup B = \{1, 2, 3\}$</li>
+              <li>$\{1, 3\} \neq \{1, 2, 3\}$ ดังนั้น $(A-B)\cup(B-A) \neq A\cup B$ ✓</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.3.2</span> หักล้าง: $A \cup C = B \cup C \Rightarrow A = B$</div>
+          <div class="solution">
+            <p>ให้ $A = \{1\}$, $B = \{2\}$, $C = \{1, 2\}$</p>
+            <ul>
+              <li>$A \cup C = \{1\} \cup \{1,2\} = \{1,2\}$</li>
+              <li>$B \cup C = \{2\} \cup \{1,2\} = \{1,2\}$</li>
+              <li>$A \cup C = B \cup C = \{1,2\}$ ✓ แต่ $A = \{1\} \neq \{2\} = B$</li>
+            </ul>
+            <p>ดังนั้นการยกเลิก (cancellation) บน $\cup$ ไม่เป็นจริงในทั่วไป!</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="alg-proof" class="subsec">
+        <h3>Algebraic Proof Using Set Identities</h3>
+
+        <div class="def-box">
+          <h4>วิธี Algebraic Proof</h4>
+          <p>แทนที่จะใช้ Element Method เราสามารถใช้ <strong>Set Algebra Laws</strong> ที่ทราบแล้ว ในการแปลงนิพจน์ด้านซ้ายไปยังด้านขวา (หรือทั้งสองด้านไปยังรูปเดียวกัน) ทีละขั้น</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.3.3</span> Algebraic Proof: $(A \cap B^c) \cup B = A \cup B$</div>
+          <div class="solution">
+            <div class="proof-box">
+              <div class="proof-title">🔬 Algebraic Proof</div>
+              <div class="proof-step setup">
+                <h5>แปลง LHS ด้วย Set Laws</h5>
+                <p>$(A \cap B^c) \cup B$</p>
+                <p>$= (A \cup B) \cap (B^c \cup B)$ &nbsp;&nbsp;&nbsp; [Distributive Law]</p>
+                <p>$= (A \cup B) \cap U$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Complement Law: $B^c \cup B = U$]</p>
+                <p>$= A \cup B$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Identity Law: $X \cap U = X$]</p>
+              </div>
+              <div class="qed">∎</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="incl-excl" class="subsec">
+        <h3>Inclusion-Exclusion Principle</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Inclusion-Exclusion Principle (หลักการรวมและแยก)</h4>
+          <p>ให้ $A$ และ $B$ เป็นเซตจำกัด (finite sets) แล้ว:</p>
+          $$|A \cup B| = |A| + |B| - |A \cap B|$$
+          <p>สำหรับสามเซต:</p>
+          $$|A \cup B \cup C| = |A| + |B| + |C| - |A \cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C|$$
+          <p><em>แนวคิด: เมื่อนับ $|A| + |B|$ เราจะนับสมาชิกใน $A \cap B$ ซ้ำสองครั้ง ต้องลบออกหนึ่งครั้ง</em></p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.3.4</span> ประยุกต์ใช้ Inclusion-Exclusion</div>
+          <p>นักศึกษา 100 คน: 60 คนเรียน Calculus, 45 คนเรียน Discrete Math, 25 คนเรียนทั้งสองวิชา จงหาจำนวนนักศึกษาที่เรียนอย่างน้อยหนึ่งวิชา</p>
+          <div class="solution">
+            <p>ให้ $C$ = เซตนักศึกษาที่เรียน Calculus, $D$ = เซตนักศึกษาที่เรียน Discrete Math</p>
+            <p>$|C| = 60$, $|D| = 45$, $|C \cap D| = 25$</p>
+            $$|C \cup D| = |C| + |D| - |C \cap D| = 60 + 45 - 25 = 80 \text{ คน}$$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.3.5</span> Inclusion-Exclusion สามเซต</div>
+          <p>ในกลุ่ม 200 คน: ชอบ Rock = 75, ชอบ Pop = 90, ชอบ Jazz = 60, ชอบ Rock และ Pop = 30, ชอบ Rock และ Jazz = 25, ชอบ Pop และ Jazz = 20, ชอบทั้งสาม = 10</p>
+          <div class="solution">
+            $$|R \cup P \cup J| = 75 + 90 + 60 - 30 - 25 - 20 + 10 = 160 \text{ คน}$$
+          </div>
+        </div>
+      </div>
+
+      <div id="partition" class="subsec">
+        <h3>Partition of a Set</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Partition (การแบ่งพาร์ติชัน)</h4>
+          <p><strong>Partition</strong> ของเซต $A$ คือกลุ่มของ subset ที่ไม่ว่าง $\{A_1, A_2, \ldots, A_n\}$ ของ $A$ ที่ตรงตามเงื่อนไข:</p>
+          <ol>
+            <li><strong>Non-empty:</strong> $A_i \neq \emptyset$ สำหรับทุก $i$</li>
+            <li><strong>Mutually disjoint:</strong> $A_i \cap A_j = \emptyset$ สำหรับ $i \neq j$ (เซตไม่ซ้อนทับกัน)</li>
+            <li><strong>Exhaustive (covers $A$):</strong> $A_1 \cup A_2 \cup \cdots \cup A_n = A$ (รวมกันครบทั้งหมด)</li>
+          </ol>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.3.6</span> Partition</div>
+          <p>ให้ $A = \{1, 2, 3, 4, 5, 6\}$</p>
+          <div class="solution">
+            <ul>
+              <li><strong>เป็น Partition:</strong> $\{\{1,2\},\ \{3,4\},\ \{5,6\}\}$ — disjoint, non-empty, และ union = $A$ ✓</li>
+              <li><strong>เป็น Partition:</strong> $\{\{1,3,5\},\ \{2,4,6\}\}$ — เลขคี่และเลขคู่ ✓</li>
+              <li><strong>ไม่เป็น Partition:</strong> $\{\{1,2,3\},\ \{2,4,5,6\}\}$ — เพราะ $2 \in \{1,2,3\} \cap \{2,4,5,6\}$ (ซ้อนทับ)</li>
+              <li><strong>ไม่เป็น Partition:</strong> $\{\{1,2,3\},\ \{4,5\}\}$ — เพราะ $6 \notin$ สมาชิกทั้งหมด (ไม่ครบ)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="indexed" class="subsec">
+        <h3>Indexed Families of Sets</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Indexed Family (ครอบครัวเซตที่มี Index)</h4>
+          <p>ให้ $I$ เป็น <strong>index set</strong> (เซตของดัชนี) ถ้าสำหรับทุก $i \in I$ เราสัมพันธ์เซต $A_i$ ไว้ เรียก $\{A_i\}_{i \in I}$ ว่า <strong>indexed family of sets</strong></p>
+          <p><strong>Union และ Intersection ของ indexed family:</strong></p>
+          $$\bigcup_{i \in I} A_i = \{x \mid \exists i \in I \text{ s.t. } x \in A_i\}$$
+          $$\bigcap_{i \in I} A_i = \{x \mid \forall i \in I,\ x \in A_i\}$$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.3.7</span> Indexed Families</div>
+          <p>ให้ $I = \{1, 2, 3, \ldots\}$ และ $A_i = \{i, i+1, i+2, \ldots\} = \{n \in \mathbb{Z} \mid n \geq i\}$</p>
+          <div class="solution">
+            <ul>
+              <li>$\displaystyle\bigcup_{i=1}^{\infty} A_i = A_1 = \{1, 2, 3, \ldots\} = \mathbb{N}$ (เพราะ $A_1$ ใหญ่สุด)</li>
+              <li>$\displaystyle\bigcap_{i=1}^{\infty} A_i = \emptyset$ (เพราะสำหรับทุก $n \in \mathbb{N}$ จะมี $i > n$ ทำให้ $n \notin A_i$)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.3.8</span> Open Intervals</div>
+          <p>ให้ $A_n = \left(0, \dfrac{1}{n}\right) = \left\{x \in \mathbb{R} \mid 0 < x < \dfrac{1}{n}\right\}$ สำหรับ $n = 1, 2, 3, \ldots$</p>
+          <div class="solution">
+            <ul>
+              <li>$\displaystyle\bigcup_{n=1}^{\infty} A_n = (0, 1)$ (เพราะ $A_1 = (0,1)$ ใหญ่สุด)</li>
+              <li>$\displaystyle\bigcap_{n=1}^{\infty} A_n = \emptyset$ (เพราะทุก $x > 0$ จะมี $n$ ใหญ่พอที่ $\frac{1}{n} < x$ ทำให้ $x \notin A_n$)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6.4 -->
+    <section id="sec64" class="ch-section">
+      <div class="section-header" style="--ch-color:#0891b2">
+        <span class="sec-num">6.4</span>
+        <div>
+          <h2>Russell's Paradox and the Halting Problem</h2>
+          <p>ขีดจำกัดของทฤษฎีเซตและการคำนวณ</p>
+        </div>
+      </div>
+
+      <div id="russell" class="subsec">
+        <h3>Russell's Paradox</h3>
+
+        <div class="warning-box">
+          <strong>ปัญหาของ "Naive Set Theory":</strong> หากเราอนุญาตให้นิยามเซตด้วยคุณสมบัติ <em>ใดๆ</em> จะนำไปสู่ความขัดแย้งที่เรียกว่า Russell's Paradox
+        </div>
+
+        <div class="def-box">
+          <h4>Russell's Paradox (1901)</h4>
+          <p>Bertrand Russell พิจารณาเซต:</p>
+          $$R = \{x \mid x \notin x\}$$
+          <p>กล่าวคือ $R$ เป็นเซตของทุกเซตที่ <em>ไม่มีตัวเองเป็นสมาชิก</em></p>
+          <p><strong>ความขัดแย้ง:</strong></p>
+          <ul>
+            <li><strong>ถ้า $R \in R$:</strong> โดยนิยามของ $R$ สมาชิกของ $R$ ต้องเป็นเซตที่ $x \notin x$ ดังนั้น $R \notin R$ — ขัดแย้ง!</li>
+            <li><strong>ถ้า $R \notin R$:</strong> แล้ว $R$ ตรงกับเงื่อนไข "$x \notin x$" ดังนั้น $R$ ต้องเป็นสมาชิกของ $R$ กล่าวคือ $R \in R$ — ขัดแย้ง!</li>
+          </ul>
+          <p>ไม่ว่ากรณีไหน ก็นำไปสู่ความขัดแย้ง</p>
+        </div>
+
+        <div class="note-box">
+          <strong>อุปมาอุปมัย (Analogy):</strong> นายช่างตัดผมคนหนึ่งตัดผมให้เฉพาะคนในเมืองที่ "ไม่ตัดผมให้ตัวเอง" คำถาม: นายช่างตัดผมให้ตัวเองหรือไม่? ถ้าตัด แสดงว่าเขาตัดผมให้คนที่ตัดผมเองได้ — ขัดกับเงื่อนไข ถ้าไม่ตัด แสดงว่าเขาควรจะถูกตัดโดยช่าง — คือตัวเอง ขัดกันอีก
+        </div>
+      </div>
+
+      <div id="zfc" class="subsec">
+        <h3>Axiomatic Set Theory — ZFC</h3>
+
+        <div class="def-box">
+          <h4>Zermelo-Fraenkel Set Theory with Choice (ZFC)</h4>
+          <p>เพื่อหลีกเลี่ยง Russell's Paradox นักคณิตศาสตร์สร้าง <strong>ระบบสัจพจน์ (axiomatic system)</strong> สำหรับทฤษฎีเซต ที่เรียกว่า <strong>ZFC</strong> ซึ่งจำกัดว่าเซตใดที่สามารถสร้างได้:</p>
+          <ul>
+            <li><strong>Axiom of Separation (Aussonderung):</strong> สามารถสร้างเซตย่อย $\{x \in A \mid P(x)\}$ ได้จากเซตที่มีอยู่แล้ว $A$ เท่านั้น — ไม่ใช่จากสิ่ง "ทั้งหมด"</li>
+            <li><strong>ป้องกัน Russell's Paradox:</strong> ไม่มี Universal Set $\{x \mid x = x\}$ ที่ครอบคลุมทุกสิ่ง</li>
+            <li>คณิตศาสตร์สมัยใหม่เกือบทั้งหมดสร้างบน ZFC</li>
+          </ul>
+        </div>
+
+        <div class="info-box">
+          <strong>หมายเหตุ:</strong> ZFC ไม่สามารถพิสูจน์หรือหักล้าง <strong>Continuum Hypothesis</strong> ได้ (Gödel 1940, Cohen 1963) — ซึ่งแสดงให้เห็นว่าแม้ระบบสัจพจน์ที่ดีก็ยังมีข้อจำกัด (ตาม Gödel's Incompleteness Theorems)
+        </div>
+      </div>
+
+      <div id="halting" class="subsec">
+        <h3>The Halting Problem</h3>
+
+        <div class="def-box">
+          <h4>Halting Problem (ปัญหาการหยุดทำงาน)</h4>
+          <p><strong>คำถาม:</strong> มีอัลกอริทึม $H$ ที่รับ <em>โปรแกรม $P$</em> และ <em>input $I$</em> แล้วตอบว่า "โปรแกรม $P$ จะ <em>หยุดทำงาน (halt)</em> เมื่อรับ $I$" หรือ "ทำงานวนซ้ำไม่สิ้นสุด" ได้หรือไม่?</p>
+          <p><strong>คำตอบ: ไม่มี (Turing, 1936)</strong> — ไม่มีอัลกอริทึมทั่วไปที่แก้ปัญหา Halting ได้สำหรับทุกกรณี</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.4.1</span> การพิสูจน์ว่า Halting Problem ไม่แก้ได้ (อย่างไม่เป็นทางการ)</div>
+          <div class="solution">
+            <div class="proof-box">
+              <div class="proof-title">💭 Proof by Contradiction</div>
+              <div class="proof-step setup">
+                <h5>สมมติว่ามีอัลกอริทึม $H$ แก้ Halting Problem ได้</h5>
+                <p>กล่าวคือ $H(P, I) = \begin{cases}\text{"halt"} & \text{ถ้า } P \text{ หยุดเมื่อรับ } I \\ \text{"loop"} & \text{ถ้า } P \text{ วนซ้ำไม่สิ้นสุดเมื่อรับ } I\end{cases}$</p>
+              </div>
+              <div class="proof-step forward">
+                <h5>สร้างโปรแกรม $D$ ที่ขัดแย้งกับ $H$</h5>
+                <p>สร้างโปรแกรม $D$ ที่เมื่อรับโปรแกรม $P$ เป็น input ทำงานดังนี้:</p>
+                <ul>
+                  <li>เรียก $H(P, P)$ (ทดสอบว่า $P$ จะหยุดหรือไม่เมื่อรับตัวเองเป็น input)</li>
+                  <li>ถ้า $H(P, P) = \text{"halt"}$ → $D$ วนซ้ำไม่สิ้นสุด</li>
+                  <li>ถ้า $H(P, P) = \text{"loop"}$ → $D$ หยุดทันที</li>
+                </ul>
+              </div>
+              <div class="proof-step backward">
+                <h5>พิจารณา $D(D)$ — ป้อน $D$ เองเป็น input</h5>
+                <ul>
+                  <li><strong>ถ้า $D$ หยุดเมื่อรับ $D$:</strong> $H(D,D) = \text{"halt"}$ ดังนั้น $D$ จะวนซ้ำ — ขัดแย้ง!</li>
+                  <li><strong>ถ้า $D$ วนซ้ำเมื่อรับ $D$:</strong> $H(D,D) = \text{"loop"}$ ดังนั้น $D$ จะหยุด — ขัดแย้ง!</li>
+                </ul>
+              </div>
+              <div class="proof-step conclude">
+                <h5>สรุป</h5>
+                <p>ความขัดแย้งทั้งสองกรณีแสดงว่า $H$ ไม่สามารถมีอยู่ได้ Halting Problem จึงไม่แก้ได้ (undecidable)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>ความสำคัญ:</strong> Halting Problem บอกว่ามี <em>ขีดจำกัดพื้นฐาน</em> ของสิ่งที่คอมพิวเตอร์ทำได้ ไม่ว่าจะทรงพลังแค่ไหน — มีปัญหาที่ไม่มีอัลกอริทึมใดแก้ได้ ความสัมพันธ์กับ Russell's Paradox: ทั้งสองใช้ <strong>self-reference</strong> และ <strong>proof by contradiction</strong> ในรูปแบบคล้ายกัน
+        </div>
+      </div>
+
+      <div id="cantor" class="subsec">
+        <h3>Cantor's Theorem</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Cantor's Theorem</h4>
+          <p>สำหรับทุกเซต $A$ (รวมถึงเซตอนันต์):</p>
+          $$|A| < |\mathcal{P}(A)|$$
+          <p>กล่าวคือ Power set ของ $A$ มีสมาชิก <em>มากกว่า</em> $A$ เสมอ</p>
+          <p>เฉพาะกรณีจำกัด: ถ้า $|A| = n$ แล้ว $|\mathcal{P}(A)| = 2^n > n$</p>
+        </div>
+
+        <div class="note-box">
+          <strong>ผลสำคัญ:</strong> Cantor แสดงให้เห็นว่ามี "ขนาดอนันต์" หลายระดับ:
+          <ul>
+            <li>$|\mathbb{N}|$ — อนันต์ countable (aleph-null: $\aleph_0$)</li>
+            <li>$|\mathcal{P}(\mathbb{N})| = |\mathbb{R}|$ — อนันต์ uncountable (มากกว่า $|\mathbb{N}|$)</li>
+            <li>$|\mathcal{P}(\mathbb{R})|$ — ใหญ่กว่า $|\mathbb{R}|$ อีก และยังใหญ่ขึ้นไปได้เรื่อยๆ</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 6.4.2</span> Cantor's Diagonal Argument (สังเขป)</div>
+          <p>Cantor แสดงว่า $\mathbb{R}$ ไม่สามารถนับได้ (uncountable) โดยสมมติว่าเราสามารถจัดลำดับ real numbers ทั้งหมดใน $[0,1]$ เป็น $x_1, x_2, x_3, \ldots$ แล้วสร้างจำนวน $d$ ที่แตกต่างจากทุก $x_i$ โดยเปลี่ยน digit ที่ $i$ ของ $x_i$ — จำนวน $d$ ที่ได้ไม่อยู่ในรายการ ซึ่งเป็นความขัดแย้ง</p>
+          <div class="solution">
+            <p>สิ่งสำคัญที่ต้องจำ:</p>
+            <ul>
+              <li>$|\mathcal{P}(A)| > |A|$ สำหรับทุกเซต (ทั้ง finite และ infinite)</li>
+              <li>ตัวพิสูจน์ใช้ diagonalization เช่นเดียวกับ Halting Problem</li>
+              <li>Cantor's Theorem นำไปสู่ทฤษฎีเลขอนันต์ (transfinite cardinal numbers)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#0e7490">
+        <span class="sec-num">📋</span>
+        <div>
+          <h2>สรุปบทที่ 6</h2>
+          <p>Set Theory — ทฤษฎีเซต</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h4>6.1 Definitions &amp; Element Method</h4>
+          <ul>
+            <li>เซต: กลุ่มสมาชิก, $\in$, $\notin$, $\emptyset$</li>
+            <li>$A \subseteq B \iff \forall x\,(x \in A \Rightarrow x \in B)$</li>
+            <li>$A = B \iff A \subseteq B$ และ $B \subseteq A$</li>
+            <li>$\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R} \subset \mathbb{C}$</li>
+            <li>Element Method: arbitrary $x \in A$, show $x \in B$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>6.2 Set Operations</h4>
+          <ul>
+            <li>$A \cup B$, $A \cap B$, $A - B$, $A^c$</li>
+            <li>$\mathcal{P}(A)$: power set, $|\mathcal{P}(A)| = 2^{|A|}$</li>
+            <li>$A \times B$: ordered pairs, $|A \times B| = |A| \cdot |B|$</li>
+            <li>De Morgan's: $(A \cup B)^c = A^c \cap B^c$</li>
+            <li>Set Algebra: Commutative, Associative, Distributive, Absorption</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>6.3 Disproofs &amp; Inclusion-Exclusion</h4>
+          <ul>
+            <li>Disproof: หา counterexample ที่ขัดกับประพจน์</li>
+            <li>Algebraic Proof: ใช้ Set Laws แปลงทีละขั้น</li>
+            <li>$|A \cup B| = |A| + |B| - |A \cap B|$</li>
+            <li>Partition: disjoint, non-empty, covers $A$</li>
+            <li>$\bigcup_{i \in I} A_i$, $\bigcap_{i \in I} A_i$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>6.4 Paradoxes &amp; Limits</h4>
+          <ul>
+            <li>Russell's Paradox: $R = \{x \mid x \notin x\}$ — ขัดแย้ง</li>
+            <li>ZFC แก้ปัญหาด้วย Axiom of Separation</li>
+            <li>Halting Problem: ไม่มีอัลกอริทึมทั่วไป (Turing)</li>
+            <li>Cantor's Theorem: $|A| < |\mathcal{P}(A)|$ สำหรับทุกเซต</li>
+            <li>$|\mathbb{N}| < |\mathbb{R}| < |\mathcal{P}(\mathbb{R})| < \cdots$</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#0e7490">
+        <span class="sec-num">✏️</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>จากหนังสือ Discrete Mathematics with Applications</p>
+        </div>
+      </div>
+
+      <div class="exercises-list">
+        <div class="exercise-item">
+          <span class="ex-num">6.1</span>
+          <div class="ex-content">
+            <strong>Set Notation และ Membership:</strong>
+            ให้ $A = \{1, 2, 3, 4, 5\}$, $B = \{x \in \mathbb{Z} \mid x^2 \leq 9\}$
+            (1) จงระบุว่าแต่ละข้อต่อไปนี้จริงหรือเท็จ: $3 \in A$; $\{3\} \in A$; $\{3\} \subseteq A$; $\emptyset \subseteq A$; $A \subseteq A$
+            (2) จงหาสมาชิกทั้งหมดของ $B$ และตรวจสอบว่า $A = B$ หรือ $A \subseteq B$ หรือ $B \subseteq A$
+            (3) จงหา $\mathcal{P}(\{a, b, c\})$ และนับจำนวนสมาชิก
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">6.2</span>
+          <div class="ex-content">
+            <strong>Element Method of Proof:</strong>
+            พิสูจน์ด้วย Element Method ว่า
+            (1) $\{n \in \mathbb{Z} \mid 4 \mid n\} \subseteq \{n \in \mathbb{Z} \mid 2 \mid n\}$
+            (2) ถ้า $A \subseteq B$ แล้ว $A \cap C \subseteq B \cap C$ สำหรับทุกเซต $C$
+            (3) $A \cap B \subseteq A$ สำหรับทุกเซต $A$ และ $B$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">6.3</span>
+          <div class="ex-content">
+            <strong>Set Operations:</strong>
+            ให้ $U = \{1, 2, \ldots, 10\}$, $A = \{1, 2, 3, 4, 5\}$, $B = \{2, 4, 6, 8\}$, $C = \{1, 3, 5, 7, 9\}$
+            จงหา: (1) $A \cup B$; (2) $A \cap B$; (3) $A - B$; (4) $B - A$; (5) $A^c$; (6) $A \cap C$; (7) $(A \cup B)^c$; (8) $A \times \{x, y\}$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">6.4</span>
+          <div class="ex-content">
+            <strong>De Morgan's Laws และ Set Algebra:</strong>
+            (1) พิสูจน์ด้วย Element Method ว่า $(A \cap B)^c = A^c \cup B^c$
+            (2) ใช้ Set Algebra Laws พิสูจน์ว่า $A - (A \cap B) = A - B$
+            (3) ใช้ Set Algebra Laws ลดรูป $(A \cup B) \cap (A \cup B^c)$
+            (4) แสดงว่า $A \subseteq B \iff A \cap B^c = \emptyset$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">6.5</span>
+          <div class="ex-content">
+            <strong>Inclusion-Exclusion และ Partition:</strong>
+            (1) โรงเรียนมีนักเรียน 500 คน: 280 คนเล่นกีฬา, 200 คนเล่นดนตรี, 120 คนทำทั้งสอง จงหาจำนวนนักเรียนที่ทำอย่างน้อยหนึ่งกิจกรรม และจำนวนที่ไม่ทำกิจกรรมใดเลย
+            (2) จงตรวจสอบว่า $\{\{1,4\},\{2,5\},\{3\},\{6\}\}$ เป็น partition ของ $\{1,2,3,4,5,6\}$ หรือไม่ พร้อมให้เหตุผล
+            (3) จงหา partition ทั้งหมดของ $\{1, 2, 3\}$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">6.6</span>
+          <div class="ex-content">
+            <strong>Russell's Paradox, Cantor, และ Halting Problem:</strong>
+            (1) อธิบายว่าทำไม $R = \{x \mid x \notin x\}$ จึงนำไปสู่ความขัดแย้ง
+            (2) ให้ $A = \{1, 2, 3, 4\}$ ตรวจสอบ Cantor's Theorem: นับว่า $|A| = 4$ และ $|\mathcal{P}(A)| = 2^4 = 16 > 4$ ✓; แล้วระบุ subset ทั้งหมด 16 ตัวของ $A$
+            (3) อธิบายอย่างย่อว่าทำไม Halting Problem จึงพิสูจน์ไม่ได้ด้วยการ reference ตัวเอง และความสัมพันธ์กับ Russell's Paradox คืออะไร
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER NAV -->
+    <div class="chapter-nav">
+      <a href="chapter5.html" class="nav-btn prev-btn">← บทที่ 5</a>
+      <a href="chapter7.html" class="nav-btn next-btn">บทที่ 7 →</a>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง — บทที่ 6: Set Theory (ทฤษฎีเซต)</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล · ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ · มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 · เนื้อหาจาก <em>Discrete Mathematics with Applications</em> — Susanna S. Epp</p>
+</footer>
+
+<script>
+  // Scroll to top for all TOC links
+  const SCROLL_OFFSET = 80;
+  document.querySelectorAll('.ch-toc a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'instant' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
+  // Sticky sidebar highlight
+  const sections = document.querySelectorAll('.ch-section, .subsec');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (s.id && window.scrollY >= s.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET - 10) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('ch-sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

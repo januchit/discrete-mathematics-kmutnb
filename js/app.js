@@ -96,6 +96,7 @@ const courseData = {
         { num: "6.3", title: "Disproofs, Algebraic Proofs, and Boolean Algebras", desc: "การพิสูจน์เท็จ พีชคณิตพิสูจน์ และพีชคณิตบูลีน" },
         { num: "6.4", title: "Boolean Algebras, Russell's Paradox, and the Halting Problem", desc: "พีชคณิตบูลีน ปฏิทรรศน์รัสเซล และปัญหาการหยุด" }
       ],
+      contentPage: "chapters/chapter6.html",
       summary: "ทฤษฎีเซตอย่างเป็นทางการ รวมถึงการดำเนินการบนเซต พีชคณิตเซต พีชคณิตบูลีน และผลลัพธ์ที่น่าสนใจในทฤษฎีเซต"
     },
     {
@@ -110,6 +111,7 @@ const courseData = {
         { num: "7.3", title: "Composition of Functions", desc: "การประกอบฟังก์ชัน" },
         { num: "7.4", title: "Cardinality with Applications to Computability", desc: "พีนาคาร์ดินัลลิตีและการนำไปใช้กับ Computability" }
       ],
+      contentPage: "chapters/chapter7.html",
       summary: "ศึกษาฟังก์ชันอย่างเป็นทางการ ได้แก่ การฉีด การทั่วถึง ฟังก์ชันทวิภาค การประกอบ และทฤษฎีเกี่ยวกับขนาดของเซต"
     },
     {
