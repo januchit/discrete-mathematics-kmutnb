@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 3 – The Logic of Quantified Statements | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>∀</text></svg>">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+  <style>
+    .inference-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+    .inference-table th { background: #059669; color: white; padding: 10px 14px; text-align: left; }
+    .inference-table td { padding: 9px 14px; border-bottom: 1px solid #e2e8f0; font-family: 'JetBrains Mono', monospace; }
+    .inference-table tr:nth-child(even) td { background: #f0fdf4; }
+    .validity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+    .validity-card { border-radius: 10px; padding: 16px; border: 2px solid; }
+    .validity-card.valid { border-color: #16a34a; background: #f0fdf4; }
+    .validity-card.invalid { border-color: #dc2626; background: #fff1f2; }
+    .validity-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .validity-card.valid h4 { color: #15803d; }
+    .validity-card.invalid h4 { color: #dc2626; }
+    .validity-card pre { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.8; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="chapter2.html" class="ch-nav-link">← บทที่ 2</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 3</span>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#059669">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 3</div>
+      <div class="chapter-hero-icon">∀</div>
+      <h1 class="chapter-hero-title">The Logic of Quantified Statements</h1>
+      <p class="chapter-hero-subtitle">ตรรกศาสตร์ของประพจน์ที่มีตัวบ่งปริมาณ</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec31">3.1 Predicates and Quantified Statements I</a>
+          <ul>
+            <li><a href="#predicates">Predicates &amp; Truth Sets</a></li>
+            <li><a href="#universal-q">Universal Quantifier ∀</a></li>
+            <li><a href="#existential-q">Existential Quantifier ∃</a></li>
+            <li><a href="#translating">Translating Statements</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec32">3.2 Predicates and Quantified Statements II</a>
+          <ul>
+            <li><a href="#negation-universal">Negation of ∀</a></li>
+            <li><a href="#negation-existential">Negation of ∃</a></li>
+            <li><a href="#negation-conditional">Negation of Universal Conditional</a></li>
+            <li><a href="#vacuous">Vacuous Truth</a></li>
+            <li><a href="#variants-ucs">Contrapositive, Converse, Inverse</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec33">3.3 Statements with Multiple Quantifiers</a>
+          <ul>
+            <li><a href="#multi-quantifiers">Mixed Quantifiers</a></li>
+            <li><a href="#order-matters">Order Matters</a></li>
+            <li><a href="#negation-multi">Negating Multiple Quantifiers</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec34">3.4 Arguments with Quantified Statements</a>
+          <ul>
+            <li><a href="#univ-instantiation">Universal Instantiation</a></li>
+            <li><a href="#univ-modus-ponens">Universal Modus Ponens</a></li>
+            <li><a href="#univ-modus-tollens">Universal Modus Tollens</a></li>
+            <li><a href="#validity-quantified">Valid vs. Invalid Forms</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 3</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 3</h2>
+        <p>บทนี้ขยาย <strong>ตรรกศาสตร์เชิงประพจน์ (Propositional Logic)</strong> ที่ศึกษาในบทที่ 2 สู่ <strong>Predicate Calculus</strong> ซึ่งนำเสนอ <strong>ตัวบ่งปริมาณ (Quantifiers)</strong> ได้แก่ $\forall$ (Universal) และ $\exists$ (Existential) เครื่องมือเหล่านี้ทำให้เราสามารถแสดงข้อความทางคณิตศาสตร์ที่ซับซ้อนได้อย่างเป็นทางการ พร้อมทั้งศึกษากฎการนิเสธและรูปแบบการอ้างเหตุผลที่ถูกต้อง</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">∀</span>
+            <strong>3.1 Predicates &amp; Quantifiers I</strong>
+            <p>นิยาม Predicate, Truth Set, ตัวบ่งปริมาณ $\forall$ และ $\exists$</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">∼</span>
+            <strong>3.2 Predicates &amp; Quantifiers II</strong>
+            <p>การนิเสธ, Vacuous Truth, Contrapositive/Converse/Inverse</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">∃</span>
+            <strong>3.3 Multiple Quantifiers</strong>
+            <p>ลำดับของ Quantifiers, การนิเสธ, นิยาม Limit</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">∴</span>
+            <strong>3.4 Arguments with Quantifiers</strong>
+            <p>Universal Instantiation, Modus Ponens/Tollens, Euler Diagrams</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3.1 -->
+    <section id="sec31" class="ch-section">
+      <div class="section-header" style="--ch-color:#059669">
+        <span class="sec-num">3.1</span>
+        <div>
+          <h2>Predicates and Quantified Statements I</h2>
+          <p>Predicates, Truth Sets และตัวบ่งปริมาณพื้นฐาน</p>
+        </div>
+      </div>
+
+      <div id="predicates" class="subsec">
+        <h3>Predicates และ Truth Sets</h3>
+
+        <div class="key-box">
+          <h4>นิยาม: Predicate (ภาคแสดง)</h4>
+          <p><strong>Predicate</strong> (หรือ <strong>propositional function</strong> หรือ <strong>open sentence</strong>) คือประโยคที่มีตัวแปรหนึ่งตัวหรือมากกว่า ซึ่งกลายเป็น <em>ประพจน์ (statement)</em> ที่มีค่าความจริงได้ก็ต่อเมื่อแทนค่าตัวแปรด้วยค่าเฉพาะ</p>
+          <p>เขียนแทนด้วย $P(x)$, $Q(x)$, $R(x, y)$ เป็นต้น โดย $x$ คือตัวแปรที่อยู่ใน <strong>domain</strong> $D$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.1.1</span> Predicates</div>
+          <p>ให้ $P(x)$: "$x$ เป็นจำนวนคี่" โดย $x \in \mathbb{Z}$</p>
+          <div class="solution">
+            <p>$P(3)$: "3 เป็นจำนวนคี่" — <strong>จริง</strong></p>
+            <p>$P(4)$: "4 เป็นจำนวนคี่" — <strong>เท็จ</strong></p>
+            <p>$P(x)$ เองยังไม่มีค่าความจริง เพราะยังไม่ได้กำหนดค่า $x$</p>
+          </div>
+        </div>
+
+        <div class="def-formal">
+          <strong>Truth Set</strong><br>
+          ถ้า $P(x)$ เป็น predicate ที่มี domain $D$ แล้ว <strong>truth set</strong> ของ $P(x)$ คือ
+          $$\{x \in D \mid P(x)\}$$
+          นั่นคือเซตของสมาชิกทุกตัวใน $D$ ที่ทำให้ $P(x)$ เป็นจริง
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.1.2</span> Truth Set</div>
+          <p>ให้ $D = \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\}$ และ $Q(x)$: "$x$ หารด้วย 3 ลงตัว"</p>
+          <div class="solution">
+            <p>Truth set ของ $Q(x)$ คือ $\{x \in D \mid x \text{ หารด้วย 3 ลงตัว}\} = \{3, 6, 9\}$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="universal-q" class="subsec">
+        <h3>Universal Quantifier $\forall$</h3>
+
+        <div class="key-box">
+          <h4>ตัวบ่งปริมาณ Universal: $\forall$ (For All)</h4>
+          <p>คำที่บ่งถึง Universal Quantifier ได้แก่: <em>"for all", "for every", "for each", "for any", "for arbitrary"</em></p>
+          <p>เขียนเป็น: $\forall x \in D,\ Q(x)$</p>
+          <ul>
+            <li>ประพจน์นี้ <strong>จริง</strong> ก็ต่อเมื่อ $Q(x)$ เป็นจริงสำหรับ <strong>ทุก</strong> $x \in D$</li>
+            <li>ประพจน์นี้ <strong>เท็จ</strong> ก็ต่อเมื่อ $Q(x)$ เป็นเท็จสำหรับ <strong>อย่างน้อยหนึ่ง</strong> $x \in D$</li>
+          </ul>
+          <p>ค่า $x$ ที่ทำให้ $Q(x)$ เท็จ เรียกว่า <strong>counterexample (ตัวอย่างโต้แย้ง)</strong></p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.1.3</span> Universal Statement</div>
+          <p>ให้ $D = \mathbb{R}$ พิจารณา $\forall x \in \mathbb{R},\ \text{ถ้า}\ x > 2\ \text{แล้ว}\ x^2 > 4$</p>
+          <div class="solution">
+            <p>ถ้า $x > 2$ แล้ว $x^2 = x \cdot x > 2 \cdot 2 = 4$ — ดังนั้นประพจน์นี้ <strong>จริง</strong></p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.1.4</span> Showing a Universal Statement is False</div>
+          <p>$\forall x \in \mathbb{R},\ x^2 \geq x$</p>
+          <div class="solution">
+            <p>ลอง $x = \frac{1}{2}$: $\left(\frac{1}{2}\right)^2 = \frac{1}{4} &lt; \frac{1}{2}$</p>
+            <p>ดังนั้น $x = \frac{1}{2}$ เป็น <strong>counterexample</strong> — ประพจน์นี้ <strong>เท็จ</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="existential-q" class="subsec">
+        <h3>Existential Quantifier $\exists$</h3>
+
+        <div class="key-box">
+          <h4>ตัวบ่งปริมาณ Existential: $\exists$ (There Exists)</h4>
+          <p>คำที่บ่งถึง Existential Quantifier ได้แก่: <em>"there exists", "there is", "there is at least one", "for some"</em></p>
+          <p>เขียนเป็น: $\exists x \in D\ \text{such that}\ Q(x)$</p>
+          <ul>
+            <li>ประพจน์นี้ <strong>จริง</strong> ก็ต่อเมื่อ $Q(x)$ เป็นจริงสำหรับ <strong>อย่างน้อยหนึ่ง</strong> $x \in D$</li>
+            <li>ประพจน์นี้ <strong>เท็จ</strong> ก็ต่อเมื่อ $Q(x)$ เป็นเท็จสำหรับ <strong>ทุก</strong> $x \in D$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.1.5</span> Existential Statement</div>
+          <p>$\exists x \in \mathbb{Z}^+\ \text{such that}\ x^2 = x$</p>
+          <div class="solution">
+            <p>ลอง $x = 1$: $1^2 = 1 = x$ — <strong>จริง!</strong> ดังนั้นประพจน์นี้ <strong>จริง</strong></p>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>สรุปเปรียบเทียบ:</strong>
+          <table class="inference-table" style="margin-top:10px">
+            <tr><th>Quantifier</th><th>สัญลักษณ์</th><th>จริงเมื่อ</th><th>เท็จเมื่อ</th></tr>
+            <tr><td>Universal</td><td>$\forall x \in D,\ Q(x)$</td><td>$Q(x)$ จริงทุก $x \in D$</td><td>มีบาง $x$ ที่ $Q(x)$ เท็จ</td></tr>
+            <tr><td>Existential</td><td>$\exists x \in D$ s.t. $Q(x)$</td><td>มีบาง $x$ ที่ $Q(x)$ จริง</td><td>$Q(x)$ เท็จทุก $x \in D$</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div id="translating" class="subsec">
+        <h3>การแปลประพจน์ระหว่างภาษาทางการและภาษาปกติ</h3>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.1.6</span> Translating from Formal to Informal</div>
+          <p>แปลประพจน์ต่อไปนี้เป็นภาษาปกติ โดยที่ $D = \mathbb{R}$</p>
+          <div class="solution">
+            <p><em>a.</em> $\forall x \in \mathbb{R},\ x^2 \geq 0$</p>
+            <p>→ "กำลังสองของจำนวนจริงทุกจำนวนไม่เป็นลบ" หรือ "For every real number $x$, $x^2$ is nonnegative."</p>
+            <p><em>b.</em> $\exists x \in \mathbb{R}\ \text{s.t.}\ x^2 = 2$</p>
+            <p>→ "มีจำนวนจริงที่กำลังสองเท่ากับ 2" (นั่นคือ $\sqrt{2}$)</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.1.7</span> Universal Conditional Statements</div>
+          <p><strong>Universal conditional statement</strong> มีรูปแบบ: $\forall x,\ \text{if}\ P(x)\ \text{then}\ Q(x)$</p>
+          <div class="solution">
+            <p>"For all real numbers $x$, if $x &gt; 2$ then $x^2 &gt; 4$"</p>
+            <p>เขียนเป็นสัญลักษณ์: $\forall x \in \mathbb{R},\ x &gt; 2 \Rightarrow x^2 &gt; 4$</p>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>สัญลักษณ์ $\Rightarrow$ และ $\Leftrightarrow$ สำหรับ Implicit Quantification:</strong><br>
+          เมื่อเขียน $P(x) \Rightarrow Q(x)$ หมายถึง $\forall x,\ P(x) \rightarrow Q(x)$ (universal quantification implied)<br>
+          เมื่อเขียน $P(x) \Leftrightarrow Q(x)$ หมายถึง $\forall x,\ P(x) \leftrightarrow Q(x)$
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3.2 -->
+    <section id="sec32" class="ch-section">
+      <div class="section-header" style="--ch-color:#059669">
+        <span class="sec-num">3.2</span>
+        <div>
+          <h2>Predicates and Quantified Statements II</h2>
+          <p>การนิเสธ, Vacuous Truth และ Variants ของ Universal Conditional</p>
+        </div>
+      </div>
+
+      <div id="negation-universal" class="subsec">
+        <h3>การนิเสธ Universal Statement</h3>
+
+        <div class="def-formal">
+          <strong>กฎการนิเสธ Universal:</strong>
+          $$\sim(\forall x \in D,\ Q(x)) \equiv \exists x \in D\ \text{such that}\ \sim Q(x)$$
+          นิเสธของ "ทุก $x$ มีสมบัติ $Q$" คือ "มีบาง $x$ ที่ไม่มีสมบัติ $Q$"
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.2.1</span> Negating a Universal Statement</div>
+          <p>ประพจน์: "All mathematicians wear glasses."</p>
+          <div class="solution">
+            <p>นิเสธ: "There exists a mathematician who does not wear glasses."</p>
+            <p>หรือเป็นสัญลักษณ์: $\sim(\forall x,\ M(x) \rightarrow G(x)) \equiv \exists x\ \text{s.t.}\ M(x) \wedge \sim G(x)$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="negation-existential" class="subsec">
+        <h3>การนิเสธ Existential Statement</h3>
+
+        <div class="def-formal">
+          <strong>กฎการนิเสธ Existential:</strong>
+          $$\sim(\exists x \in D\ \text{s.t.}\ Q(x)) \equiv \forall x \in D,\ \sim Q(x)$$
+          นิเสธของ "มีบาง $x$ ที่มีสมบัติ $Q$" คือ "ทุก $x$ ไม่มีสมบัติ $Q$"
+        </div>
+
+        <div class="info-box">
+          <strong>สรุปกฎ De Morgan สำหรับ Quantifiers:</strong><br>
+          $\sim(\forall x,\ Q(x)) \equiv \exists x,\ \sim Q(x)$<br>
+          $\sim(\exists x,\ Q(x)) \equiv \forall x,\ \sim Q(x)$<br><br>
+          สังเกตว่า $\forall$ generalizes $\wedge$ (AND ของสมาชิกทุกตัว) และ $\exists$ generalizes $\vee$ (OR ของสมาชิกทุกตัว)
+        </div>
+      </div>
+
+      <div id="negation-conditional" class="subsec">
+        <h3>การนิเสธ Universal Conditional Statement</h3>
+
+        <div class="def-formal">
+          <strong>การนิเสธ Universal Conditional:</strong>
+          $$\sim(\forall x,\ P(x) \rightarrow Q(x)) \equiv \exists x\ \text{such that}\ P(x) \wedge \sim Q(x)$$
+          นิเสธของ "ถ้า $P$ แล้ว $Q$ (สำหรับทุก $x$)" คือ "มีบาง $x$ ที่ $P$ เป็นจริงแต่ $Q$ เป็นเท็จ"
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.2.2</span> Negating a Universal Conditional</div>
+          <p>ประพจน์: "For all real numbers $x$, if $x &gt; 2$ then $x^2 &gt; 4$."</p>
+          <div class="solution">
+            <p>นิเสธ: "There exists a real number $x$ such that $x &gt; 2$ and $x^2 \leq 4$."</p>
+            <p>เป็นสัญลักษณ์: $\exists x \in \mathbb{R}\ \text{s.t.}\ x &gt; 2 \wedge x^2 \leq 4$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="vacuous" class="subsec">
+        <h3>Vacuous Truth (ความจริงแบบว่างเปล่า)</h3>
+
+        <div class="key-box">
+          <h4>Vacuous Truth</h4>
+          <p><strong>Universal conditional statement</strong> $\forall x \in D,\ P(x) \rightarrow Q(x)$ เป็น <strong>vacuously true (จริงแบบว่าง)</strong> ถ้า $P(x)$ เป็นเท็จสำหรับ <em>ทุก</em> $x \in D$ กล่าวคือไม่มีสมาชิกใดใน $D$ ที่ตรงตามเงื่อนไข $P$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.2.3</span> Vacuous Truth</div>
+          <p>"For all integers $n$, if $n &gt; 5$ and $n &lt; 3$, then $n^2 = 0$."</p>
+          <div class="solution">
+            <p>ไม่มีจำนวนเต็มใดที่ทั้ง $n &gt; 5$ และ $n &lt; 3$ พร้อมกัน ดังนั้น hypothesis เป็นเท็จสำหรับทุก $n$</p>
+            <p>ประพจน์นี้เป็น <strong>จริงแบบ Vacuous</strong> (trivially/vacuously true)</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="variants-ucs" class="subsec">
+        <h3>Variants ของ Universal Conditional Statement</h3>
+
+        <p>สำหรับ universal conditional statement $\forall x \in D,\ P(x) \rightarrow Q(x)$:</p>
+
+        <div class="def-formal">
+          <strong>รูปแบบต่างๆ และสมมูล:</strong>
+          <table class="inference-table" style="margin-top:10px">
+            <tr><th>รูปแบบ</th><th>สัญลักษณ์</th><th>สมมูลกับต้นฉบับ?</th></tr>
+            <tr><td>ต้นฉบับ (Original)</td><td>$\forall x,\ P(x) \rightarrow Q(x)$</td><td>—</td></tr>
+            <tr><td>Contrapositive</td><td>$\forall x,\ \sim Q(x) \rightarrow \sim P(x)$</td><td>✓ สมมูล</td></tr>
+            <tr><td>Converse</td><td>$\forall x,\ Q(x) \rightarrow P(x)$</td><td>✗ ไม่สมมูล</td></tr>
+            <tr><td>Inverse</td><td>$\forall x,\ \sim P(x) \rightarrow \sim Q(x)$</td><td>✗ ไม่สมมูล</td></tr>
+          </table>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.2.4</span> Contrapositive, Converse, Inverse</div>
+          <p>ประพจน์: <em>"All blond people have blue eyes."</em></p>
+          <p>เขียนเป็น: $\forall x,\ \text{Blond}(x) \rightarrow \text{BlueEyes}(x)$</p>
+          <div class="solution">
+            <p><strong>นิเสธ:</strong> "There exists a blond person who does not have blue eyes."<br>
+            $\exists x\ \text{s.t.}\ \text{Blond}(x) \wedge \sim\text{BlueEyes}(x)$</p>
+            <p><strong>Contrapositive:</strong> "All people without blue eyes are not blond."<br>
+            $\forall x,\ \sim\text{BlueEyes}(x) \rightarrow \sim\text{Blond}(x)$ &nbsp;— <em>สมมูลกับต้นฉบับ</em></p>
+            <p><strong>Converse:</strong> "All people with blue eyes are blond."<br>
+            $\forall x,\ \text{BlueEyes}(x) \rightarrow \text{Blond}(x)$ &nbsp;— <em>ไม่สมมูล</em></p>
+            <p><strong>Inverse:</strong> "All non-blond people don't have blue eyes."<br>
+            $\forall x,\ \sim\text{Blond}(x) \rightarrow \sim\text{BlueEyes}(x)$ &nbsp;— <em>ไม่สมมูล</em></p>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          <strong>ข้อควรระวัง:</strong> Converse Error และ Inverse Error เป็นความผิดพลาดที่พบบ่อยในการอ้างเหตุผล อย่าสับสนระหว่าง Contrapositive (ซึ่งสมมูล) กับ Converse หรือ Inverse (ซึ่งไม่สมมูล)
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3.3 -->
+    <section id="sec33" class="ch-section">
+      <div class="section-header" style="--ch-color:#059669">
+        <span class="sec-num">3.3</span>
+        <div>
+          <h2>Statements with Multiple Quantifiers</h2>
+          <p>ประพจน์ที่มีตัวบ่งปริมาณหลายตัว</p>
+        </div>
+      </div>
+
+      <div id="multi-quantifiers" class="subsec">
+        <h3>Mixed Quantifiers</h3>
+
+        <p>เมื่อ predicate มีตัวแปรสองตัว เราต้องใช้ quantifier สองตัว ลำดับของ quantifier สำคัญมาก</p>
+
+        <div class="key-box">
+          <h4>ความหมายของ Mixed Quantifiers</h4>
+          <p><strong>$\forall x\ \exists y\ P(x,y)$:</strong> สำหรับทุก $x$ มี $y$ บางตัว (ซึ่งอาจขึ้นอยู่กับ $x$) ที่ทำให้ $P(x,y)$ จริง</p>
+          <p><strong>$\exists x\ \forall y\ P(x,y)$:</strong> มี $x$ ตัวหนึ่งที่ตายตัว ซึ่งทำให้ $P(x,y)$ จริงสำหรับทุก $y$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.3.1</span> Interpreting Mixed Quantifiers</div>
+          <p>ให้ $P(x,y)$: "$x + y = 0$" โดย $x, y \in \mathbb{R}$</p>
+          <div class="solution">
+            <p><em>a.</em> $\forall x \in \mathbb{R},\ \exists y \in \mathbb{R}\ \text{s.t.}\ x + y = 0$</p>
+            <p>→ "สำหรับจำนวนจริงทุกตัว $x$ มีจำนวนจริง $y$ (ขึ้นกับ $x$) ที่ $x+y=0$" — <strong>จริง</strong> (เพราะ $y = -x$ เสมอ)</p>
+            <p><em>b.</em> $\exists x \in \mathbb{R}\ \forall y \in \mathbb{R},\ x + y = 0$</p>
+            <p>→ "มีจำนวนจริง $x$ ตัวหนึ่งที่ $x + y = 0$ สำหรับทุก $y$" — <strong>เท็จ</strong> (ไม่มี $x$ ที่ใช้ได้กับ $y$ ทุกค่า)</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="order-matters" class="subsec">
+        <h3>ลำดับของ Quantifiers สำคัญมาก</h3>
+
+        <div class="warning-box">
+          <strong>ORDER MATTERS!</strong> โดยทั่วไป การสลับลำดับของ quantifiers ที่ต่างชนิดกันจะเปลี่ยนความหมายของประพจน์<br>
+          $\forall x\ \exists y\ P(x,y) \not\equiv \exists y\ \forall x\ P(x,y)$<br><br>
+          <strong>ข้อยกเว้น:</strong> quantifiers ชนิดเดียวกันที่อยู่ติดกันสามารถสลับลำดับได้โดยไม่เปลี่ยนความหมาย<br>
+          $\forall x\ \forall y\ P(x,y) \equiv \forall y\ \forall x\ P(x,y)$<br>
+          $\exists x\ \exists y\ P(x,y) \equiv \exists y\ \exists x\ P(x,y)$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.3.2</span> Order Matters — Integers</div>
+          <p>ให้ domain คือ $\mathbb{Z}$ และ $P(x,y)$: "$x \cdot y = 1$"</p>
+          <div class="solution">
+            <p><em>a.</em> $\forall x\ \exists y\ (x \cdot y = 1)$: "ทุกจำนวนเต็มมีตัวผกผัน (inverse) การคูณ" — <strong>เท็จ</strong> (เช่น $x=2$ ไม่มี $y \in \mathbb{Z}$ ที่ $2y=1$)</p>
+            <p><em>b.</em> $\exists y\ \forall x\ (x \cdot y = 1)$: "มีจำนวนเต็ม $y$ ที่เป็น inverse การคูณของจำนวนเต็มทุกตัว" — <strong>เท็จ</strong></p>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>นิยาม Limit (ตัวอย่างสำคัญของ Multiple Quantifiers):</strong><br>
+          ลำดับ $(a_n)$ เข้าสู่ขีดจำกัด $L$ นิยามโดย:<br>
+          $$\forall \varepsilon > 0,\ \exists N\ \text{s.t.}\ \forall n > N,\ |a_n - L| < \varepsilon$$
+          ประพจน์นี้มี quantifier 3 ตัวซ้อนกัน และ <em>ลำดับของ quantifier มีความหมายสำคัญมาก</em>
+        </div>
+      </div>
+
+      <div id="negation-multi" class="subsec">
+        <h3>การนิเสธประพจน์ที่มีหลาย Quantifiers</h3>
+
+        <div class="def-formal">
+          <strong>กฎการนิเสธ (สลับ Quantifier และเลื่อนนิเสธเข้าไป):</strong>
+          $$\sim(\forall x\ \exists y\ P(x,y)) \equiv \exists x\ \forall y\ \sim P(x,y)$$
+          $$\sim(\exists x\ \forall y\ P(x,y)) \equiv \forall x\ \exists y\ \sim P(x,y)$$
+          <p>สำหรับ quantifiers หลายตัว: สลับ $\forall \leftrightarrow \exists$ ทุกตัว แล้วนิเสธ predicate ในที่สุด</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.3.3</span> Negating the Limit Definition</div>
+          <p>นิเสธของนิยาม limit: ลำดับ $(a_n)$ <em>ไม่</em> เข้าสู่ขีดจำกัด $L$ หมายความว่า</p>
+          <div class="solution">
+            <p>$$\sim(\forall \varepsilon > 0,\ \exists N\ \text{s.t.}\ \forall n > N,\ |a_n - L| < \varepsilon)$$</p>
+            <p>$$\equiv \exists \varepsilon > 0\ \text{s.t.}\ \forall N,\ \exists n > N\ \text{s.t.}\ |a_n - L| \geq \varepsilon$$</p>
+            <p>นั่นคือ มี $\varepsilon > 0$ ที่สำหรับทุก $N$ เราหาจำนวนพจน์ $n > N$ ที่ $|a_n - L| \geq \varepsilon$ ได้เสมอ</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3.4 -->
+    <section id="sec34" class="ch-section">
+      <div class="section-header" style="--ch-color:#059669">
+        <span class="sec-num">3.4</span>
+        <div>
+          <h2>Arguments with Quantified Statements</h2>
+          <p>การอ้างเหตุผลด้วย Quantified Statements</p>
+        </div>
+      </div>
+
+      <div id="univ-instantiation" class="subsec">
+        <h3>Universal Instantiation</h3>
+
+        <div class="key-box">
+          <h4>Universal Instantiation (การนำมาใช้กับกรณีเฉพาะ)</h4>
+          <p>ถ้าทราบว่า $\forall x \in D,\ P(x)$ เป็นจริง และ $a$ เป็นสมาชิกเฉพาะของ $D$ แล้วเราสรุปได้ว่า $P(a)$ เป็นจริง</p>
+          <div style="text-align:center;padding:10px 0;">
+            $\dfrac{\forall x \in D,\ P(x) \qquad a \in D}{\therefore\ P(a)}$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.4.1</span> Classic Syllogism — Socrates</div>
+          <div class="solution">
+            <p>Premise 1: All men are mortal. &nbsp;&nbsp;($\forall x,\ \text{Man}(x) \rightarrow \text{Mortal}(x)$)</p>
+            <p>Premise 2: Socrates is a man. &nbsp;&nbsp;($\text{Man}(\text{Socrates})$)</p>
+            <p>$\therefore$ Socrates is mortal. &nbsp;&nbsp;($\text{Mortal}(\text{Socrates})$)</p>
+            <p>นี่คือการใช้ Universal Instantiation กับ Modus Ponens</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="univ-modus-ponens" class="subsec">
+        <h3>Universal Modus Ponens</h3>
+
+        <div class="def-formal">
+          <strong>Universal Modus Ponens (valid):</strong>
+          $$\frac{\forall x \in D,\ P(x) \rightarrow Q(x) \qquad P(a)\ \text{for a particular}\ a \in D}{\therefore\ Q(a)}$$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.4.2</span> Universal Modus Ponens</div>
+          <p>Premise 1: For all real numbers $x$, if $x &gt; 2$ then $x^2 &gt; 4$.</p>
+          <p>Premise 2: $\sqrt{3} + 1 &gt; 2$.</p>
+          <div class="solution">
+            <p>โดย Universal Modus Ponens: $(\sqrt{3}+1)^2 &gt; 4$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="univ-modus-tollens" class="subsec">
+        <h3>Universal Modus Tollens</h3>
+
+        <div class="def-formal">
+          <strong>Universal Modus Tollens (valid):</strong>
+          $$\frac{\forall x \in D,\ P(x) \rightarrow Q(x) \qquad \sim Q(a)\ \text{for a particular}\ a \in D}{\therefore\ \sim P(a)}$$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.4.3</span> No Polynomial Has a Horizontal Asymptote</div>
+          <p>Premise 1: No polynomial function has a horizontal asymptote.</p>
+          <p>Premise 2: The function $f(x) = \frac{x}{x+1}$ has a horizontal asymptote at $y = 1$.</p>
+          <div class="solution">
+            <p>สรุป: $f(x) = \frac{x}{x+1}$ <strong>ไม่ใช่</strong> polynomial function</p>
+            <p>นี่คือการใช้ Universal Modus Tollens</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="validity-quantified" class="subsec">
+        <h3>รูปแบบที่ Valid และ Invalid</h3>
+
+        <div class="validity-grid">
+          <div class="validity-card valid">
+            <h4>✓ Universal Modus Ponens (Valid)</h4>
+            <pre>∀x, P(x) → Q(x)
+P(a)
+∴ Q(a)</pre>
+          </div>
+          <div class="validity-card valid">
+            <h4>✓ Universal Modus Tollens (Valid)</h4>
+            <pre>∀x, P(x) → Q(x)
+∼Q(a)
+∴ ∼P(a)</pre>
+          </div>
+          <div class="validity-card valid">
+            <h4>✓ Universal Transitivity (Valid)</h4>
+            <pre>∀x, P(x) → Q(x)
+∀x, Q(x) → R(x)
+∴ ∀x, P(x) → R(x)</pre>
+          </div>
+          <div class="validity-card invalid">
+            <h4>✗ Converse Error (Invalid)</h4>
+            <pre>∀x, P(x) → Q(x)
+Q(a)
+∴ P(a)  ← WRONG</pre>
+          </div>
+          <div class="validity-card invalid">
+            <h4>✗ Inverse Error (Invalid)</h4>
+            <pre>∀x, P(x) → Q(x)
+∼P(a)
+∴ ∼Q(a)  ← WRONG</pre>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>Euler Diagrams สำหรับทดสอบ Validity:</strong><br>
+          ใช้วงกลมแสดง "เซตของสิ่งที่มีสมบัติ $P$" และ "เซตของสิ่งที่มีสมบัติ $Q$" โดยถ้า $\forall x, P(x) \rightarrow Q(x)$ แล้ว วงกลมของ $P$ ต้องอยู่ภายในวงกลมของ $Q$ หากสามารถวาด Euler diagram ที่ทำให้ premises จริงแต่ conclusion เท็จได้ แสดงว่า argument นั้น invalid
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 3.4.4</span> Testing Validity with Euler Diagrams</div>
+          <p>Argument: All integers are rational. $\frac{1}{2}$ is rational. $\therefore$ $\frac{1}{2}$ is an integer.</p>
+          <div class="solution">
+            <p>รูปแบบ: $\forall x, \text{Int}(x) \rightarrow \text{Rat}(x)$; $\text{Rat}(\frac{1}{2})$; $\therefore \text{Int}(\frac{1}{2})$</p>
+            <p>นี่คือ <strong>Converse Error</strong> — invalid เพราะวงกลม Integers อยู่ภายใน Rationals แต่ $\frac{1}{2}$ อยู่ใน Rationals โดยไม่จำเป็นต้องอยู่ใน Integers</p>
+            <p>จริงๆ แล้ว $\frac{1}{2}$ <strong>ไม่ใช่</strong> จำนวนเต็ม — argument นี้ invalid</p>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>หมายเหตุ: Abduction</strong><br>
+          ในบางครั้งนักวิทยาศาสตร์ใช้รูปแบบที่เรียกว่า <em>abduction</em> (หรือ "inference to the best explanation") ซึ่งมีรูปแบบคล้าย Converse Error แต่ใช้ในบริบทของการสร้างสมมติฐาน ไม่ใช่การพิสูจน์ทางคณิตศาสตร์ Abduction ไม่ใช่ argument ที่ deductively valid
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#c8983b">
+        <span class="sec-num">📋</span>
+        <div>
+          <h2>สรุปบทที่ 3</h2>
+          <p>The Logic of Quantified Statements</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h4>3.1 Predicates &amp; Quantifiers I</h4>
+          <ul>
+            <li>Predicate $P(x)$: open sentence ที่กลายเป็น statement เมื่อแทนค่า</li>
+            <li>Truth set: $\{x \in D \mid P(x)\}$</li>
+            <li>$\forall x \in D, Q(x)$: จริงถ้า $Q$ จริงทุก $x$; เท็จถ้ามี counterexample</li>
+            <li>$\exists x \in D$ s.t. $Q(x)$: จริงถ้ามีบาง $x$; เท็จถ้า $Q$ เท็จทุก $x$</li>
+            <li>$\Rightarrow$ และ $\Leftrightarrow$ บ่งถึง implicit quantification</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>3.2 Negations &amp; Variants</h4>
+          <ul>
+            <li>$\sim(\forall x, Q(x)) \equiv \exists x$ s.t. $\sim Q(x)$</li>
+            <li>$\sim(\exists x$ s.t. $Q(x)) \equiv \forall x, \sim Q(x)$</li>
+            <li>$\sim(\forall x, P(x){\rightarrow}Q(x)) \equiv \exists x$ s.t. $P(x) \wedge \sim Q(x)$</li>
+            <li>Vacuous truth: true เมื่อ hypothesis เป็นเท็จสำหรับทุก $x$</li>
+            <li>Contrapositive $\equiv$ original; Converse $\not\equiv$ original</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>3.3 Multiple Quantifiers</h4>
+          <ul>
+            <li>$\forall x\ \exists y\ P(x,y)$: $y$ อาจขึ้นกับ $x$</li>
+            <li>$\exists x\ \forall y\ P(x,y)$: $x$ ตัวเดียวใช้ได้กับทุก $y$</li>
+            <li>ลำดับ quantifier ต่างชนิดกัน <strong>ไม่สามารถสลับได้</strong></li>
+            <li>นิยาม limit: $\forall\varepsilon{>}0, \exists N$ s.t. $\forall n{>}N, |a_n{-}L|{<}\varepsilon$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>3.4 Arguments with Quantifiers</h4>
+          <ul>
+            <li>Universal Instantiation: $\forall x, P(x)$ และ $a \in D$ $\Rightarrow$ $P(a)$</li>
+            <li>Universal Modus Ponens และ Tollens: valid</li>
+            <li>Universal Transitivity: valid</li>
+            <li>Converse Error และ Inverse Error: <strong>invalid</strong></li>
+            <li>Euler Diagrams ใช้ทดสอบ validity</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#ea580c">
+        <span class="sec-num">✏️</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>จากหนังสือ Discrete Mathematics with Applications</p>
+        </div>
+      </div>
+
+      <div class="exercises-list">
+        <div class="exercise-item">
+          <span class="ex-num">3.1</span>
+          <div class="ex-content">
+            <strong>Exercise Set 3.1:</strong> ข้อ 1–6 (เขียน truth set ของ predicates), ข้อ 7–14 (กำหนดค่าความจริงของ universal/existential statements), ข้อ 15–20 (หา counterexample), ข้อ 21–28 (แปลประพจน์ formal ↔ informal)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">3.2</span>
+          <div class="ex-content">
+            <strong>Exercise Set 3.2:</strong> ข้อ 1–8 (เขียนนิเสธ), ข้อ 9–16 (contrapositive/converse/inverse), ข้อ 17–22 (vacuous truth), ข้อ 23–30 (ระบุความจริงและเท็จพร้อมเหตุผล)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">3.3</span>
+          <div class="ex-content">
+            <strong>Exercise Set 3.3:</strong> ข้อ 1–6 (แปล multiple quantifiers), ข้อ 7–14 (กำหนดค่าความจริง), ข้อ 15–20 (เขียนนิเสธ), ข้อ 21–24 (ใช้นิยาม limit)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">3.4</span>
+          <div class="ex-content">
+            <strong>Exercise Set 3.4:</strong> ข้อ 1–8 (ระบุรูปแบบ inference), ข้อ 9–16 (valid/invalid arguments พร้อม Euler diagrams), ข้อ 17–24 (สร้าง argument จาก premises ที่กำหนด)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER NAV -->
+    <div class="chapter-nav">
+      <a href="chapter2.html" class="nav-btn prev-btn">← บทที่ 2 — The Logic of Compound Statements</a>
+      <a href="../index.html" class="nav-btn next-btn">กลับหน้าหลัก →</a>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง — บทที่ 3: The Logic of Quantified Statements</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล · ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ · มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 · เนื้อหาจาก <em>Discrete Mathematics with Applications</em> — Susanna S. Epp</p>
+</footer>
+
+<script>
+  // Scroll to top for all TOC links
+  const SCROLL_OFFSET = 80;
+  document.querySelectorAll('.ch-toc a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'instant' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
+  // Sticky sidebar highlight
+  const sections = document.querySelectorAll('.ch-section, .subsec');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (s.id && window.scrollY >= s.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET - 10) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('ch-sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

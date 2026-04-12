@@ -20,6 +20,7 @@ const courseData = {
       titleTH: "ตรรกศาสตร์ของประพจน์ผสม",
       icon: "🔀",
       color: "#7c3aed",
+      contentPage: "chapters/chapter2.html",
       sections: [
         { num: "2.1", title: "Logical Form and Logical Equivalence", desc: "รูปแบบตรรกะและความสมมูลทางตรรกะ" },
         { num: "2.2", title: "Conditional Statements", desc: "ประพจน์เงื่อนไข if-then และรูปแบบที่เกี่ยวข้อง" },
@@ -35,6 +36,7 @@ const courseData = {
       titleTH: "ตรรกศาสตร์ของประพจน์มีตัวบ่งปริมาณ",
       icon: "∀",
       color: "#059669",
+      contentPage: "chapters/chapter3.html",
       sections: [
         { num: "3.1", title: "Predicates and Quantified Statements I", desc: "เพรดิเคตและประพจน์มีตัวบ่งปริมาณ ส่วนที่ 1" },
         { num: "3.2", title: "Predicates and Quantified Statements II", desc: "เพรดิเคตและประพจน์มีตัวบ่งปริมาณ ส่วนที่ 2" },

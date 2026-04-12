@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 2 – The Logic of Compound Statements | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>∑</text></svg>">
+  <style>
+    .truth-table { border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 13px; margin: 12px auto; }
+    .truth-table th { background: #1e3a5f; color: white; padding: 8px 14px; text-align: center; }
+    .truth-table td { padding: 7px 14px; border: 1px solid #e2e8f0; text-align: center; }
+    .truth-table tr:nth-child(even) td { background: #f8fafc; }
+    .truth-table .highlight-row td { background: #fef9c3; font-weight: 600; }
+  </style>
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="chapter1.html" class="ch-nav-link">← บทที่ 1</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 2</span>
+      <span class="ch-nav-divider">|</span>
+      <a href="chapter3.html" class="ch-nav-link">บทที่ 3 →</a>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#7c3aed">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 2</div>
+      <div class="chapter-hero-icon">🔀</div>
+      <h1 class="chapter-hero-title">The Logic of Compound Statements</h1>
+      <p class="chapter-hero-subtitle">ตรรกศาสตร์ของประพจน์ผสม</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec21">2.1 Logical Form and Logical Equivalence</a>
+          <ul>
+            <li><a href="#truth-tables">Truth Tables</a></li>
+            <li><a href="#logical-equiv">Logical Equivalence</a></li>
+            <li><a href="#demorgan">De Morgan's Laws</a></li>
+            <li><a href="#tautology">Tautology &amp; Contradiction</a></li>
+            <li><a href="#equiv-laws">Laws of Logical Equivalence</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec22">2.2 Conditional Statements</a>
+          <ul>
+            <li><a href="#conditional-def">นิยาม Conditional</a></li>
+            <li><a href="#contrapositive">Contrapositive &amp; Converse</a></li>
+            <li><a href="#biconditional">Biconditional</a></li>
+            <li><a href="#necessary-suff">Necessary &amp; Sufficient</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec23">2.3 Valid and Invalid Arguments</a>
+          <ul>
+            <li><a href="#valid-args">Valid Arguments</a></li>
+            <li><a href="#modus-ponens">Modus Ponens</a></li>
+            <li><a href="#modus-tollens">Modus Tollens</a></li>
+            <li><a href="#inference-rules">Rules of Inference</a></li>
+            <li><a href="#fallacies">Fallacies</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec24">2.4 Digital Logic Circuits</a></li>
+        <li><a href="#sec25">2.5 Number Systems &amp; Circuits</a></li>
+        <li><a href="#summary">สรุปบทที่ 2</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 2</h2>
+        <p>บทนี้ศึกษา <strong>ตรรกศาสตร์ของประพจน์ผสม</strong> ซึ่งเป็นรากฐานของการคิดอย่างเป็นระบบในคณิตศาสตร์และวิทยาการคอมพิวเตอร์ เนื้อหาเริ่มจากรูปแบบตรรกศาสตร์และความสมมูล ต่อด้วยประพจน์เงื่อนไข การวิเคราะห์ข้อโต้แย้ง และการประยุกต์ใช้ในวงจรดิจิทัลและระบบเลข</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">⊕</span>
+            <strong>2.1 Logical Form</strong>
+            <p>ตารางค่าความจริง สมมูลตรรกศาสตร์ กฎ De Morgan</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">→</span>
+            <strong>2.2 Conditional Statements</strong>
+            <p>ประพจน์เงื่อนไข กลับ สลับขัดแย้ง สองทิศทาง</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">∴</span>
+            <strong>2.3 Valid Arguments</strong>
+            <p>กฎการอนุมาน Modus Ponens/Tollens ความผิดพลาด</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">⊼</span>
+            <strong>2.4 Logic Circuits</strong>
+            <p>วงจรตรรกะ AND/OR/NOT/NAND/NOR gates</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">₂</span>
+            <strong>2.5 Number Systems</strong>
+            <p>เลขฐาน 2 การบวก Half-adder/Full-adder</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2.1 -->
+    <section id="sec21" class="ch-section">
+      <div class="section-header" style="--ch-color:#7c3aed">
+        <span class="sec-num">2.1</span>
+        <div>
+          <h2>Logical Form and Logical Equivalence</h2>
+          <p>รูปแบบตรรกศาสตร์และความสมมูล</p>
+        </div>
+      </div>
+
+      <div class="def-formal">
+        <strong>นิยาม: Statement (ประพจน์)</strong><br>
+        <strong>Statement</strong> หรือ <strong>Proposition</strong> คือประโยคบอกเล่าที่มีค่าความจริงเป็น <em>จริง (True, T)</em> หรือ <em>เท็จ (False, F)</em> เพียงอย่างเดียวเท่านั้น ไม่ใช่ทั้งสองพร้อมกัน
+      </div>
+
+      <div class="example-box">
+        <div class="example-header"><span>ตัวอย่าง 2.1.1</span> ตัวอย่างประพจน์และไม่ใช่ประพจน์</div>
+        <p><strong>ประพจน์ (Statements):</strong></p>
+        <ul>
+          <li>"1 + 1 = 2" — จริง</li>
+          <li>"กรุงเทพฯ เป็นเมืองหลวงของฝรั่งเศส" — เท็จ</li>
+          <li>"5 เป็นจำนวนคี่" — จริง</li>
+        </ul>
+        <p><strong>ไม่ใช่ประพจน์ (Not Statements):</strong></p>
+        <ul>
+          <li>"เธอสวยมาก" — คลุมเครือ</li>
+          <li>"$x + 2 = 5$" — ขึ้นกับค่า $x$ (Open sentence)</li>
+          <li>"หยุดทำสิ่งนั้น!" — คำสั่ง ไม่มีค่าความจริง</li>
+        </ul>
+      </div>
+
+      <h3>ตัวเชื่อมตรรกศาสตร์ (Logical Connectives)</h3>
+      <p>ตัวเชื่อมตรรกศาสตร์ใช้สร้าง <strong>ประพจน์ผสม (Compound Statements)</strong> จากประพจน์ย่อย</p>
+
+      <div class="def-grid">
+        <div class="def-card" style="border-color:#7c3aed">
+          <div class="def-title" style="color:#7c3aed">Negation (นิเสธ) $\sim p$</div>
+          <div class="def-body">อ่านว่า "not $p$" มีค่าตรงข้ามกับ $p$<br>
+          สัญลักษณ์: $\sim$, $\neg$</div>
+        </div>
+        <div class="def-card" style="border-color:#2563eb">
+          <div class="def-title" style="color:#2563eb">Conjunction (การเชื่อม AND) $p \wedge q$</div>
+          <div class="def-body">อ่านว่า "$p$ and $q$" เป็นจริงก็ต่อเมื่อ $p$ และ $q$ เป็นจริงทั้งคู่</div>
+        </div>
+        <div class="def-card" style="border-color:#059669">
+          <div class="def-title" style="color:#059669">Disjunction (การเชื่อม OR) $p \vee q$</div>
+          <div class="def-body">อ่านว่า "$p$ or $q$" เป็นจริงเมื่อ $p$ หรือ $q$ อย่างน้อยหนึ่งตัวเป็นจริง (inclusive or)</div>
+        </div>
+        <div class="def-card" style="border-color:#ea580c">
+          <div class="def-title" style="color:#ea580c">Exclusive Or (XOR) $p \oplus q$</div>
+          <div class="def-body">เป็นจริงเมื่อ $p$ กับ $q$ มีค่าต่างกัน (หนึ่งจริง หนึ่งเท็จ) เท่านั้น</div>
+        </div>
+      </div>
+
+      <div id="truth-tables" class="subsec">
+        <h3>Truth Tables (ตารางค่าความจริง)</h3>
+        <p>ตารางค่าความจริงแสดงค่าของประพจน์ผสมสำหรับทุกกรณีที่เป็นไปได้ของประพจน์ย่อย</p>
+
+        <div class="info-box">
+          <strong>หลักการสร้างตาราง:</strong> ถ้ามีตัวแปร $n$ ตัว จะมี $2^n$ แถวในตาราง
+        </div>
+
+        <h4>ตาราง Negation: $\sim p$</h4>
+        <table class="truth-table">
+          <tr><th>$p$</th><th>$\sim p$</th></tr>
+          <tr><td>T</td><td>F</td></tr>
+          <tr><td>F</td><td>T</td></tr>
+        </table>
+
+        <h4>ตาราง Conjunction: $p \wedge q$</h4>
+        <table class="truth-table">
+          <tr><th>$p$</th><th>$q$</th><th>$p \wedge q$</th></tr>
+          <tr><td>T</td><td>T</td><td>T</td></tr>
+          <tr><td>T</td><td>F</td><td>F</td></tr>
+          <tr><td>F</td><td>T</td><td>F</td></tr>
+          <tr><td>F</td><td>F</td><td>F</td></tr>
+        </table>
+
+        <h4>ตาราง Disjunction: $p \vee q$</h4>
+        <table class="truth-table">
+          <tr><th>$p$</th><th>$q$</th><th>$p \vee q$</th></tr>
+          <tr><td>T</td><td>T</td><td>T</td></tr>
+          <tr><td>T</td><td>F</td><td>T</td></tr>
+          <tr><td>F</td><td>T</td><td>T</td></tr>
+          <tr><td>F</td><td>F</td><td>F</td></tr>
+        </table>
+
+        <h4>ตาราง Exclusive Or: $p \oplus q$ (XOR)</h4>
+        <table class="truth-table">
+          <tr><th>$p$</th><th>$q$</th><th>$p \oplus q$</th></tr>
+          <tr><td>T</td><td>T</td><td>F</td></tr>
+          <tr><td>T</td><td>F</td><td>T</td></tr>
+          <tr><td>F</td><td>T</td><td>T</td></tr>
+          <tr><td>F</td><td>F</td><td>F</td></tr>
+        </table>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.1.2</span> สร้าง Truth Table สำหรับ $\sim(p \wedge q) \vee (\sim p \vee \sim q)$</div>
+          <table class="truth-table">
+            <tr><th>$p$</th><th>$q$</th><th>$p \wedge q$</th><th>$\sim(p \wedge q)$</th><th>$\sim p$</th><th>$\sim q$</th><th>$\sim p \vee \sim q$</th><th>ผลลัพธ์</th></tr>
+            <tr><td>T</td><td>T</td><td>T</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+            <tr><td>T</td><td>F</td><td>F</td><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td></tr>
+            <tr><td>F</td><td>T</td><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td></tr>
+            <tr><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div id="logical-equiv" class="subsec">
+        <h3>Logical Equivalence (ความสมมูลตรรกศาสตร์)</h3>
+
+        <div class="def-formal">
+          <strong>นิยาม: Logical Equivalence</strong><br>
+          ประพจน์ $P$ และ $Q$ <strong>สมมูลกัน (logically equivalent)</strong> เขียนว่า $P \equiv Q$ ก็ต่อเมื่อทุก row ในตารางค่าความจริงของ $P$ และ $Q$ มีค่าเหมือนกันทุกกรณี
+        </div>
+
+        <div class="info-box">
+          <strong>หมายเหตุ:</strong> สัญลักษณ์ $\equiv$ ไม่ใช่ตัวเชื่อมตรรกศาสตร์ แต่เป็นการกล่าวว่าสองประพจน์มีค่าความจริงเหมือนกันเสมอ ต่างจาก $\leftrightarrow$ ซึ่งเป็นตัวเชื่อม
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.1.3</span> ตรวจสอบว่า $\sim(p \vee q) \equiv \sim p \wedge \sim q$ หรือไม่</div>
+          <table class="truth-table">
+            <tr><th>$p$</th><th>$q$</th><th>$p \vee q$</th><th>$\sim(p \vee q)$</th><th>$\sim p$</th><th>$\sim q$</th><th>$\sim p \wedge \sim q$</th></tr>
+            <tr class="highlight-row"><td>T</td><td>T</td><td>T</td><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+            <tr class="highlight-row"><td>T</td><td>F</td><td>T</td><td>F</td><td>F</td><td>T</td><td>F</td></tr>
+            <tr class="highlight-row"><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>F</td><td>F</td></tr>
+            <tr class="highlight-row"><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+          </table>
+          <div class="solution">
+            คอลัมน์ที่ 4 และ 7 มีค่าเหมือนกันทุกแถว ดังนั้น $\sim(p \vee q) \equiv \sim p \wedge \sim q$ ✓
+          </div>
+        </div>
+      </div>
+
+      <div id="demorgan" class="subsec">
+        <h3>De Morgan's Laws</h3>
+
+        <div class="key-box">
+          <h4>กฎ De Morgan</h4>
+          <p>กฎ De Morgan กล่าวถึงความสมมูลของนิเสธของประพจน์ผสม</p>
+          <p style="font-size:1.1em; text-align:center; margin: 10px 0;">
+            $$\sim(p \wedge q) \equiv \sim p \vee \sim q$$
+            $$\sim(p \vee q) \equiv \sim p \wedge \sim q$$
+          </p>
+          <p><strong>วิธีจำ:</strong> นิเสธเข้าข้างใน แล้วเปลี่ยน $\wedge \leftrightarrow \vee$</p>
+        </div>
+
+        <h4>ตรวจสอบ De Morgan Law ที่ 1: $\sim(p \wedge q) \equiv \sim p \vee \sim q$</h4>
+        <table class="truth-table">
+          <tr><th>$p$</th><th>$q$</th><th>$p \wedge q$</th><th>$\sim(p \wedge q)$</th><th>$\sim p$</th><th>$\sim q$</th><th>$\sim p \vee \sim q$</th></tr>
+          <tr><td>T</td><td>T</td><td>T</td><td><strong>F</strong></td><td>F</td><td>F</td><td><strong>F</strong></td></tr>
+          <tr><td>T</td><td>F</td><td>F</td><td><strong>T</strong></td><td>F</td><td>T</td><td><strong>T</strong></td></tr>
+          <tr><td>F</td><td>T</td><td>F</td><td><strong>T</strong></td><td>T</td><td>F</td><td><strong>T</strong></td></tr>
+          <tr><td>F</td><td>F</td><td>F</td><td><strong>T</strong></td><td>T</td><td>T</td><td><strong>T</strong></td></tr>
+        </table>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.1.4</span> ประยุกต์ใช้ De Morgan</div>
+          <p>เขียนนิเสธของ "The bus was late or the train was early" ในรูปที่ง่ายขึ้น</p>
+          <div class="solution">
+            <p>ให้ $p$ = "The bus was late", $q$ = "The train was early"</p>
+            <p>ประพจน์ต้นฉบับ: $p \vee q$</p>
+            <p>นิเสธ: $\sim(p \vee q) \equiv \sim p \wedge \sim q$</p>
+            <p>คำตอบ: "The bus was not late <strong>and</strong> the train was not early"</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="tautology" class="subsec">
+        <h3>Tautology and Contradiction</h3>
+
+        <div class="def-grid">
+          <div class="def-card" style="border-color:#059669">
+            <div class="def-title" style="color:#059669">Tautology (สัจนิรันดร์)</div>
+            <div class="def-body">ประพจน์ที่มีค่าความจริงเป็น <strong>จริงเสมอ</strong> ทุกกรณี เขียนแทนด้วย $\mathbf{t}$<br>
+            <em>ตัวอย่าง:</em> $p \vee \sim p$ (Law of Excluded Middle)</div>
+          </div>
+          <div class="def-card" style="border-color:#dc2626">
+            <div class="def-title" style="color:#dc2626">Contradiction (ขัดแย้ง)</div>
+            <div class="def-body">ประพจน์ที่มีค่าความจริงเป็น <strong>เท็จเสมอ</strong> ทุกกรณี เขียนแทนด้วย $\mathbf{c}$<br>
+            <em>ตัวอย่าง:</em> $p \wedge \sim p$ (Law of Contradiction)</div>
+          </div>
+        </div>
+
+        <h4>ตรวจสอบ: $p \vee \sim p$ เป็น Tautology</h4>
+        <table class="truth-table">
+          <tr><th>$p$</th><th>$\sim p$</th><th>$p \vee \sim p$</th></tr>
+          <tr><td>T</td><td>F</td><td><strong>T</strong></td></tr>
+          <tr><td>F</td><td>T</td><td><strong>T</strong></td></tr>
+        </table>
+      </div>
+
+      <div id="equiv-laws" class="subsec">
+        <h3>Theorem 2.1.1: ตารางกฎความสมมูล (Laws of Logical Equivalence)</h3>
+        <p>กฎต่อไปนี้ใช้ลดรูปและพิสูจน์ความสมมูลของประพจน์ โดยไม่ต้องสร้างตารางค่าความจริงทุกครั้ง</p>
+
+        <div class="highlight-box">
+          <table style="width:100%; border-collapse: collapse; font-size: 0.95em;">
+            <tr style="background:#7c3aed; color:white;">
+              <th style="padding:8px 12px;">ชื่อกฎ</th>
+              <th style="padding:8px 12px;">กฎที่ 1</th>
+              <th style="padding:8px 12px;">กฎที่ 2</th>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Commutative Laws<br><small>(กฎสลับที่)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \wedge q \equiv q \wedge p$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \vee q \equiv q \vee p$</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Associative Laws<br><small>(กฎการเปลี่ยนหมู่)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$(p \wedge q) \wedge r \equiv p \wedge (q \wedge r)$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$(p \vee q) \vee r \equiv p \vee (q \vee r)$</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Distributive Laws<br><small>(กฎการกระจาย)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \wedge (q \vee r) \equiv (p \wedge q) \vee (p \wedge r)$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \vee (q \wedge r) \equiv (p \vee q) \wedge (p \vee r)$</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Identity Laws<br><small>(กฎเอกลักษณ์)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \wedge \mathbf{t} \equiv p$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \vee \mathbf{c} \equiv p$</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Negation Laws<br><small>(กฎนิเสธ)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \vee \sim p \equiv \mathbf{t}$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \wedge \sim p \equiv \mathbf{c}$</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Double Negative Law<br><small>(กฎนิเสธสองชั้น)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;" colspan="2">$\sim(\sim p) \equiv p$</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Idempotent Laws<br><small>(กฎ Idempotent)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \wedge p \equiv p$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \vee p \equiv p$</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Universal Bound Laws<br><small>(กฎขอบเขต)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \vee \mathbf{t} \equiv \mathbf{t}$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \wedge \mathbf{c} \equiv \mathbf{c}$</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">De Morgan's Laws<br><small>(กฎ De Morgan)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$\sim(p \wedge q) \equiv \sim p \vee \sim q$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$\sim(p \vee q) \equiv \sim p \wedge \sim q$</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Absorption Laws<br><small>(กฎการดูดซับ)</small></td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \vee (p \wedge q) \equiv p$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$p \wedge (p \vee q) \equiv p$</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Negations of t and c</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$\sim \mathbf{t} \equiv \mathbf{c}$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">$\sim \mathbf{c} \equiv \mathbf{t}$</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.1.5</span> การลดรูปโดยใช้กฎความสมมูล</div>
+          <p>ลดรูป $(p \wedge \sim q) \vee (p \wedge q)$ ให้ง่ายที่สุด</p>
+          <div class="solution">
+            <p>$\begin{align}
+            (p \wedge \sim q) \vee (p \wedge q)
+            &\equiv p \wedge (\sim q \vee q) &\text{(Distributive Law)}\\
+            &\equiv p \wedge \mathbf{t} &\text{(Negation Law)}\\
+            &\equiv p &\text{(Identity Law)}
+            \end{align}$</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.1.6</span> ลดรูปอีกตัวอย่าง</div>
+          <p>ลดรูป $\sim(\sim p \wedge q) \vee (p \wedge \sim q)$</p>
+          <div class="solution">
+            <p>$\begin{align}
+            \sim(\sim p \wedge q) \vee (p \wedge \sim q)
+            &\equiv (p \vee \sim q) \vee (p \wedge \sim q) &\text{(De Morgan)}\\
+            &\equiv p \vee [\sim q \vee (p \wedge \sim q)] &\text{(Associative)}\\
+            &\equiv p \vee [(\sim q \vee p) \wedge (\sim q \vee \sim q)] &\text{(Distributive)}\\
+            &\equiv p \vee [(\sim q \vee p) \wedge \sim q] &\text{(Idempotent)}\\
+            &\equiv p \vee \sim q &\text{(Absorption)}
+            \end{align}$</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2.2 -->
+    <section id="sec22" class="ch-section">
+      <div class="section-header" style="--ch-color:#7c3aed">
+        <span class="sec-num">2.2</span>
+        <div>
+          <h2>Conditional Statements</h2>
+          <p>ประพจน์เงื่อนไข</p>
+        </div>
+      </div>
+
+      <div id="conditional-def" class="subsec">
+        <h3>นิยาม Conditional Statement (ประพจน์เงื่อนไข)</h3>
+
+        <div class="def-formal">
+          <strong>นิยาม: Conditional Statement $p \rightarrow q$</strong><br>
+          ถ้า $p$ และ $q$ เป็นประพจน์ <strong>ประพจน์เงื่อนไข</strong> $p \rightarrow q$ อ่านว่า "ถ้า $p$ แล้ว $q$" หรือ "$p$ implies $q$"<br>
+          โดย $p$ เรียกว่า <strong>hypothesis (สมมติฐาน)</strong> และ $q$ เรียกว่า <strong>conclusion (บทสรุป)</strong><br>
+          $p \rightarrow q$ เป็นเท็จก็ต่อเมื่อ $p$ เป็นจริงและ $q$ เป็นเท็จ เท่านั้น
+        </div>
+
+        <h4>Truth Table สำหรับ $p \rightarrow q$</h4>
+        <table class="truth-table">
+          <tr><th>$p$</th><th>$q$</th><th>$p \rightarrow q$</th></tr>
+          <tr><td>T</td><td>T</td><td>T</td></tr>
+          <tr class="highlight-row"><td>T</td><td>F</td><td><strong>F</strong> ← กรณีเดียวที่เป็นเท็จ</td></tr>
+          <tr><td>F</td><td>T</td><td>T</td></tr>
+          <tr><td>F</td><td>F</td><td>T</td></tr>
+        </table>
+
+        <div class="info-box">
+          <strong>การตีความ:</strong> "If you score 90%, then you get an A." หากคะแนน 90% แต่ไม่ได้ A นั่นคือสัญญาเป็นเท็จ แต่ถ้าคะแนนไม่ถึง 90% ประพจน์ก็เป็นจริง (ว่างเปล่าจริง — vacuously true) ไม่ว่าจะได้ A หรือไม่ก็ตาม
+        </div>
+
+        <h4>ความสมมูลสำคัญของ Conditional</h4>
+        <div class="key-box">
+          <ul>
+            <li>$p \rightarrow q \equiv \sim p \vee q$ (สมมูลกับ Disjunction)</li>
+            <li>$\sim(p \rightarrow q) \equiv p \wedge \sim q$ (นิเสธของ Conditional)</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.2.1</span> ตรวจสอบ $p \rightarrow q \equiv \sim p \vee q$</div>
+          <table class="truth-table">
+            <tr><th>$p$</th><th>$q$</th><th>$p \rightarrow q$</th><th>$\sim p$</th><th>$\sim p \vee q$</th></tr>
+            <tr><td>T</td><td>T</td><td>T</td><td>F</td><td>T</td></tr>
+            <tr><td>T</td><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+            <tr><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+            <tr><td>F</td><td>F</td><td>T</td><td>T</td><td>T</td></tr>
+          </table>
+          <div class="solution">คอลัมน์ 3 และ 5 เหมือนกันทุกแถว ดังนั้น $p \rightarrow q \equiv \sim p \vee q$ ✓</div>
+        </div>
+      </div>
+
+      <div id="contrapositive" class="subsec">
+        <h3>Contrapositive, Converse และ Inverse</h3>
+        <p>จากประพจน์เงื่อนไข $p \rightarrow q$ สามารถสร้างประพจน์ที่เกี่ยวข้องได้ 3 รูปแบบ</p>
+
+        <div class="def-grid">
+          <div class="def-card" style="border-color:#7c3aed">
+            <div class="def-title" style="color:#7c3aed">Contrapositive (สลับขัดแย้ง)</div>
+            <div class="def-body">$\sim q \rightarrow \sim p$<br>
+            <strong>สมมูลกับ</strong> $p \rightarrow q$<br>
+            เขียน: "If not $q$, then not $p$"</div>
+          </div>
+          <div class="def-card" style="border-color:#ea580c">
+            <div class="def-title" style="color:#ea580c">Converse (ประพจน์กลับ)</div>
+            <div class="def-body">$q \rightarrow p$<br>
+            <strong>ไม่สมมูล</strong> กับ $p \rightarrow q$<br>
+            เขียน: "If $q$, then $p$"</div>
+          </div>
+          <div class="def-card" style="border-color:#dc2626">
+            <div class="def-title" style="color:#dc2626">Inverse (ประพจน์ผกผัน)</div>
+            <div class="def-body">$\sim p \rightarrow \sim q$<br>
+            <strong>ไม่สมมูล</strong> กับ $p \rightarrow q$ (แต่สมมูลกับ Converse)<br>
+            เขียน: "If not $p$, then not $q$"</div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <h4>ความสัมพันธ์ระหว่างรูปแบบต่างๆ</h4>
+          <p style="text-align:center;">
+            $p \rightarrow q \equiv \sim q \rightarrow \sim p$ (Contrapositive)<br>
+            $q \rightarrow p \equiv \sim p \rightarrow \sim q$ (Converse ≡ Inverse)<br>
+            แต่ $p \rightarrow q \not\equiv q \rightarrow p$ และ $p \rightarrow q \not\equiv \sim p \rightarrow \sim q$
+          </p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.2.2</span> เขียน Contrapositive, Converse, Inverse</div>
+          <p>ให้ $p \rightarrow q$: "If it rains, then the ground is wet."</p>
+          <div class="solution">
+            <ul>
+              <li><strong>Contrapositive:</strong> "If the ground is not wet, then it does not rain." (จริงพร้อมกับต้นฉบับ)</li>
+              <li><strong>Converse:</strong> "If the ground is wet, then it rains." (อาจไม่จริง — น้ำรดก็ได้)</li>
+              <li><strong>Inverse:</strong> "If it does not rain, then the ground is not wet." (อาจไม่จริง)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div id="biconditional" class="subsec">
+        <h3>Biconditional Statement (ประพจน์สองทิศทาง)</h3>
+
+        <div class="def-formal">
+          <strong>นิยาม: Biconditional $p \leftrightarrow q$</strong><br>
+          $p \leftrightarrow q$ อ่านว่า "$p$ if and only if $q$" (iif) เป็นจริงเมื่อ $p$ และ $q$ มีค่าความจริงเหมือนกัน<br>
+          $$p \leftrightarrow q \equiv (p \rightarrow q) \wedge (q \rightarrow p)$$
+        </div>
+
+        <h4>Truth Table สำหรับ $p \leftrightarrow q$</h4>
+        <table class="truth-table">
+          <tr><th>$p$</th><th>$q$</th><th>$p \rightarrow q$</th><th>$q \rightarrow p$</th><th>$p \leftrightarrow q$</th></tr>
+          <tr><td>T</td><td>T</td><td>T</td><td>T</td><td><strong>T</strong></td></tr>
+          <tr><td>T</td><td>F</td><td>F</td><td>T</td><td><strong>F</strong></td></tr>
+          <tr><td>F</td><td>T</td><td>T</td><td>F</td><td><strong>F</strong></td></tr>
+          <tr><td>F</td><td>F</td><td>T</td><td>T</td><td><strong>T</strong></td></tr>
+        </table>
+
+        <div class="info-box">
+          <strong>สังเกต:</strong> $p \leftrightarrow q$ เป็นจริงเมื่อ $p$ และ $q$ มีค่าเหมือนกัน (ทั้งคู่ T หรือทั้งคู่ F) จึงเป็นนิเสธของ XOR กล่าวคือ $p \leftrightarrow q \equiv \sim(p \oplus q)$
+        </div>
+      </div>
+
+      <div id="necessary-suff" class="subsec">
+        <h3>Necessary and Sufficient Conditions</h3>
+
+        <div class="key-box">
+          <h4>ความหมายของ Necessary และ Sufficient</h4>
+          <p>สำหรับประพจน์ "$r$ is sufficient for $s$" หมายความว่า $r \rightarrow s$<br>
+          ส่วน "$r$ is necessary for $s$" หมายความว่า $s \rightarrow r$ (หรือเทียบเท่า $\sim r \rightarrow \sim s$)</p>
+          <ul>
+            <li><strong>"$p$ only if $q$"</strong> หมายความว่า $p \rightarrow q$ (ถ้าไม่มี $q$ ก็ไม่มี $p$)</li>
+            <li><strong>"$p$ if and only if $q$"</strong> หมายความว่า $p \leftrightarrow q$</li>
+            <li><strong>"$p$ is sufficient for $q$"</strong> หมายความว่า $p \rightarrow q$</li>
+            <li><strong>"$p$ is necessary for $q$"</strong> หมายความว่า $q \rightarrow p$</li>
+            <li><strong>"$p$ is necessary and sufficient for $q$"</strong> หมายความว่า $p \leftrightarrow q$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.2.3</span> Necessary และ Sufficient</div>
+          <p>พิจารณาประพจน์: "Being a square is sufficient for being a rectangle."</p>
+          <div class="solution">
+            <p>ให้ $p$ = "It is a square", $q$ = "It is a rectangle"</p>
+            <p>ประพจน์หมายความว่า: $p \rightarrow q$ — "If it is a square, then it is a rectangle" ✓</p>
+            <p>แต่ $q \rightarrow p$ ไม่จริง (สี่เหลี่ยมผืนผ้าไม่จำเป็นต้องเป็นจัตุรัส)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2.3 -->
+    <section id="sec23" class="ch-section">
+      <div class="section-header" style="--ch-color:#7c3aed">
+        <span class="sec-num">2.3</span>
+        <div>
+          <h2>Valid and Invalid Arguments</h2>
+          <p>ข้อโต้แย้งที่ถูกต้องและไม่ถูกต้อง</p>
+        </div>
+      </div>
+
+      <div id="valid-args" class="subsec">
+        <h3>ข้อโต้แย้ง (Argument) คืออะไร</h3>
+
+        <div class="def-formal">
+          <strong>นิยาม: Argument (ข้อโต้แย้ง)</strong><br>
+          <strong>Argument</strong> คือลำดับของประพจน์ที่จบด้วย <strong>บทสรุป (conclusion)</strong> โดยประพจน์ที่อยู่ก่อนหน้าเรียกว่า <strong>premises (สมมติฐาน)</strong><br>
+          สัญลักษณ์ $\therefore$ (therefore) ใช้แสดงบทสรุป<br><br>
+          <strong>Argument Form ที่ถูกต้อง (Valid):</strong> ถ้า premises ทุกตัวเป็นจริง แล้ว conclusion ต้องเป็นจริงด้วยเสมอ<br>
+          <strong>Critical Row:</strong> แถวในตาราง truth table ที่ premises ทุกตัวเป็นจริง
+        </div>
+
+        <div class="info-box">
+          <strong>วิธีทดสอบความถูกต้องด้วย Truth Table:</strong>
+          <ol>
+            <li>สร้าง truth table สำหรับ premises ทุกตัวและ conclusion</li>
+            <li>ระบุ critical rows (แถวที่ premises ทุกตัว = T)</li>
+            <li>ตรวจสอบว่า conclusion = T ในทุก critical row</li>
+            <li>ถ้าใช่ทุกแถว → argument ถูกต้อง (valid); ถ้ามีแถวที่ไม่ใช่ → invalid</li>
+          </ol>
+        </div>
+      </div>
+
+      <div id="modus-ponens" class="subsec">
+        <h3>Modus Ponens</h3>
+
+        <div class="key-box">
+          <h4>Modus Ponens (กฎยืนยัน)</h4>
+          <p style="text-align:center; font-size:1.1em;">
+            $p \rightarrow q$<br>
+            $p$<br>
+            $\therefore q$
+          </p>
+          <p>ถ้า "$p$ implies $q$" และ "$p$ เป็นจริง" ดังนั้น "$q$ เป็นจริง"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.3.1</span> Modus Ponens ในชีวิตจริง</div>
+          <p>Premise 1: "If it is raining, then the streets are wet."</p>
+          <p>Premise 2: "It is raining."</p>
+          <p>$\therefore$ "The streets are wet."</p>
+          <div class="solution">
+            <table class="truth-table">
+              <tr><th>$p$</th><th>$q$</th><th>$p \rightarrow q$</th><th>$p$</th><th>$q$</th></tr>
+              <tr><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+              <tr><td>T</td><td>F</td><td>F</td><td>T</td><td>F</td></tr>
+              <tr><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td></tr>
+              <tr><td>F</td><td>F</td><td>T</td><td>F</td><td>F</td></tr>
+            </table>
+            <p>Critical row คือแถวที่ 1 (ทั้ง $p \rightarrow q$ และ $p$ เป็นจริง) และใน critical row นั้น $q$ = T ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="modus-tollens" class="subsec">
+        <h3>Modus Tollens</h3>
+
+        <div class="key-box">
+          <h4>Modus Tollens (กฎปฏิเสธ)</h4>
+          <p style="text-align:center; font-size:1.1em;">
+            $p \rightarrow q$<br>
+            $\sim q$<br>
+            $\therefore \sim p$
+          </p>
+          <p>ถ้า "$p$ implies $q$" และ "$q$ เป็นเท็จ" ดังนั้น "$p$ เป็นเท็จ" (ใช้ Contrapositive)</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.3.2</span> Modus Tollens</div>
+          <p>Premise 1: "If the program is correct, then it compiles."</p>
+          <p>Premise 2: "The program does not compile."</p>
+          <p>$\therefore$ "The program is not correct."</p>
+          <div class="solution">valid ✓ เพราะ $p \rightarrow q$ และ $\sim q$ ให้ $\sim p$ โดย Modus Tollens</div>
+        </div>
+      </div>
+
+      <div id="inference-rules" class="subsec">
+        <h3>ตารางกฎการอนุมาน (Rules of Inference)</h3>
+        <p>กฎต่อไปนี้เป็น argument forms ที่ถูกต้อง (valid) สามารถใช้ได้โดยตรงในการพิสูจน์</p>
+
+        <div class="highlight-box">
+          <table style="width:100%; border-collapse:collapse; font-size:0.9em;">
+            <tr style="background:#7c3aed; color:white;">
+              <th style="padding:8px 12px;">ชื่อกฎ</th>
+              <th style="padding:8px 12px;">รูปแบบ</th>
+              <th style="padding:8px 12px;">คำอธิบาย</th>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Modus Ponens</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-family:monospace;">$p \rightarrow q,\ p\ \therefore\ q$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">ยืนยัน hypothesis</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Modus Tollens</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-family:monospace;">$p \rightarrow q,\ \sim q\ \therefore\ \sim p$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">ปฏิเสธ conclusion</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Generalization</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-family:monospace;">$p\ \therefore\ p \vee q$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">ขยายด้วย disjunction</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Specialization</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-family:monospace;">$p \wedge q\ \therefore\ p$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">ดึงออกจาก conjunction</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Elimination</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-family:monospace;">$p \vee q,\ \sim p\ \therefore\ q$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">ตัดทิ้งตัวเท็จ</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Transitivity</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-family:monospace;">$p \rightarrow q,\ q \rightarrow r\ \therefore\ p \rightarrow r$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">Hypothetical Syllogism</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Division into Cases</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-family:monospace;">$p \vee q,\ p \rightarrow r,\ q \rightarrow r\ \therefore\ r$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">Proof by cases</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Conjunction</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-family:monospace;">$p,\ q\ \therefore\ p \wedge q$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">รวมสองประพจน์</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-weight:600;">Contradiction Rule</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0; font-family:monospace;">$\sim p \rightarrow \mathbf{c}\ \therefore\ p$</td>
+              <td style="padding:7px 12px; border:1px solid #e2e8f0;">Proof by contradiction</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.3.3</span> พิสูจน์โดยใช้กฎการอนุมาน</div>
+          <p>กำหนด premises: (1) $p \rightarrow q$, (2) $q \rightarrow r$, (3) $\sim r$ จงหา conclusion $\sim p$</p>
+          <div class="solution">
+            <ol>
+              <li>$p \rightarrow q$ &emsp;&emsp;&emsp;&emsp;&ensp; (premise 1)</li>
+              <li>$q \rightarrow r$ &emsp;&emsp;&emsp;&emsp;&ensp; (premise 2)</li>
+              <li>$p \rightarrow r$ &emsp;&emsp;&emsp;&emsp;&ensp; (Transitivity จาก 1 และ 2)</li>
+              <li>$\sim r$ &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp; (premise 3)</li>
+              <li>$\therefore \sim p$ &emsp;&emsp;&emsp;&emsp;&ensp; (Modus Tollens จาก 3 และ 4) ✓</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div id="fallacies" class="subsec">
+        <h3>Fallacies (ความผิดพลาดในการอนุมาน)</h3>
+
+        <div class="warning-box">
+          <h4>Fallacy คืออะไร</h4>
+          <p><strong>Fallacy</strong> คือรูปแบบ argument ที่ดูเหมือนถูกต้องแต่จริงๆ แล้ว invalid ระวังอย่าสับสนกับ valid arguments</p>
+        </div>
+
+        <div class="def-grid">
+          <div class="def-card" style="border-color:#dc2626">
+            <div class="def-title" style="color:#dc2626">Converse Error (ความผิดพลาดเชิง Converse)</div>
+            <div class="def-body">
+              <p style="text-align:center;">$p \rightarrow q$<br>$q$<br>$\therefore p$ &emsp; ✗ <strong>INVALID!</strong></p>
+              <p><em>ตัวอย่าง:</em> "If you are a dog, you are a mammal. You are a mammal. Therefore you are a dog." — ผิด!</p>
+            </div>
+          </div>
+          <div class="def-card" style="border-color:#dc2626">
+            <div class="def-title" style="color:#dc2626">Inverse Error (ความผิดพลาดเชิง Inverse)</div>
+            <div class="def-body">
+              <p style="text-align:center;">$p \rightarrow q$<br>$\sim p$<br>$\therefore \sim q$ &emsp; ✗ <strong>INVALID!</strong></p>
+              <p><em>ตัวอย่าง:</em> "If you study hard, you pass. You did not study hard. Therefore you did not pass." — อาจผ่านได้ด้วยเหตุผลอื่น!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 2.3.4</span> ตรวจสอบ Converse Error ด้วย Truth Table</div>
+          <p>รูปแบบ: $p \rightarrow q$, $q$ $\therefore p$ — valid หรือไม่?</p>
+          <table class="truth-table">
+            <tr><th>$p$</th><th>$q$</th><th>$p \rightarrow q$ (P1)</th><th>$q$ (P2)</th><th>$p$ (C)</th></tr>
+            <tr><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+            <tr class="highlight-row"><td>F</td><td>T</td><td>T</td><td>T</td><td><strong>F</strong> ← counterexample!</td></tr>
+            <tr><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td></tr>
+            <tr><td>F</td><td>F</td><td>T</td><td>F</td><td>F</td></tr>
+          </table>
+          <div class="solution">แถวที่ 2 เป็น critical row (P1 = T, P2 = T) แต่ conclusion = F → <strong>INVALID</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2.4 -->
+    <section id="sec24" class="ch-section">
+      <div class="section-header" style="--ch-color:#7c3aed">
+        <span class="sec-num">2.4</span>
+        <div>
+          <h2>Application: Digital Logic Circuits</h2>
+          <p>การประยุกต์: วงจรตรรกะดิจิทัล</p>
+        </div>
+      </div>
+
+      <p>วงจรตรรกะดิจิทัลเป็นการประยุกต์ใช้ตรรกศาสตร์โดยตรง สัญญาณไฟฟ้าในวงจรคอมพิวเตอร์มีค่าเพียง 2 สถานะ ได้แก่ <strong>1 (สูง, T)</strong> และ <strong>0 (ต่ำ, F)</strong></p>
+
+      <h3>Gates พื้นฐาน (Basic Logic Gates)</h3>
+
+      <div class="def-grid">
+        <div class="def-card" style="border-color:#2563eb">
+          <div class="def-title" style="color:#2563eb">AND-gate</div>
+          <div class="def-body">
+            <p>output = 1 ก็ต่อเมื่อ input ทั้งสองเป็น 1</p>
+            <p>สอดคล้องกับ $P \wedge Q$</p>
+            <table class="truth-table" style="margin:4px auto; font-size:12px;">
+              <tr><th>P</th><th>Q</th><th>P AND Q</th></tr>
+              <tr><td>1</td><td>1</td><td>1</td></tr>
+              <tr><td>1</td><td>0</td><td>0</td></tr>
+              <tr><td>0</td><td>1</td><td>0</td></tr>
+              <tr><td>0</td><td>0</td><td>0</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="def-card" style="border-color:#059669">
+          <div class="def-title" style="color:#059669">OR-gate</div>
+          <div class="def-body">
+            <p>output = 1 เมื่อ input อย่างน้อยหนึ่งตัวเป็น 1</p>
+            <p>สอดคล้องกับ $P \vee Q$</p>
+            <table class="truth-table" style="margin:4px auto; font-size:12px;">
+              <tr><th>P</th><th>Q</th><th>P OR Q</th></tr>
+              <tr><td>1</td><td>1</td><td>1</td></tr>
+              <tr><td>1</td><td>0</td><td>1</td></tr>
+              <tr><td>0</td><td>1</td><td>1</td></tr>
+              <tr><td>0</td><td>0</td><td>0</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="def-card" style="border-color:#7c3aed">
+          <div class="def-title" style="color:#7c3aed">NOT-gate (Inverter)</div>
+          <div class="def-body">
+            <p>output = ตรงข้ามกับ input (inverter)</p>
+            <p>สอดคล้องกับ $\sim P$</p>
+            <table class="truth-table" style="margin:4px auto; font-size:12px;">
+              <tr><th>P</th><th>NOT P</th></tr>
+              <tr><td>1</td><td>0</td></tr>
+              <tr><td>0</td><td>1</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <h3>Boolean Variables and Expressions</h3>
+      <div class="def-formal">
+        <strong>นิยาม: Boolean Expression</strong><br>
+        <strong>Boolean variable</strong> คือตัวแปรที่มีค่าเป็น 0 หรือ 1 เท่านั้น<br>
+        <strong>Boolean expression</strong> คือนิพจน์ที่สร้างจาก Boolean variables ด้วย AND ($\cdot$ หรือ $\wedge$), OR ($+$ หรือ $\vee$) และ NOT ($\overline{\phantom{x}}$ หรือ $\sim$)
+      </div>
+
+      <div class="example-box">
+        <div class="example-header"><span>ตัวอย่าง 2.4.1</span> Boolean Expression จากวงจร</div>
+        <p>วงจรที่มี input $P$, $Q$, $R$ ให้ output: $(P \wedge Q) \vee (\sim P \wedge R)$</p>
+        <table class="truth-table">
+          <tr><th>P</th><th>Q</th><th>R</th><th>$P \wedge Q$</th><th>$\sim P$</th><th>$\sim P \wedge R$</th><th>Output</th></tr>
+          <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+          <tr><td>1</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+          <tr><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+          <tr><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+          <tr><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+          <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td></tr>
+        </table>
+      </div>
+
+      <h3>Disjunctive Normal Form (DNF)</h3>
+      <div class="def-formal">
+        <strong>นิยาม: Disjunctive Normal Form</strong><br>
+        <strong>DNF</strong> คือ Boolean expression ที่เขียนในรูป OR ของหลาย AND terms โดยแต่ละ AND term ประกอบด้วย literals (ตัวแปรหรือนิเสธของตัวแปร)<br>
+        $$(\text{literal}_1 \wedge \text{literal}_2 \wedge \ldots) \vee (\text{literal}_1 \wedge \ldots) \vee \ldots$$
+        <p>ทุก Boolean function สามารถเขียนในรูป DNF ได้ โดยนำ AND terms จากแถวที่ output = 1</p>
+      </div>
+
+      <h3>NAND และ NOR Gates</h3>
+      <div class="def-grid">
+        <div class="def-card" style="border-color:#ea580c">
+          <div class="def-title" style="color:#ea580c">NAND gate (Sheffer stroke $P | Q$)</div>
+          <div class="def-body">
+            <p>$P \mid Q \equiv \sim(P \wedge Q) \equiv \sim P \vee \sim Q$</p>
+            <table class="truth-table" style="margin:4px auto; font-size:12px;">
+              <tr><th>P</th><th>Q</th><th>P NAND Q</th></tr>
+              <tr><td>1</td><td>1</td><td>0</td></tr>
+              <tr><td>1</td><td>0</td><td>1</td></tr>
+              <tr><td>0</td><td>1</td><td>1</td></tr>
+              <tr><td>0</td><td>0</td><td>1</td></tr>
+            </table>
+            <p><strong>NAND เป็น functionally complete</strong> — สามารถสร้าง AND, OR, NOT ได้ทั้งหมด!</p>
+          </div>
+        </div>
+        <div class="def-card" style="border-color:#dc2626">
+          <div class="def-title" style="color:#dc2626">NOR gate (Peirce arrow $P \downarrow Q$)</div>
+          <div class="def-body">
+            <p>$P \downarrow Q \equiv \sim(P \vee Q) \equiv \sim P \wedge \sim Q$</p>
+            <table class="truth-table" style="margin:4px auto; font-size:12px;">
+              <tr><th>P</th><th>Q</th><th>P NOR Q</th></tr>
+              <tr><td>1</td><td>1</td><td>0</td></tr>
+              <tr><td>1</td><td>0</td><td>0</td></tr>
+              <tr><td>0</td><td>1</td><td>0</td></tr>
+              <tr><td>0</td><td>0</td><td>1</td></tr>
+            </table>
+            <p><strong>NOR ก็เป็น functionally complete</strong> เช่นกัน</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>ความสำคัญของ NAND/NOR:</strong> ในการผลิต IC (Integrated Circuit) จริง วงจรคอมพิวเตอร์ส่วนใหญ่สร้างจาก NAND หรือ NOR gates เพราะผลิตได้ง่ายและถูกกว่า
+      </div>
+    </section>
+
+    <!-- SECTION 2.5 -->
+    <section id="sec25" class="ch-section">
+      <div class="section-header" style="--ch-color:#7c3aed">
+        <span class="sec-num">2.5</span>
+        <div>
+          <h2>Application: Number Systems and Circuits for Addition</h2>
+          <p>การประยุกต์: ระบบเลขและวงจรบวก</p>
+        </div>
+      </div>
+
+      <h3>Binary Notation (เลขฐาน 2)</h3>
+      <div class="def-formal">
+        <strong>นิยาม: Binary Representation</strong><br>
+        ทุกจำนวนเต็มบวกสามารถเขียนในรูป <strong>เลขฐาน 2 (binary)</strong> ได้อย่างเดียว โดยใช้เพียงตัวเลข 0 และ 1<br>
+        $$a_n \cdot 2^n + a_{n-1} \cdot 2^{n-1} + \cdots + a_1 \cdot 2 + a_0$$
+        เขียนย่อเป็น $(a_n a_{n-1} \ldots a_1 a_0)_2$
+      </div>
+
+      <div class="example-box">
+        <div class="example-header"><span>ตัวอย่าง 2.5.1</span> แปลง Binary → Decimal</div>
+        <p>แปลง $(1101)_2$ เป็นเลขฐาน 10</p>
+        <div class="solution">
+          <p>$(1101)_2 = 1 \cdot 2^3 + 1 \cdot 2^2 + 0 \cdot 2^1 + 1 \cdot 2^0$</p>
+          <p>$= 8 + 4 + 0 + 1 = \mathbf{13}_{10}$</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="example-header"><span>ตัวอย่าง 2.5.2</span> แปลง Decimal → Binary (หารด้วย 2)</div>
+        <p>แปลง $43_{10}$ เป็นเลขฐาน 2</p>
+        <div class="solution">
+          <table class="truth-table">
+            <tr><th>หาร</th><th>ผลหาร</th><th>เศษ (bit)</th></tr>
+            <tr><td>43 ÷ 2</td><td>21</td><td>1</td></tr>
+            <tr><td>21 ÷ 2</td><td>10</td><td>1</td></tr>
+            <tr><td>10 ÷ 2</td><td>5</td><td>0</td></tr>
+            <tr><td>5 ÷ 2</td><td>2</td><td>1</td></tr>
+            <tr><td>2 ÷ 2</td><td>1</td><td>0</td></tr>
+            <tr><td>1 ÷ 2</td><td>0</td><td>1</td></tr>
+          </table>
+          <p>อ่านเศษจากล่างขึ้นบน: $43_{10} = (101011)_2$</p>
+          <p>ตรวจสอบ: $32 + 8 + 2 + 1 = 43$ ✓</p>
+        </div>
+      </div>
+
+      <h3>Binary Addition Rules (กฎการบวกเลขฐาน 2)</h3>
+      <div class="key-box">
+        <h4>กฎการบวกพื้นฐาน</h4>
+        <table class="truth-table">
+          <tr><th>P</th><th>Q</th><th>Sum (S)</th><th>Carry (C)</th></tr>
+          <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+          <tr><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+          <tr class="highlight-row"><td>1</td><td>1</td><td>0</td><td>1 ← ทดไป 1</td></tr>
+        </table>
+        <p><strong>Carry = $P \wedge Q$, Sum = $P \oplus Q$ (XOR)</strong></p>
+      </div>
+
+      <div class="example-box">
+        <div class="example-header"><span>ตัวอย่าง 2.5.3</span> บวกเลขฐาน 2</div>
+        <p>คำนวณ $(1011)_2 + (0110)_2$</p>
+        <div class="solution">
+          <pre style="font-family:'JetBrains Mono',monospace; background:#f8fafc; padding:12px; border-radius:6px; font-size:14px;">
+    Carry:  1 1 1 0
+            1 0 1 1   (= 11)
+          + 0 1 1 0   (=  6)
+          -------
+          1 0 0 0 1   (= 17) ✓</pre>
+        </div>
+      </div>
+
+      <h3>Half-Adder (วงจรบวกครึ่งหน่วย)</h3>
+      <div class="def-formal">
+        <strong>Half-Adder</strong> เป็นวงจรที่รับ input 2 bits (P, Q) และให้ output 2 bits:<br>
+        <ul>
+          <li><strong>Carry</strong> $= P \wedge Q$ (AND gate)</li>
+          <li><strong>Sum</strong> $= P \oplus Q = (P \vee Q) \wedge \sim(P \wedge Q)$ (XOR = OR NAND)</li>
+        </ul>
+        Half-Adder ใช้บวก bit เดี่ยวได้ แต่ไม่รองรับ carry จากหลักก่อนหน้า
+      </div>
+
+      <h3>Full-Adder (วงจรบวกเต็มหน่วย)</h3>
+      <div class="def-formal">
+        <strong>Full-Adder</strong> รับ input 3 bits (P, Q, carry-in $C_{in}$) และให้ output 2 bits:<br>
+        <ul>
+          <li><strong>Sum</strong> $= P \oplus Q \oplus C_{in}$</li>
+          <li><strong>Carry-out</strong> $= (P \wedge Q) \vee (P \wedge C_{in}) \vee (Q \wedge C_{in})$</li>
+        </ul>
+        Full-Adder สองตัวเชื่อมกันสร้าง 2-bit adder ได้ และ $n$ Full-Adders เชื่อมกันสร้าง $n$-bit adder
+      </div>
+
+      <h3>Two's Complement (เลขติดลบในฐาน 2)</h3>
+      <div class="def-formal">
+        <strong>Two's Complement (8-bit)</strong> ใช้แทนจำนวนเต็มลบในคอมพิวเตอร์<br>
+        <strong>วิธีหา Two's Complement ของ $-n$:</strong>
+        <ol>
+          <li>เขียน $n$ ในรูป 8-bit binary</li>
+          <li>กลับทุก bit (one's complement)</li>
+          <li>บวก 1</li>
+        </ol>
+      </div>
+
+      <div class="example-box">
+        <div class="example-header"><span>ตัวอย่าง 2.5.4</span> หา Two's Complement ของ $-13$</div>
+        <div class="solution">
+          <ol>
+            <li>$13_{10} = (00001101)_2$</li>
+            <li>One's complement: $(11110010)_2$</li>
+            <li>บวก 1: $(11110011)_2$</li>
+          </ol>
+          <p>ดังนั้น $-13$ แทนด้วย $(11110011)_2$ ใน 8-bit two's complement</p>
+          <p><strong>ตรวจสอบ:</strong> $13 + (-13) = (00001101) + (11110011) = (100000000)_2$ ทิ้ง overflow bit → $(00000000)_2 = 0$ ✓</p>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h4>ช่วงค่าของ 8-bit Two's Complement</h4>
+        <ul>
+          <li>จำนวนบวกสูงสุด: $(01111111)_2 = 127$</li>
+          <li>จำนวนลบต่ำสุด: $(10000000)_2 = -128$</li>
+          <li>ช่วงทั้งหมด: $-128$ ถึง $127$</li>
+        </ul>
+      </div>
+
+      <h3>Hexadecimal Notation (เลขฐาน 16)</h3>
+      <div class="def-formal">
+        <strong>Hexadecimal</strong> ใช้ตัวเลข 0–9 และตัวอักษร A–F แทนค่า 0–15 ตามลำดับ<br>
+        <strong>ประโยชน์:</strong> 4 bits binary = 1 hex digit ทำให้เขียนสั้นกว่า
+      </div>
+
+      <table class="truth-table">
+        <tr><th>Decimal</th><th>Binary (4-bit)</th><th>Hexadecimal</th></tr>
+        <tr><td>0</td><td>0000</td><td>0</td></tr>
+        <tr><td>5</td><td>0101</td><td>5</td></tr>
+        <tr><td>10</td><td>1010</td><td>A</td></tr>
+        <tr><td>11</td><td>1011</td><td>B</td></tr>
+        <tr><td>12</td><td>1100</td><td>C</td></tr>
+        <tr><td>13</td><td>1101</td><td>D</td></tr>
+        <tr><td>14</td><td>1110</td><td>E</td></tr>
+        <tr><td>15</td><td>1111</td><td>F</td></tr>
+        <tr><td>255</td><td>11111111</td><td>FF</td></tr>
+      </table>
+
+      <div class="example-box">
+        <div class="example-header"><span>ตัวอย่าง 2.5.5</span> แปลง Hexadecimal</div>
+        <p>แปลง $(3A7F)_{16}$ เป็นเลขฐาน 10</p>
+        <div class="solution">
+          <p>$(3A7F)_{16} = 3 \cdot 16^3 + 10 \cdot 16^2 + 7 \cdot 16^1 + 15 \cdot 16^0$</p>
+          <p>$= 3 \cdot 4096 + 10 \cdot 256 + 7 \cdot 16 + 15$</p>
+          <p>$= 12288 + 2560 + 112 + 15 = \mathbf{14975}_{10}$</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#c8983b">
+        <span class="sec-num">📋</span>
+        <div>
+          <h2>สรุปบทที่ 2</h2>
+          <p>The Logic of Compound Statements</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h4>2.1 Logical Form and Equivalence</h4>
+          <ul>
+            <li>ประพจน์ผสมสร้างจาก $\sim$, $\wedge$, $\vee$, $\oplus$</li>
+            <li>Truth table แสดงค่าทุกกรณี ($2^n$ แถวสำหรับ $n$ ตัวแปร)</li>
+            <li>$P \equiv Q$ เมื่อ truth table เหมือนกันทุกแถว</li>
+            <li>De Morgan: $\sim(p \wedge q) \equiv \sim p \vee \sim q$</li>
+            <li>Tautology ($\mathbf{t}$) = จริงเสมอ; Contradiction ($\mathbf{c}$) = เท็จเสมอ</li>
+            <li>กฎ 11 กลุ่ม: Commutative, Associative, Distributive, ฯลฯ</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>2.2 Conditional Statements</h4>
+          <ul>
+            <li>$p \rightarrow q$ เท็จเฉพาะเมื่อ $p = T$ และ $q = F$</li>
+            <li>$p \rightarrow q \equiv \sim p \vee q$</li>
+            <li>Contrapositive $\sim q \rightarrow \sim p \equiv p \rightarrow q$</li>
+            <li>Converse และ Inverse ไม่สมมูลกับต้นฉบับ</li>
+            <li>$p \leftrightarrow q \equiv (p \rightarrow q) \wedge (q \rightarrow p)$</li>
+            <li>Necessary/Sufficient conditions และ "only if"</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>2.3 Valid Arguments</h4>
+          <ul>
+            <li>Argument valid ถ้า conclusion จริงใน critical rows ทุกแถว</li>
+            <li>Modus Ponens: $p \rightarrow q,\ p \therefore q$</li>
+            <li>Modus Tollens: $p \rightarrow q,\ \sim q \therefore \sim p$</li>
+            <li>กฎอื่น: Transitivity, Elimination, Division into Cases</li>
+            <li>Converse Error และ Inverse Error เป็น fallacies</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>2.4 Digital Logic Circuits</h4>
+          <ul>
+            <li>AND-gate = $\wedge$, OR-gate = $\vee$, NOT-gate = $\sim$</li>
+            <li>Boolean expression ลดรูปด้วยกฎ logical equivalence</li>
+            <li>DNF = OR ของ AND terms จากแถว output = 1</li>
+            <li>NAND ($|$) และ NOR ($\downarrow$) เป็น functionally complete</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>2.5 Number Systems</h4>
+          <ul>
+            <li>Binary: $(a_n \ldots a_0)_2 = \sum a_i \cdot 2^i$</li>
+            <li>Carry = $P \wedge Q$, Sum = $P \oplus Q$ (Half-Adder)</li>
+            <li>Full-Adder รองรับ carry-in จากหลักก่อนหน้า</li>
+            <li>Two's complement แทนจำนวนลบ: invert + add 1</li>
+            <li>Hexadecimal: 4 bits = 1 hex digit (0–F)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#ea580c">
+        <span class="sec-num">✏️</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>จากหนังสือ Discrete Mathematics with Applications</p>
+        </div>
+      </div>
+
+      <div class="exercises-list">
+        <div class="exercise-item">
+          <span class="ex-num">2.1</span>
+          <div class="ex-content">
+            <strong>Exercise Set 2.1:</strong> ข้อ 1–6 (ค่าความจริงของประพจน์ผสม), ข้อ 7–14 (สร้าง truth tables), ข้อ 15–20 (Logical equivalence), ข้อ 21–28 (ลดรูปโดยใช้กฎ), ข้อ 29–32 (De Morgan's Laws ในภาษาธรรมชาติ)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">2.2</span>
+          <div class="ex-content">
+            <strong>Exercise Set 2.2:</strong> ข้อ 1–8 (truth table ของ conditional), ข้อ 9–16 (Contrapositive, Converse, Inverse), ข้อ 17–22 (biconditional), ข้อ 23–28 (necessary, sufficient, "only if")
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">2.3</span>
+          <div class="ex-content">
+            <strong>Exercise Set 2.3:</strong> ข้อ 1–6 (ตรวจสอบ validity ด้วย truth table), ข้อ 7–14 (ระบุ fallacy หรือ valid rule), ข้อ 15–20 (พิสูจน์โดยใช้ rules of inference), ข้อ 21–26 (argument จากภาษาธรรมชาติ)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">2.4</span>
+          <div class="ex-content">
+            <strong>Exercise Set 2.4:</strong> ข้อ 1–4 (input/output table ของวงจร), ข้อ 5–8 (เขียน Boolean expression), ข้อ 9–12 (DNF), ข้อ 13–16 (NAND/NOR gates)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">2.5</span>
+          <div class="ex-content">
+            <strong>Exercise Set 2.5:</strong> ข้อ 1–6 (แปลง binary ↔ decimal), ข้อ 7–10 (บวกเลขฐาน 2), ข้อ 11–14 (two's complement), ข้อ 15–18 (hexadecimal)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER NAV -->
+    <div class="chapter-nav">
+      <a href="chapter1.html" class="nav-btn prev-btn">← บทที่ 1 — Speaking Mathematically</a>
+      <a href="chapter3.html" class="nav-btn next-btn">บทที่ 3 — The Logic of Quantified Statements →</a>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง — บทที่ 2: The Logic of Compound Statements</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล · ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ · มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 · เนื้อหาจาก <em>Discrete Mathematics with Applications</em> — Susanna S. Epp</p>
+</footer>
+
+<script>
+  // Scroll to top for all TOC links
+  const SCROLL_OFFSET = 80;
+  document.querySelectorAll('.ch-toc a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'instant' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
+  // Sticky sidebar highlight
+  const sections = document.querySelectorAll('.ch-section, .subsec');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (s.id && window.scrollY >= s.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET - 10) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('ch-sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>
