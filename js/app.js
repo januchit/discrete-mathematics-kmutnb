@@ -305,7 +305,7 @@ function renderChapter(id) {
             <h4>บทต่างๆ</h4>
             <ul class="sidebar-chapters">
               ${courseData.chapters.map(c => `
-                <li class="${c.id === id ? 'active' : ''}" onclick="renderChapter(${c.id})" style="--ch-color: ${c.color}">
+                <li class="${c.id === id ? 'active' : ''}" onclick="${c.contentPage ? `window.location.href='${c.contentPage}'` : `renderChapter(${c.id})`}" style="--ch-color: ${c.color}">
                   <span class="sidebar-num">${c.id}</span>
                   <span class="sidebar-title">${c.titleTH}</span>
                 </li>

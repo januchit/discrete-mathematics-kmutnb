@@ -46,7 +46,10 @@
         el.className = 'nav-chapter-item';
         el.dataset.ch = ch.id;
         el.textContent = `บทที่ ${ch.id}`;
-        el.addEventListener('click', () => renderChapter(ch.id));
+        el.addEventListener('click', () => {
+          if (ch.contentPage) window.location.href = ch.contentPage;
+          else renderChapter(ch.id);
+        });
         nav.appendChild(el);
       });
     });
