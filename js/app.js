@@ -120,6 +120,7 @@ const courseData = {
       titleTH: "ความสัมพันธ์",
       icon: "↔",
       color: "#be185d",
+      contentPage: "chapters/chapter8.html",
       sections: [
         { num: "8.1", title: "Relations on Sets", desc: "ความสัมพันธ์บนเซตและการแทนด้วยเมทริกซ์" },
         { num: "8.2", title: "Reflexivity, Symmetry, and Transitivity", desc: "สมบัติ reflexive, symmetric, transitive" },
@@ -135,6 +136,7 @@ const courseData = {
       titleTH: "การนับและความน่าจะเป็น",
       icon: "🎲",
       color: "#ea580c",
+      contentPage: "chapters/chapter9.html",
       sections: [
         { num: "9.1", title: "Introduction", desc: "บทนำสู่การนับ" },
         { num: "9.2", title: "Possibility Trees and the Multiplication Rule", desc: "ต้นไม้ความเป็นไปได้และกฎการคูณ" },
@@ -154,6 +156,7 @@ const courseData = {
       titleTH: "กราฟและต้นไม้",
       icon: "🌳",
       color: "#16a34a",
+      contentPage: "chapters/chapter10.html",
       sections: [
         { num: "10.1", title: "Graphs: Definitions and Basic Properties", desc: "นิยามกราฟและสมบัติพื้นฐาน" },
         { num: "10.2", title: "Trails, Paths, and Circuits", desc: "เส้นทาง วิถี และวงจร" },
@@ -171,6 +174,7 @@ const courseData = {
       titleTH: "การวิเคราะห์ประสิทธิภาพอัลกอริทึม",
       icon: "📊",
       color: "#0369a1",
+      contentPage: "chapters/chapter11.html",
       sections: [
         { num: "11.1", title: "Real-Valued Functions of a Real Variable and Their Graphs", desc: "ฟังก์ชันค่าจริงและกราฟ" },
         { num: "11.2", title: "O-, Ω-, and Θ-Notations", desc: "สัญลักษณ์ Big-O, Omega, Theta" },
@@ -186,6 +190,7 @@ const courseData = {
       titleTH: "นิพจน์ปกติและออโตมาตาแบบจำกัดสถานะ",
       icon: "🤖",
       color: "#6d28d9",
+      contentPage: "chapters/chapter12.html",
       sections: [
         { num: "12.1", title: "Formal Languages and Regular Expressions", desc: "ภาษาทางการและนิพจน์ปกติ" },
         { num: "12.2", title: "Finite-State Automata", desc: "ออโตมาตาแบบจำกัดสถานะ (DFA/NFA)" },

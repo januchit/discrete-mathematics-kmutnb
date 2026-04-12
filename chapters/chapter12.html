@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 12 – Regular Expressions and Finite-State Automata | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+  <style>
+    /* ---- Chapter 12 color token ---- */
+    :root { --ch12: #6d28d9; --ch12-light: #ede9fe; --ch12-mid: #7c3aed; }
+
+    /* ---- def-box / thm-box ---- */
+    .def-box {
+      background: #f5f3ff;
+      border: 1px solid #c4b5fd;
+      border-left: 4px solid var(--ch12);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .def-box h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #5b21b6;
+      margin-bottom: 10px;
+    }
+    .def-box ul, .def-box ol { padding-left: 20px; margin-top: 6px; line-height: 2; }
+
+    .thm-box {
+      background: #faf5ff;
+      border: 2px solid var(--ch12);
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin: 16px 0;
+    }
+    .thm-box h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #4c1d95;
+      margin-bottom: 10px;
+    }
+    .thm-box p { font-size: 15px; line-height: 1.8; margin: 6px 0; }
+
+    /* ---- DFA State Diagram ---- */
+    .dfa-diagram {
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 28px 20px 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+      box-shadow: 0 2px 10px rgba(109,40,217,0.06);
+    }
+    .dfa-diagram-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #5b21b6;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    /* SVG-based state diagram container */
+    .dfa-svg-wrap {
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+    }
+    .dfa-svg-wrap svg { max-width: 100%; height: auto; }
+
+    /* CSS-only state machine (for simpler cases) */
+    .state-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: nowrap;
+      margin: 12px 0;
+    }
+    .state-circle {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 2.5px solid var(--ch12);
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--ch12);
+      position: relative;
+      flex-shrink: 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .state-circle.accept {
+      box-shadow: 0 0 0 4px white, 0 0 0 6.5px var(--ch12);
+    }
+    .state-circle.start::before {
+      content: '→';
+      position: absolute;
+      left: -26px;
+      font-size: 18px;
+      color: var(--ch12);
+      font-weight: 700;
+    }
+    .state-circle.start-accept {
+      box-shadow: 0 0 0 4px white, 0 0 0 6.5px var(--ch12);
+    }
+    .state-circle.start-accept::before {
+      content: '→';
+      position: absolute;
+      left: -26px;
+      font-size: 18px;
+      color: var(--ch12);
+      font-weight: 700;
+    }
+    .state-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 60px;
+      flex-shrink: 0;
+    }
+    .state-arrow .arrow-label {
+      font-size: 12px;
+      color: #374151;
+      margin-bottom: 2px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .state-arrow .arrow-line {
+      font-size: 22px;
+      color: #374151;
+      line-height: 1;
+    }
+    .self-loop {
+      font-size: 11px;
+      text-align: center;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    /* ---- Transition table ---- */
+    .trans-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 14px 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .trans-table th {
+      background: var(--ch12);
+      color: white;
+      padding: 9px 14px;
+      text-align: center;
+      font-family: 'Sarabun', sans-serif;
+    }
+    .trans-table td {
+      padding: 9px 14px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .trans-table tr:nth-child(even) td { background: #f5f3ff; }
+    .trans-table td.state-col { font-weight: 700; color: var(--ch12); }
+    .trans-table td.accept-marker { background: #ede9fe; font-weight: 700; }
+
+    /* ---- Regex display ---- */
+    .regex-display {
+      background: #1e1b4b;
+      color: #a5b4fc;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin: 12px 0;
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .regex-display .re-keyword { color: #f472b6; }
+    .regex-display .re-char { color: #86efac; }
+    .regex-display .re-op { color: #fbbf24; }
+    .regex-display .re-comment { color: #6b7280; font-style: italic; }
+
+    /* ---- Language example chips ---- */
+    .lang-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .lang-chip {
+      background: var(--ch12-light);
+      border: 1px solid #c4b5fd;
+      color: #4c1d95;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+    .lang-chip.reject {
+      background: #fff1f2;
+      border-color: #fecdd3;
+      color: #be123c;
+      text-decoration: line-through;
+    }
+    .lang-chip.accept {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #15803d;
+    }
+
+    /* ---- RE operation cards ---- */
+    .re-op-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .re-op-card {
+      background: white;
+      border: 2px solid #c4b5fd;
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .re-op-name {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #5b21b6;
+      margin-bottom: 6px;
+    }
+    .re-op-formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      color: #1e1b4b;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .re-op-desc { font-size: 13px; color: #374151; line-height: 1.5; }
+
+    /* ---- NFA/DFA comparison ---- */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .compare-card {
+      background: white;
+      border-radius: 10px;
+      padding: 18px;
+      border: 2px solid;
+    }
+    .compare-card.dfa-card { border-color: #6d28d9; }
+    .compare-card.nfa-card { border-color: #0ea5e9; }
+    .compare-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .compare-card.dfa-card h4 { color: #5b21b6; }
+    .compare-card.nfa-card h4 { color: #0369a1; }
+    .compare-card ul { padding-left: 18px; font-size: 14px; line-height: 1.9; }
+
+    /* ---- Minimization steps ---- */
+    .min-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .min-step {
+      display: flex;
+      gap: 16px;
+      background: white;
+      border-radius: 10px;
+      padding: 14px 18px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .min-step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--ch12);
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .min-step-body { font-size: 15px; line-height: 1.7; }
+    .min-step-body strong { color: #4c1d95; }
+
+    /* ---- Pumping lemma box ---- */
+    .pump-box {
+      background: #fff7ed;
+      border: 2px solid #f97316;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 16px 0;
+    }
+    .pump-box h4 {
+      color: #c2410c;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .pump-box p, .pump-box ol { font-size: 14px; line-height: 1.8; }
+    .pump-box ol { padding-left: 20px; margin-top: 8px; }
+
+    /* ---- Summary grid ---- */
+    .ch12-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .ch12-summary-card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      border-top: 3px solid var(--ch12);
+    }
+    .ch12-summary-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #4c1d95;
+      margin-bottom: 10px;
+    }
+    .ch12-summary-card ul {
+      padding-left: 16px;
+      font-size: 13px;
+      line-height: 1.9;
+      color: #374151;
+    }
+
+    /* ---- Closing banner ---- */
+    .final-banner {
+      background: linear-gradient(135deg, #1e1b4b, #4c1d95);
+      color: white;
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      margin: 32px 0 0;
+    }
+    .final-banner h3 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #c4b5fd;
+      margin-bottom: 12px;
+    }
+    .final-banner p { font-size: 15px; color: #ddd6fe; line-height: 1.8; }
+
+    @media (max-width: 768px) {
+      .re-op-grid { grid-template-columns: 1fr; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .ch12-summary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="chapter11.html" class="ch-nav-link">← บทที่ 11</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 12</span>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#6d28d9">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 12</div>
+      <div class="chapter-hero-icon">🤖</div>
+      <h1 class="chapter-hero-title">Regular Expressions and Finite-State Automata</h1>
+      <p class="chapter-hero-subtitle">นิพจน์ปกติและออโตมาตาแบบจำกัดสถานะ</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec121">12.1 Formal Languages &amp; Regular Expressions</a>
+          <ul>
+            <li><a href="#lang-basics">Alphabet, String, Language</a></li>
+            <li><a href="#re-ops">การดำเนินการบน RE</a></li>
+            <li><a href="#re-def">นิยาม Regular Expression</a></li>
+            <li><a href="#re-examples">ตัวอย่าง RE</a></li>
+            <li><a href="#re-prog">RE ในการเขียนโปรแกรม</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec122">12.2 Finite-State Automata (DFA/NFA)</a>
+          <ul>
+            <li><a href="#dfa-def">นิยาม DFA</a></li>
+            <li><a href="#dfa-ex1">DFA รับ substring "01"</a></li>
+            <li><a href="#dfa-ex2">DFA Mod 3</a></li>
+            <li><a href="#dfa-ex3">DFA ลงท้ายด้วย "ab"</a></li>
+            <li><a href="#nfa-def">NFA และความสัมพันธ์กับ DFA</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec123">12.3 Simplifying Finite-State Automata</a>
+          <ul>
+            <li><a href="#min-algo">Minimization Algorithm</a></li>
+            <li><a href="#min-example">ตัวอย่าง Minimize</a></li>
+            <li><a href="#myhill">Myhill-Nerode Theorem</a></li>
+            <li><a href="#pumping">Pumping Lemma</a></li>
+            <li><a href="#kleene">Kleene's Theorem</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 12</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 12 — บทสุดท้าย</h2>
+        <p>บทนี้ศึกษา <strong>Regular Expressions (นิพจน์ปกติ)</strong> และ <strong>Finite-State Automata (ออโตมาตาแบบจำกัดสถานะ)</strong> ซึ่งเป็นพื้นฐานของทฤษฎีการคำนวณ (Theory of Computation) ทั้งสองแนวคิดเชื่อมกันด้วย <em>Kleene's Theorem</em> — ภาษาที่อธิบายด้วย RE ก็คือภาษาที่ DFA รับได้พอดี ซึ่งมีประยุกต์ใช้ตั้งแต่การค้นหาข้อความ (grep), compiler ไปจนถึง network packet filtering</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">🔤</span>
+            <strong>12.1 Regular Expressions</strong>
+            <p>Alphabet $\Sigma$, String, Language $L \subseteq \Sigma^*$, การดำเนินการ: concatenation, union, Kleene star</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">⚙️</span>
+            <strong>12.2 Finite-State Automata</strong>
+            <p>DFA $M=(Q,\Sigma,\delta,q_0,F)$, State diagram, Transition table, NFA, Subset Construction</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">✂️</span>
+            <strong>12.3 Simplification</strong>
+            <p>Minimization algorithm, Table-filling, Myhill-Nerode, Pumping Lemma, Kleene's Theorem</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 12.1 -->
+    <!-- ============================================================ -->
+    <section id="sec121" class="ch-section">
+      <div class="section-header" style="--ch-color:#6d28d9">
+        <span class="sec-num">12.1</span>
+        <div>
+          <h2>Formal Languages and Regular Expressions</h2>
+          <p>ภาษาทางการและนิพจน์ปกติ</p>
+        </div>
+      </div>
+
+      <!-- Alphabet, String, Language -->
+      <div id="lang-basics" class="subsec">
+        <h3>Alphabet, String และ Language</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Alphabet, String, Kleene Star</h4>
+          <ul>
+            <li><strong>Alphabet ($\Sigma$):</strong> เซตจำกัดที่ไม่ว่างของสัญลักษณ์ เช่น $\Sigma = \{0, 1\}$ หรือ $\Sigma = \{a, b, c, \ldots, z\}$</li>
+            <li><strong>String (สตริง):</strong> ลำดับจำกัดของสัญลักษณ์จาก $\Sigma$ เช่น $w = 01101$ หรือ $w = \text{hello}$</li>
+            <li><strong>Empty string ($\lambda$ หรือ $\varepsilon$):</strong> สตริงที่มีความยาวเป็นศูนย์</li>
+            <li><strong>$\Sigma^*$:</strong> เซตของสตริงทั้งหมดที่สร้างได้จาก $\Sigma$ รวมถึง $\lambda$ เช่น $\{0,1\}^* = \{\lambda, 0, 1, 00, 01, 10, 11, 000, \ldots\}$</li>
+            <li><strong>Language ($L$):</strong> สับเซตใดๆ ของ $\Sigma^*$ กล่าวคือ $L \subseteq \Sigma^*$</li>
+          </ul>
+        </div>
+
+        <p>ความยาวของสตริง $w$ เขียนว่า $|w|$ เช่น $|01101| = 5$ และ $|\lambda| = 0$ การเชื่อมสตริง (concatenation) $xy$ คือการนำ $x$ ต่อด้วย $y$ เช่น $x = ab$, $y = cd$ ได้ $xy = abcd$</p>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.1.1</span> ตัวอย่าง Languages บน $\{a, b\}$</div>
+          <p>ให้ $\Sigma = \{a, b\}$ พิจารณา Languages ต่อไปนี้:</p>
+          <div class="solution">
+            <ul>
+              <li>$L_1 = \{a, ab, abb, abbb, \ldots\} = \{ab^n \mid n \geq 0\}$ — สตริงที่ขึ้นต้นด้วย $a$ ตามด้วย $b$ กี่ตัวก็ได้</li>
+              <li>$L_2 = \{w \in \{a,b\}^* \mid w \text{ มีความยาวคู่}\}$ — สตริงความยาวคู่ทั้งหมด</li>
+              <li>$L_3 = \emptyset$ — ภาษาว่าง ไม่มีสตริงใดเลย</li>
+              <li>$L_4 = \{\lambda\}$ — ภาษาที่มีเฉพาะ empty string</li>
+              <li>$L_5 = \{a,b\}^*$ — ภาษาที่มีทุกสตริงที่เป็นไปได้</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.1.2</span> การดำเนินการบน Languages</div>
+          <p>ให้ $L_1 = \{a, ab\}$ และ $L_2 = \{b, bb\}$ บน $\Sigma = \{a, b\}$</p>
+          <div class="solution">
+            <p><strong>Union:</strong> $L_1 \cup L_2 = \{a, ab, b, bb\}$</p>
+            <p><strong>Concatenation:</strong> $L_1 L_2 = \{ab, abb, ab^2, ab^3\} = \{ab, abb, abb, abbb\}$ (เอาสตริงจาก $L_1$ ต่อกับสตริงจาก $L_2$ ทุกคู่)</p>
+            <p>$L_1 L_2 = \{a \cdot b,\ a \cdot bb,\ ab \cdot b,\ ab \cdot bb\} = \{ab, abb, ab^2, ab^3\}$</p>
+            <p><strong>Kleene Star:</strong> $L_1^* = \{\lambda, a, ab, aa, aab, aba, abab, \ldots\}$ — สตริงทั้งหมดที่เป็น concatenation ของสมาชิกใน $L_1$ กี่ตัวก็ได้ (รวมถึง 0 ตัว = $\lambda$)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Operations on RE -->
+      <div id="re-ops" class="subsec">
+        <h3>การดำเนินการหลักบน Regular Expressions</h3>
+
+        <div class="re-op-grid">
+          <div class="re-op-card">
+            <div class="re-op-name">Concatenation</div>
+            <div class="re-op-formula">rs</div>
+            <div class="re-op-desc">ต่อสตริงที่ match $r$ กับสตริงที่ match $s$ เช่น $ab$ match เฉพาะสตริง "ab"</div>
+          </div>
+          <div class="re-op-card">
+            <div class="re-op-name">Union / Alternation</div>
+            <div class="re-op-formula">r | s</div>
+            <div class="re-op-desc">match สตริงที่ match $r$ หรือ $s$ อย่างน้อยหนึ่งอัน เช่น $a|b$ match "a" หรือ "b"</div>
+          </div>
+          <div class="re-op-card">
+            <div class="re-op-name">Kleene Star</div>
+            <div class="re-op-formula">r*</div>
+            <div class="re-op-desc">match สตริงที่เป็น concatenation ของสิ่งที่ match $r$ กี่ครั้งก็ได้ (รวม 0 ครั้ง = $\lambda$)</div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>ลำดับความสำคัญ (Precedence):</strong> Kleene star (*) มีความสำคัญสูงสุด รองลงมาคือ Concatenation และ Union (|) มีความสำคัญต่ำสุด เช่น $ab^*|c = (a(b^*))|c$
+        </div>
+      </div>
+
+      <!-- RE Definition -->
+      <div id="re-def" class="subsec">
+        <h3>นิยามอย่างเป็นทางการของ Regular Expression</h3>
+
+        <div class="def-formal">
+          <span class="def-label">นิยาม</span>
+          <p><strong>Regular Expression (RE)</strong> บน Alphabet $\Sigma$ นิยามแบบ recursive ดังนี้:</p>
+          <ol>
+            <li><strong>Base cases:</strong>
+              <ul>
+                <li>$\emptyset$ เป็น RE แทน empty language $\{\}$</li>
+                <li>$\lambda$ (หรือ $\varepsilon$) เป็น RE แทน language $\{\lambda\}$</li>
+                <li>สำหรับแต่ละ $a \in \Sigma$: $a$ เป็น RE แทน language $\{a\}$</li>
+              </ul>
+            </li>
+            <li><strong>Recursive cases:</strong> ถ้า $r$ และ $s$ เป็น RE แล้ว
+              <ul>
+                <li>$(r)(s)$ เป็น RE แทน concatenation: $L(r) \cdot L(s)$</li>
+                <li>$(r|s)$ เป็น RE แทน union: $L(r) \cup L(s)$</li>
+                <li>$(r^*)$ เป็น RE แทน Kleene star: $L(r)^*$</li>
+              </ul>
+            </li>
+          </ol>
+          <p>$L(r)$ หมายถึง language ที่ RE $r$ อธิบาย (describe)</p>
+        </div>
+
+        <div class="info-box">
+          <strong>หมายเหตุ:</strong> ในทางปฏิบัติมักละวงเล็บออกเมื่อไม่กำกวม เช่น $a^*b^*$ แทน $(a^*)(b^*)$ และ $a|bc$ แทน $a|(bc)$ เพราะ concatenation มีความสำคัญสูงกว่า union
+        </div>
+      </div>
+
+      <!-- RE Examples -->
+      <div id="re-examples" class="subsec">
+        <h3>ตัวอย่าง Regular Expressions</h3>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.1.3</span> RE บน $\Sigma = \{0, 1\}$</div>
+          <div class="solution">
+            <table class="eq-table">
+              <thead>
+                <tr><th>Regular Expression</th><th>Language ที่ได้</th><th>คำอธิบาย</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>$(0|1)^*$</td><td>$\{0,1\}^*$</td><td>สตริง binary ทั้งหมด (รวม $\lambda$)</td></tr>
+                <tr><td>$0^*1^*$</td><td>$\{0^m1^n \mid m,n \geq 0\}$</td><td>เลข 0 กี่ตัวก็ได้ ตามด้วยเลข 1 กี่ตัวก็ได้</td></tr>
+                <tr><td>$(01)^*$</td><td>$\{\lambda, 01, 0101, 010101, \ldots\}$</td><td>การสลับ "01" กี่รอบก็ได้</td></tr>
+                <tr><td>$(0|1)^*01(0|1)^*$</td><td>สตริงที่มี "01" เป็น substring</td><td>ขึ้นต้นและลงท้ายด้วยอะไรก็ได้ แต่ต้องมี "01"</td></tr>
+                <tr><td>$1(0|1)^*1$</td><td>สตริงที่ขึ้นต้นและลงท้ายด้วย 1</td><td>ความยาวอย่างน้อย 2</td></tr>
+                <tr><td>$(0|1)^*(00|11)(0|1)^*$</td><td>สตริงที่มีสองบิตติดกันเหมือนกัน</td><td>มี "00" หรือ "11" เป็น substring</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.1.4</span> RE บน $\Sigma = \{a, b\}$</div>
+          <div class="solution">
+            <table class="eq-table">
+              <thead>
+                <tr><th>Regular Expression</th><th>ตัวอย่างสตริงที่ match</th><th>คำอธิบาย</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>$a^*$</td><td>$\lambda, a, aa, aaa, \ldots$</td><td>สตริงที่ประกอบด้วย a ล้วนๆ</td></tr>
+                <tr><td>$ab^*a$</td><td>$aa, aba, abba, \ldots$</td><td>ขึ้นต้นและลงท้ายด้วย a คั่นด้วย b กี่ตัวก็ได้</td></tr>
+                <tr><td>$(ab)^+$</td><td>$ab, abab, ababab, \ldots$</td><td>$r^+ = rr^*$ — ซ้ำอย่างน้อย 1 ครั้ง</td></tr>
+                <tr><td>$a(a|b)^*b$</td><td>$ab, aab, abb, aabb, \ldots$</td><td>ขึ้นต้นด้วย a ลงท้ายด้วย b</td></tr>
+                <tr><td>$(a|b)^*b(a|b)^*$</td><td>ทุกสตริงที่มี b อย่างน้อย 1 ตัว</td><td>มี b เป็น substring</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.1.5</span> ทดสอบว่าสตริงอยู่ใน Language หรือไม่</div>
+          <p>พิจารณา $r = (0|1)^*1(0|1)^*0$ บน $\Sigma=\{0,1\}$</p>
+          <div class="solution">
+            <p>$L(r)$ = สตริง binary ที่มีทั้ง 1 และ 0 (โดย 1 ปรากฏก่อน 0 บางตัว)</p>
+            <div class="lang-chips">
+              <span class="lang-chip accept">10 ✓</span>
+              <span class="lang-chip accept">110 ✓</span>
+              <span class="lang-chip accept">1010 ✓</span>
+              <span class="lang-chip accept">0110 ✓</span>
+              <span class="lang-chip reject">0 ✗</span>
+              <span class="lang-chip reject">11 ✗</span>
+              <span class="lang-chip reject">111 ✗</span>
+              <span class="lang-chip reject">λ ✗</span>
+            </div>
+            <p>คำอธิบาย: $(0|1)^*$ ตามด้วย $1$ ตามด้วย $(0|1)^*$ ตามด้วย $0$ — หมายความว่าสตริงต้องมีทั้ง 1 และ 0 และ 0 ตัวสุดท้ายต้องมี 1 นำหน้า</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RE in Programming -->
+      <div id="re-prog" class="subsec">
+        <h3>Regular Expressions ในการเขียนโปรแกรม</h3>
+
+        <p>RE ที่ใช้ในโปรแกรม (เช่น Python, JavaScript, grep) เป็นส่วนขยายของ RE ทางทฤษฎี มี shorthand หลายอย่าง:</p>
+
+        <div class="regex-display">
+<span class="re-comment"># ตัวอย่าง Regex ในทางปฏิบัติ</span>
+
+<span class="re-keyword">[a-z]</span>      <span class="re-comment"># = a|b|c|...|z  (character class)</span>
+<span class="re-keyword">[0-9]</span>      <span class="re-comment"># = 0|1|...|9</span>
+<span class="re-keyword">\d</span>         <span class="re-comment"># = [0-9]  (digit)</span>
+<span class="re-keyword">\w</span>         <span class="re-comment"># = [a-zA-Z0-9_]  (word character)</span>
+<span class="re-keyword">\s</span>         <span class="re-comment"># = [ \t\n\r]  (whitespace)</span>
+<span class="re-keyword">r{n}</span>       <span class="re-comment"># r ซ้ำกัน n ครั้งพอดี</span>
+<span class="re-keyword">r{m,n}</span>     <span class="re-comment"># r ซ้ำ m ถึง n ครั้ง</span>
+<span class="re-keyword">r?</span>         <span class="re-comment"># = r|λ  (optional, 0 หรือ 1 ครั้ง)</span>
+<span class="re-keyword">r+</span>         <span class="re-comment"># = rr*  (1 ครั้งขึ้นไป)</span>
+<span class="re-keyword">.</span>          <span class="re-comment"># = Σ\{newline}  (any character)</span>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.1.6</span> Regex ตรวจสอบ Thai Phone Number</div>
+          <p>หมายเลขโทรศัพท์ไทย: 0XX-XXXXXXX (เบอร์มือถือ 10 หลัก)</p>
+          <div class="solution">
+            <div class="regex-display"><span class="re-keyword">0[689]\d</span><span class="re-op">-</span><span class="re-keyword">\d{7}</span>
+<span class="re-comment"># หรือแบบไม่มี dash: 0[689]\d{8}</span></div>
+            <p><strong>อธิบาย:</strong></p>
+            <ul>
+              <li><code>0</code> — ขึ้นต้นด้วย 0</li>
+              <li><code>[689]</code> — หลักที่ 2 เป็น 6, 8 หรือ 9</li>
+              <li><code>\d</code> — หลักที่ 3 เป็นตัวเลขใดก็ได้</li>
+              <li><code>-</code> — เครื่องหมาย dash</li>
+              <li><code>\d{7}</code> — 7 หลักสุดท้าย</li>
+            </ul>
+            <div class="lang-chips">
+              <span class="lang-chip accept">089-1234567 ✓</span>
+              <span class="lang-chip accept">061-9876543 ✓</span>
+              <span class="lang-chip reject">021-1234567 ✗</span>
+              <span class="lang-chip reject">08-12345678 ✗</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.1.7</span> Regex ตรวจสอบรูปแบบ Email (แบบง่าย)</div>
+          <div class="solution">
+            <div class="regex-display"><span class="re-keyword">[a-zA-Z0-9._%+-]+</span><span class="re-op">@</span><span class="re-keyword">[a-zA-Z0-9.-]+</span><span class="re-op">\.</span><span class="re-keyword">[a-zA-Z]{2,}</span></div>
+            <p><strong>อธิบาย:</strong></p>
+            <ul>
+              <li><code>[a-zA-Z0-9._%+-]+</code> — ชื่อผู้ใช้ (ตัวอักษร, ตัวเลข, หรือ .<>_%+-)</li>
+              <li><code>@</code> — เครื่องหมาย @</li>
+              <li><code>[a-zA-Z0-9.-]+</code> — domain name</li>
+              <li><code>\.</code> — จุด (escaped)</li>
+              <li><code>[a-zA-Z]{2,}</code> — top-level domain อย่างน้อย 2 ตัวอักษร</li>
+            </ul>
+            <div class="lang-chips">
+              <span class="lang-chip accept">user@kmutnb.ac.th ✓</span>
+              <span class="lang-chip accept">info@example.com ✓</span>
+              <span class="lang-chip reject">@nodomain.com ✗</span>
+              <span class="lang-chip reject">user@.com ✗</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 12.2 -->
+    <!-- ============================================================ -->
+    <section id="sec122" class="ch-section">
+      <div class="section-header" style="--ch-color:#6d28d9">
+        <span class="sec-num">12.2</span>
+        <div>
+          <h2>Finite-State Automata</h2>
+          <p>ออโตมาตาแบบจำกัดสถานะ (DFA และ NFA)</p>
+        </div>
+      </div>
+
+      <!-- DFA Definition -->
+      <div id="dfa-def" class="subsec">
+        <h3>นิยาม Deterministic Finite Automaton (DFA)</h3>
+
+        <div class="def-formal">
+          <span class="def-label">นิยาม</span>
+          <p><strong>Deterministic Finite Automaton (DFA)</strong> คือ 5-tuple $M = (Q, \Sigma, \delta, q_0, F)$ ที่:</p>
+          <ul>
+            <li>$Q$ — เซตจำกัดของ <strong>states (สถานะ)</strong></li>
+            <li>$\Sigma$ — <strong>alphabet (อักษร)</strong></li>
+            <li>$\delta: Q \times \Sigma \to Q$ — <strong>transition function (ฟังก์ชันเปลี่ยนสถานะ)</strong></li>
+            <li>$q_0 \in Q$ — <strong>start state / initial state (สถานะเริ่มต้น)</strong></li>
+            <li>$F \subseteq Q$ — เซตของ <strong>accept states / final states (สถานะยอมรับ)</strong></li>
+          </ul>
+        </div>
+
+        <div class="def-box">
+          <h4>Language ที่ DFA รับ</h4>
+          <p>DFA $M$ <strong>รับ (accepts)</strong> สตริง $w = a_1 a_2 \cdots a_n$ ก็ต่อเมื่อ:</p>
+          <ol>
+            <li>เริ่มที่ $q_0$</li>
+            <li>อ่านสัญลักษณ์ทีละตัว: $q_0 \xrightarrow{a_1} q_1 \xrightarrow{a_2} q_2 \cdots \xrightarrow{a_n} q_n$</li>
+            <li>สถานะสุดท้าย $q_n \in F$</li>
+          </ol>
+          <p><strong>Language ของ $M$:</strong> $L(M) = \{w \in \Sigma^* \mid M \text{ รับ } w\}$</p>
+          <p>ถ้า $L(M) = L$ สำหรับ DFA $M$ บางตัว เราเรียก $L$ ว่า <strong>Regular Language (ภาษาปกติ)</strong></p>
+        </div>
+
+        <div class="key-box">
+          <h4>สัญลักษณ์ใน State Diagram</h4>
+          <ul>
+            <li><strong>วงกลม:</strong> แต่ละ state $q \in Q$</li>
+            <li><strong>วงกลมคู่:</strong> accept states ($q \in F$)</li>
+            <li><strong>ลูกศรชี้เข้า:</strong> start state $q_0$ (มีลูกศรจากภายนอก)</li>
+            <li><strong>ลูกศรระหว่าง states:</strong> $\delta(q, a) = p$ คือ "อ่าน $a$ ที่ state $q$ ไปที่ state $p$"</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- DFA Example 1 -->
+      <div id="dfa-ex1" class="subsec">
+        <h3>ตัวอย่าง 1: DFA รับ strings ที่มี "01" เป็น substring</h3>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.2.1</span> DFA สำหรับ $L = \{w \in \{0,1\}^* \mid \text{"01" เป็น substring ของ } w\}$</div>
+          <p><strong>แนวคิด:</strong> ต้องการตรวจว่า $w$ มี "01" ปรากฏอยู่หรือไม่ — ใช้ 3 states</p>
+          <div class="solution">
+            <p><strong>States:</strong></p>
+            <ul>
+              <li>$q_0$: ยังไม่เห็น "0" ที่อาจเริ่ม "01" (start state)</li>
+              <li>$q_1$: เห็น "0" ล่าสุด รอดูว่าตามด้วย "1" หรือไม่</li>
+              <li>$q_2$: เห็น "01" แล้ว (accept state) — จะอยู่ที่นี่ตลอด</li>
+            </ul>
+
+            <div class="dfa-diagram">
+              <div class="dfa-diagram-title">State Diagram: DFA รับ substring "01"</div>
+              <div class="dfa-svg-wrap">
+                <svg width="520" height="130" viewBox="0 0 520 130" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace" font-size="13">
+                  <!-- start arrow -->
+                  <line x1="30" y1="65" x2="65" y2="65" stroke="#6d28d9" stroke-width="2" marker-end="url(#arr)"/>
+                  <!-- states -->
+                  <circle cx="95" cy="65" r="28" fill="white" stroke="#6d28d9" stroke-width="2.5"/>
+                  <text x="95" y="70" text-anchor="middle" fill="#5b21b6" font-weight="700">q₀</text>
+                  <circle cx="245" cy="65" r="28" fill="white" stroke="#6d28d9" stroke-width="2.5"/>
+                  <text x="245" y="70" text-anchor="middle" fill="#5b21b6" font-weight="700">q₁</text>
+                  <!-- q2: double circle for accept -->
+                  <circle cx="400" cy="65" r="28" fill="#ede9fe" stroke="#6d28d9" stroke-width="2.5"/>
+                  <circle cx="400" cy="65" r="22" fill="none" stroke="#6d28d9" stroke-width="1.5"/>
+                  <text x="400" y="70" text-anchor="middle" fill="#4c1d95" font-weight="700">q₂</text>
+
+                  <!-- q0->q1 on 0 -->
+                  <line x1="123" y1="65" x2="217" y2="65" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+                  <text x="170" y="55" text-anchor="middle" fill="#374151">0</text>
+                  <!-- q0 self-loop on 1 -->
+                  <path d="M85,38 Q95,10 105,38" fill="none" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+                  <text x="95" y="16" text-anchor="middle" fill="#374151">1</text>
+                  <!-- q1->q2 on 1 -->
+                  <line x1="273" y1="65" x2="372" y2="65" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+                  <text x="322" y="55" text-anchor="middle" fill="#374151">1</text>
+                  <!-- q1 self-loop on 0 -->
+                  <path d="M235,38 Q245,10 255,38" fill="none" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+                  <text x="245" y="16" text-anchor="middle" fill="#374151">0</text>
+                  <!-- q2 self-loop on 0,1 -->
+                  <path d="M390,38 Q400,10 410,38" fill="none" stroke="#374151" stroke-width="1.8" marker-end="url(#arr)"/>
+                  <text x="400" y="16" text-anchor="middle" fill="#374151">0,1</text>
+
+                  <defs>
+                    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L8,3 z" fill="#374151"/>
+                    </marker>
+                  </defs>
+                </svg>
+              </div>
+            </div>
+
+            <p><strong>Transition Table:</strong></p>
+            <table class="trans-table">
+              <thead>
+                <tr><th>State</th><th>อ่าน 0</th><th>อ่าน 1</th><th>หมายเหตุ</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="state-col">→ q₀</td><td>q₁</td><td>q₀</td><td>Start state</td></tr>
+                <tr><td class="state-col">q₁</td><td>q₁</td><td>q₂</td><td>เห็น "0" แล้ว</td></tr>
+                <tr><td class="state-col accept-marker">* q₂</td><td>q₂</td><td>q₂</td><td>Accept — เห็น "01" แล้ว</td></tr>
+              </tbody>
+            </table>
+
+            <p><strong>ทดสอบ:</strong> $w = 100101$</p>
+            <p>$q_0 \xrightarrow{1} q_0 \xrightarrow{0} q_1 \xrightarrow{0} q_1 \xrightarrow{1} q_2 \xrightarrow{0} q_2 \xrightarrow{1} q_2$ — ลงท้ายที่ $q_2 \in F$ ดังนั้น <strong>รับ ✓</strong></p>
+            <p><strong>ทดสอบ:</strong> $w = 0000$</p>
+            <p>$q_0 \xrightarrow{0} q_1 \xrightarrow{0} q_1 \xrightarrow{0} q_1 \xrightarrow{0} q_1$ — ลงท้ายที่ $q_1 \notin F$ ดังนั้น <strong>ปฏิเสธ ✗</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DFA Example 2: Mod 3 -->
+      <div id="dfa-ex2" class="subsec">
+        <h3>ตัวอย่าง 2: DFA รับ binary strings ที่หารด้วย 3 ลงตัว</h3>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.2.2</span> DFA สำหรับ $L = \{w \in \{0,1\}^* \mid \text{ค่า binary ของ } w \equiv 0 \pmod{3}\}$</div>
+          <p><strong>แนวคิด:</strong> เมื่ออ่านบิตทีละตัวจากซ้ายไปขวา ค่าปัจจุบัน mod 3 จะเปลี่ยนตามกฎ: ถ้า current value $= v$ แล้วอ่านบิต $b$ จะได้ $2v + b$</p>
+          <div class="solution">
+            <p><strong>States:</strong> $q_0$ (remainder 0), $q_1$ (remainder 1), $q_2$ (remainder 2)</p>
+            <p><strong>Transitions:</strong></p>
+            <ul>
+              <li>จาก $q_r$ อ่าน $b$: ไปที่ $q_{(2r+b) \bmod 3}$</li>
+              <li>$\delta(q_0, 0) = q_0$, $\delta(q_0, 1) = q_1$</li>
+              <li>$\delta(q_1, 0) = q_2$, $\delta(q_1, 1) = q_0$</li>
+              <li>$\delta(q_2, 0) = q_1$, $\delta(q_2, 1) = q_2$</li>
+            </ul>
+            <p><strong>Accept state:</strong> $q_0$ (เพราะ remainder 0 = หารด้วย 3 ลงตัว)</p>
+            <p><strong>หมายเหตุ:</strong> empty string $\lambda$ แทนค่า 0 ซึ่ง $0 \equiv 0 \pmod 3$ ดังนั้น $q_0$ เป็นทั้ง start และ accept</p>
+
+            <div class="dfa-diagram">
+              <div class="dfa-diagram-title">State Diagram: DFA Mod 3 (Binary)</div>
+              <div class="dfa-svg-wrap">
+                <svg width="520" height="200" viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace" font-size="13">
+                  <defs>
+                    <marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                      <path d="M0,0 L0,6 L8,3 z" fill="#374151"/>
+                    </marker>
+                  </defs>
+                  <!-- start arrow -->
+                  <line x1="10" y1="100" x2="52" y2="100" stroke="#6d28d9" stroke-width="2" marker-end="url(#arr2)"/>
+                  <!-- q0: accept+start (double circle) -->
+                  <circle cx="85" cy="100" r="30" fill="#ede9fe" stroke="#6d28d9" stroke-width="2.5"/>
+                  <circle cx="85" cy="100" r="24" fill="none" stroke="#6d28d9" stroke-width="1.5"/>
+                  <text x="85" y="105" text-anchor="middle" fill="#4c1d95" font-weight="700">q₀</text>
+                  <!-- q1 -->
+                  <circle cx="270" cy="40" r="28" fill="white" stroke="#6d28d9" stroke-width="2.5"/>
+                  <text x="270" y="45" text-anchor="middle" fill="#5b21b6" font-weight="700">q₁</text>
+                  <!-- q2 -->
+                  <circle cx="270" cy="160" r="28" fill="white" stroke="#6d28d9" stroke-width="2.5"/>
+                  <text x="270" y="165" text-anchor="middle" fill="#5b21b6" font-weight="700">q₂</text>
+
+                  <!-- q0 self-loop 0 -->
+                  <path d="M73,70 Q60,40 85,55" fill="none" stroke="#374151" stroke-width="1.8" marker-end="url(#arr2)"/>
+                  <text x="55" y="48" fill="#374151">0</text>
+
+                  <!-- q0->q1 on 1 -->
+                  <line x1="112" y1="85" x2="245" y2="52" stroke="#374151" stroke-width="1.8" marker-end="url(#arr2)"/>
+                  <text x="168" y="60" fill="#374151">1</text>
+
+                  <!-- q1->q0 on 1 -->
+                  <line x1="245" y1="56" x2="112" y2="90" stroke="#374151" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr2)"/>
+                  <text x="158" y="85" fill="#374151">1</text>
+
+                  <!-- q1->q2 on 0 -->
+                  <line x1="270" y1="68" x2="270" y2="132" stroke="#374151" stroke-width="1.8" marker-end="url(#arr2)"/>
+                  <text x="278" y="104" fill="#374151">0</text>
+
+                  <!-- q2->q1 on 0 -->
+                  <line x1="262" y1="132" x2="262" y2="68" stroke="#374151" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#arr2)"/>
+                  <text x="246" y="104" fill="#374151">0</text>
+
+                  <!-- q0->q2... via q2 self on 1 and q2->q0 on ... -->
+                  <!-- q2 self-loop on 1 -->
+                  <path d="M260,132 Q310,170 282,148" fill="none" stroke="#374151" stroke-width="1.8" marker-end="url(#arr2)"/>
+                  <text x="306" y="168" fill="#374151">1</text>
+
+                  <!-- q0->q2 on ... need path -->
+                  <!-- q1 self-loop? No. q0->q2: via reading 0,0 etc. State diagram already covered. -->
+                  <!-- Let's add q2->q0: there's no direct. Let me trace: from q2 read 1 -> q_{(4+1)%3}=q_2. read 0 -> q_{4%3}=q_1. So q2->q2 on 1, q2->q1 on 0. Need q0->q2? -->
+                  <!-- Actually from definition: delta(q0,0)=q0, delta(q0,1)=q1, delta(q1,0)=q2, delta(q1,1)=q0, delta(q2,0)=q1, delta(q2,1)=q2 -->
+                  <!-- So we need q0 loop on 0, q0->q1 on 1, q1->q0 on 1, q1->q2 on 0, q2->q1 on 0, q2->q2 on 1 -->
+                </svg>
+              </div>
+            </div>
+
+            <table class="trans-table">
+              <thead>
+                <tr><th>State</th><th>อ่าน 0</th><th>อ่าน 1</th><th>ความหมาย</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="state-col accept-marker">→* q₀</td><td>q₀</td><td>q₁</td><td>ค่า mod 3 = 0</td></tr>
+                <tr><td class="state-col">q₁</td><td>q₂</td><td>q₀</td><td>ค่า mod 3 = 1</td></tr>
+                <tr><td class="state-col">q₂</td><td>q₁</td><td>q₂</td><td>ค่า mod 3 = 2</td></tr>
+              </tbody>
+            </table>
+
+            <p><strong>ทดสอบ:</strong> $w = 1001$ (ค่า binary = 9 = 3×3, หารด้วย 3 ลงตัว)</p>
+            <p>$q_0 \xrightarrow{1} q_1 \xrightarrow{0} q_2 \xrightarrow{0} q_1 \xrightarrow{1} q_0$ — ลงท้ายที่ $q_0 \in F$ ดังนั้น <strong>รับ ✓</strong></p>
+            <p><strong>ทดสอบ:</strong> $w = 10$ (ค่า binary = 2 ไม่หารด้วย 3)</p>
+            <p>$q_0 \xrightarrow{1} q_1 \xrightarrow{0} q_2$ — ลงท้ายที่ $q_2 \notin F$ ดังนั้น <strong>ปฏิเสธ ✗</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DFA Example 3: ends with ab -->
+      <div id="dfa-ex3" class="subsec">
+        <h3>ตัวอย่าง 3: DFA รับ strings ที่ลงท้ายด้วย "ab"</h3>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.2.3</span> DFA สำหรับ $L = \{w \in \{a,b\}^* \mid w \text{ ลงท้ายด้วย "ab"}\}$</div>
+          <div class="solution">
+            <p><strong>States:</strong></p>
+            <ul>
+              <li>$q_0$: ยังไม่เห็น "a" ที่จะเริ่ม "ab" / หรือเห็นสถานะที่ไม่อยู่ระหว่างรับ "ab"</li>
+              <li>$q_1$: เห็น "a" ล่าสุด (รอ "b")</li>
+              <li>$q_2$: เห็น "ab" ล่าสุด (accept state)</li>
+            </ul>
+
+            <table class="trans-table">
+              <thead>
+                <tr><th>State</th><th>อ่าน a</th><th>อ่าน b</th><th>ความหมาย</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="state-col">→ q₀</td><td>q₁</td><td>q₀</td><td>สถานะเริ่มต้น</td></tr>
+                <tr><td class="state-col">q₁</td><td>q₁</td><td>q₂</td><td>เห็น a ล่าสุด</td></tr>
+                <tr><td class="state-col accept-marker">* q₂</td><td>q₁</td><td>q₀</td><td>เห็น "ab" ล่าสุด</td></tr>
+              </tbody>
+            </table>
+
+            <p><strong>คำอธิบาย transitions:</strong></p>
+            <ul>
+              <li>$\delta(q_0, a) = q_1$: เห็น a ครั้งแรกที่อาจเริ่ม "ab"</li>
+              <li>$\delta(q_0, b) = q_0$: b โดยไม่มี a นำหน้า ย้อนกลับ start</li>
+              <li>$\delta(q_1, a) = q_1$: เห็น a ซ้อน, a ใหม่เป็น a ล่าสุด</li>
+              <li>$\delta(q_1, b) = q_2$: ครบ "ab" แล้ว!</li>
+              <li>$\delta(q_2, a) = q_1$: เห็น a ใหม่หลัง "ab" ต้องรอ b อีกครั้ง</li>
+              <li>$\delta(q_2, b) = q_0$: "abb" สุดท้าย ไม่ลงท้ายด้วย "ab"</li>
+            </ul>
+
+            <p><strong>ทดสอบ:</strong> $w = \text{aabab}$</p>
+            <p>$q_0 \xrightarrow{a} q_1 \xrightarrow{a} q_1 \xrightarrow{b} q_2 \xrightarrow{a} q_1 \xrightarrow{b} q_2$ — ลงท้ายที่ $q_2 \in F$ ดังนั้น <strong>รับ ✓</strong></p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.2.4</span> DFA รับ strings ที่มี a จำนวนคู่ บน $\{a, b\}$</div>
+          <div class="solution">
+            <p><strong>States:</strong> $q_e$ (จำนวน a เป็นคู่ — accept), $q_o$ (จำนวน a เป็นคี่)</p>
+            <table class="trans-table">
+              <thead>
+                <tr><th>State</th><th>อ่าน a</th><th>อ่าน b</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="state-col accept-marker">→* qₑ</td><td>qₒ</td><td>qₑ</td></tr>
+                <tr><td class="state-col">qₒ</td><td>qₑ</td><td>qₒ</td></tr>
+              </tbody>
+            </table>
+            <p>ทดสอบ $w = \text{abba}$: $q_e \xrightarrow{a} q_o \xrightarrow{b} q_o \xrightarrow{b} q_o \xrightarrow{a} q_e$ — รับ ✓ (มี a สองตัว = คู่)</p>
+            <p>ทดสอบ $w = \text{aba}$: $q_e \xrightarrow{a} q_o \xrightarrow{b} q_o \xrightarrow{a} q_e$ — รับ ✓ (มี a สองตัว = คู่)</p>
+            <p>ทดสอบ $w = \text{ab}$: $q_e \xrightarrow{a} q_o \xrightarrow{b} q_o$ — ปฏิเสธ ✗ (มี a หนึ่งตัว = คี่)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- NFA -->
+      <div id="nfa-def" class="subsec">
+        <h3>Nondeterministic Finite Automaton (NFA)</h3>
+
+        <div class="def-formal">
+          <span class="def-label">นิยาม</span>
+          <p><strong>NFA</strong> คือ 5-tuple $N = (Q, \Sigma, \delta, q_0, F)$ ที่เหมือน DFA ยกเว้น:</p>
+          <ul>
+            <li>$\delta: Q \times (\Sigma \cup \{\varepsilon\}) \to \mathcal{P}(Q)$ — transition function ส่งคืน <em>เซต</em>ของ states (อาจว่าง)</li>
+            <li>NFA อาจมีหลาย transitions จาก state เดียวกันบน input เดียวกัน</li>
+            <li>NFA อาจมี <strong>$\varepsilon$-transitions</strong> — เปลี่ยน state โดยไม่ต้องอ่าน input</li>
+          </ul>
+          <p>NFA <strong>รับ</strong> $w$ ก็ต่อเมื่อมี <em>บาง</em>เส้นทางการคำนวณที่ลงท้ายที่ accept state</p>
+        </div>
+
+        <div class="compare-grid">
+          <div class="compare-card dfa-card">
+            <h4>DFA (Deterministic)</h4>
+            <ul>
+              <li>แต่ละ (state, symbol) มี transition เดียวพอดี</li>
+              <li>ไม่มี $\varepsilon$-transitions</li>
+              <li>ง่ายต่อการ implement</li>
+              <li>อาจต้องการ states มากกว่า NFA</li>
+              <li>$\delta: Q \times \Sigma \to Q$ (ฟังก์ชันปกติ)</li>
+            </ul>
+          </div>
+          <div class="compare-card nfa-card">
+            <h4>NFA (Nondeterministic)</h4>
+            <ul>
+              <li>แต่ละ (state, symbol) อาจมี 0, 1 หรือหลาย transitions</li>
+              <li>อาจมี $\varepsilon$-transitions</li>
+              <li>มักมี states น้อยกว่า DFA</li>
+              <li>ออกแบบง่ายกว่า DFA</li>
+              <li>$\delta: Q \times (\Sigma \cup \{\varepsilon\}) \to \mathcal{P}(Q)$</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท (Rabin-Scott): NFA และ DFA มีประสิทธิภาพเท่ากัน</h4>
+          <p>สำหรับ NFA $N$ ทุกตัว มี DFA $M$ ที่ $L(M) = L(N)$</p>
+          <p><strong>การพิสูจน์:</strong> ใช้ <em>Subset Construction (Power Set Construction)</em> — states ของ DFA $M$ คือสับเซตของ $Q_N$ (states ของ NFA) ดังนั้น $M$ มีได้สูงสุด $2^{|Q_N|}$ states</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.2.5</span> NFA และ Subset Construction</div>
+          <p>NFA $N$ บน $\{a, b\}$: รับสตริงที่ลงท้ายด้วย "ab" (แบบ NFA)</p>
+          <div class="solution">
+            <p><strong>States ของ NFA:</strong> $\{p_0, p_1, p_2\}$, $q_0 = p_0$, $F = \{p_2\}$</p>
+            <table class="trans-table">
+              <thead>
+                <tr><th>State</th><th>a</th><th>b</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="state-col">→ p₀</td><td>{p₀, p₁}</td><td>{p₀}</td></tr>
+                <tr><td class="state-col">p₁</td><td>∅</td><td>{p₂}</td></tr>
+                <tr><td class="state-col accept-marker">* p₂</td><td>∅</td><td>∅</td></tr>
+              </tbody>
+            </table>
+            <p>NFA นี้ง่ายกว่า: จาก $p_0$ อ่าน a สามารถ "เดาว่า" a นี้คือจุดเริ่ม "ab" ได้</p>
+            <p>Subset Construction จะสร้าง DFA ที่สมมูล — ซึ่งก็คือ DFA ในตัวอย่าง 12.2.3</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 12.3 -->
+    <!-- ============================================================ -->
+    <section id="sec123" class="ch-section">
+      <div class="section-header" style="--ch-color:#6d28d9">
+        <span class="sec-num">12.3</span>
+        <div>
+          <h2>Simplifying Finite-State Automata</h2>
+          <p>การทำให้ออโตมาตาเรียบง่าย — Minimization</p>
+        </div>
+      </div>
+
+      <!-- Minimization Algorithm -->
+      <div id="min-algo" class="subsec">
+        <h3>DFA Minimization Algorithm</h3>
+
+        <p>DFA ที่รับภาษาเดียวกันอาจมี states จำนวนต่างกัน เราต้องการหา <strong>Minimal DFA</strong> — DFA ที่มี states น้อยที่สุดสำหรับ language นั้น</p>
+
+        <div class="def-box">
+          <h4>นิยาม: States ที่แยกแยะได้ (Distinguishable States)</h4>
+          <p>States $p, q \in Q$ <strong>แยกแยะได้</strong> ก็ต่อเมื่อมีสตริง $w \in \Sigma^*$ ที่ทำให้ DFA ยอมรับจาก $p$ แต่ปฏิเสธจาก $q$ (หรือกลับกัน)</p>
+          <p>กล่าวคือ $\delta^*(p, w) \in F$ และ $\delta^*(q, w) \notin F$ หรือในทางกลับกัน</p>
+          <p>ถ้า $p$ และ $q$ ไม่แยกแยะได้ เรียกว่า <strong>equivalent (สมมูล)</strong> — สามารถรวมเป็น state เดียวได้</p>
+        </div>
+
+        <div class="min-steps">
+          <div class="min-step">
+            <div class="min-step-num">1</div>
+            <div class="min-step-body">
+              <strong>ขั้นตอน 1: ลบ Unreachable States</strong><br>
+              ลบ states ที่ไม่สามารถไปถึงได้จาก start state $q_0$ ด้วย input ใดๆ ออกไป (ใช้ BFS หรือ DFS จาก $q_0$)
+            </div>
+          </div>
+          <div class="min-step">
+            <div class="min-step-num">2</div>
+            <div class="min-step-body">
+              <strong>ขั้นตอน 2: Table-Filling Algorithm</strong><br>
+              สร้างตารางคู่ $(p, q)$ สำหรับทุกคู่ states: ทำเครื่องหมาย (marked) ถ้า $p \in F$ และ $q \notin F$ (หรือกลับกัน) จากนั้น propagate: ถ้า $(p,q)$ ยังไม่ marked แต่มีสัญลักษณ์ $a$ ที่ $(\delta(p,a), \delta(q,a))$ ถูก marked แล้ว ให้ mark $(p,q)$ ด้วย วนซ้ำจนไม่มีการเปลี่ยนแปลง
+            </div>
+          </div>
+          <div class="min-step">
+            <div class="min-step-num">3</div>
+            <div class="min-step-body">
+              <strong>ขั้นตอน 3: รวม Equivalent States</strong><br>
+              คู่ $(p,q)$ ที่ไม่ถูก marked คือ equivalent states — รวมเป็น state เดียว ปรับ transitions ตามไปด้วย
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>ผลลัพธ์:</strong> Minimal DFA ที่ได้มีจำนวน states น้อยที่สุดที่เป็นไปได้ และเป็น <em>unique</em> (ไม่นับชื่อ states) สำหรับ language นั้น
+        </div>
+      </div>
+
+      <!-- Minimization Example -->
+      <div id="min-example" class="subsec">
+        <h3>ตัวอย่าง: Minimize DFA 5 States → 3 States</h3>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.3.1</span> Minimize DFA บน $\Sigma = \{a, b\}$</div>
+          <p>พิจารณา DFA ต่อไปนี้ (5 states: $q_0, q_1, q_2, q_3, q_4$, $F = \{q_1, q_4\}$)</p>
+          <div class="solution">
+            <table class="trans-table">
+              <thead>
+                <tr><th>State</th><th>a</th><th>b</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="state-col">→ q₀</td><td>q₁</td><td>q₂</td></tr>
+                <tr><td class="state-col accept-marker">* q₁</td><td>q₀</td><td>q₃</td></tr>
+                <tr><td class="state-col">q₂</td><td>q₄</td><td>q₀</td></tr>
+                <tr><td class="state-col">q₃</td><td>q₂</td><td>q₁</td></tr>
+                <tr><td class="state-col accept-marker">* q₄</td><td>q₃</td><td>q₂</td></tr>
+              </tbody>
+            </table>
+
+            <p><strong>ขั้นที่ 1:</strong> ตรวจ Reachability — ทุก states ถึงได้จาก $q_0$ ดังนั้นไม่มีอะไรต้องลบ</p>
+
+            <p><strong>ขั้นที่ 2:</strong> Table-Filling</p>
+            <p>เริ่มต้น: mark ทุกคู่ที่มีหนึ่ง state ใน $F$ และอีกอันไม่ใน $F$</p>
+            <p>$F = \{q_1, q_4\}$, non-$F = \{q_0, q_2, q_3\}$</p>
+            <p>Mark ครั้งแรก (Base): $(q_0,q_1), (q_0,q_4), (q_2,q_1), (q_2,q_4), (q_3,q_1), (q_3,q_4)$</p>
+
+            <p><strong>Propagate:</strong> พิจารณาคู่ $(q_0, q_2)$:</p>
+            <ul>
+              <li>อ่าน $a$: $\delta(q_0,a)=q_1$, $\delta(q_2,a)=q_4$ — $(q_1,q_4)$ เป็นสองตัวใน $F$ ทั้งคู่ — ไม่ marked</li>
+              <li>อ่าน $b$: $\delta(q_0,b)=q_2$, $\delta(q_2,b)=q_0$ — $(q_0,q_2)$ คือตัวเอง — ยังไม่ marked</li>
+            </ul>
+            <p>พิจารณาคู่ $(q_0, q_3)$:</p>
+            <ul>
+              <li>อ่าน $a$: $\delta(q_0,a)=q_1$, $\delta(q_3,a)=q_2$ — $(q_1,q_2)$ — $q_1 \in F, q_2 \notin F$ — marked! ดังนั้น mark $(q_0,q_3)$</li>
+            </ul>
+            <p>พิจารณาคู่ $(q_2, q_3)$:</p>
+            <ul>
+              <li>อ่าน $a$: $\delta(q_2,a)=q_4$, $\delta(q_3,a)=q_2$ — $(q_2,q_4)$ — marked! ดังนั้น mark $(q_2,q_3)$</li>
+            </ul>
+            <p>พิจารณาคู่ $(q_1, q_4)$:</p>
+            <ul>
+              <li>อ่าน $a$: $\delta(q_1,a)=q_0$, $\delta(q_4,a)=q_3$ — $(q_0,q_3)$ — marked แล้ว! ดังนั้น mark $(q_1,q_4)$</li>
+            </ul>
+
+            <p><strong>ผล:</strong> คู่ที่ไม่ถูก mark = $(q_0, q_2)$ และ $(q_1, q_4)$</p>
+            <p>ดังนั้น: $q_0 \equiv q_2$ และ $q_1 \equiv q_4$</p>
+
+            <p><strong>ขั้นที่ 3:</strong> รวม Equivalent States</p>
+            <ul>
+              <li>$[A] = \{q_0, q_2\}$ (start state)</li>
+              <li>$[B] = \{q_1, q_4\}$ (accept state)</li>
+              <li>$[C] = \{q_3\}$</li>
+            </ul>
+
+            <p><strong>Minimal DFA (3 states):</strong></p>
+            <table class="trans-table">
+              <thead>
+                <tr><th>State</th><th>a</th><th>b</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="state-col">→ [A]</td><td>[B]</td><td>[A]</td></tr>
+                <tr><td class="state-col accept-marker">* [B]</td><td>[A]</td><td>[C]</td></tr>
+                <tr><td class="state-col">[C]</td><td>[A]</td><td>[B]</td></tr>
+              </tbody>
+            </table>
+            <p>ลดจาก 5 states เหลือ <strong>3 states</strong> ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Myhill-Nerode -->
+      <div id="myhill" class="subsec">
+        <h3>Myhill-Nerode Theorem</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท Myhill-Nerode</h4>
+          <p>Language $L \subseteq \Sigma^*$ เป็น regular ก็ต่อเมื่อ <strong>Nerode right congruence</strong> $\sim_L$ มี equivalence classes จำนวนจำกัด</p>
+          <p><strong>นิยาม $\sim_L$:</strong> สำหรับ $x, y \in \Sigma^*$ เขียน $x \sim_L y$ ก็ต่อเมื่อ สำหรับทุก $w \in \Sigma^*$: $xw \in L \iff yw \in L$</p>
+          <p>จำนวน equivalence classes ของ $\sim_L$ เท่ากับจำนวน states ของ minimal DFA สำหรับ $L$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.3.2</span> หา Myhill-Nerode Classes สำหรับ $L = \{w \mid w \text{ ลงท้ายด้วย "ab"}\}$</div>
+          <div class="solution">
+            <p>พิจารณา equivalence classes บน $\{a,b\}^*$:</p>
+            <ul>
+              <li>$[q_0]$: สตริง $x$ ที่ไม่ลงท้ายด้วย a หรือ ab — เช่น $\lambda, b, bb, ba, bba$</li>
+              <li>$[q_1]$: สตริง $x$ ที่ลงท้ายด้วย a (แต่ไม่ใช่ "ab") — เช่น $a, aa, ba, baa$</li>
+              <li>$[q_2]$: สตริง $x$ ที่ลงท้ายด้วย "ab" — เช่น $ab, aab, bab$</li>
+            </ul>
+            <p>มี 3 classes ดังนั้น minimal DFA มี 3 states — ซึ่งตรงกับ DFA ในตัวอย่าง 12.2.3</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pumping Lemma -->
+      <div id="pumping" class="subsec">
+        <h3>Pumping Lemma สำหรับ Regular Languages</h3>
+
+        <div class="pump-box">
+          <h4>ทฤษฎีบท: Pumping Lemma for Regular Languages</h4>
+          <p>ถ้า $L$ เป็น regular language แล้วมีจำนวนเต็ม $p \geq 1$ (เรียกว่า <em>pumping length</em>) ที่สำหรับทุกสตริง $s \in L$ ที่ $|s| \geq p$ สามารถเขียน $s = xyz$ โดย:</p>
+          <ol>
+            <li>$|xy| \leq p$</li>
+            <li>$|y| \geq 1$ (กล่าวคือ $y \neq \lambda$)</li>
+            <li>สำหรับทุก $i \geq 0$: $xy^iz \in L$</li>
+          </ol>
+          <p>กล่าวคือ สามารถ "pump" (ซ้ำส่วน $y$) กี่ครั้งก็ได้แล้วยังอยู่ใน $L$</p>
+        </div>
+
+        <div class="highlight-box">
+          <strong>การใช้ Pumping Lemma แสดงว่า $L$ ไม่ regular:</strong> สมมติว่า $L$ regular แล้วใช้ Pumping Lemma นำไปสู่ contradiction — แสดงว่าสมมติฐานผิด ดังนั้น $L$ ไม่ regular (Proof by Contradiction)
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.3.3</span> พิสูจน์ว่า $L = \{0^n 1^n \mid n \geq 0\}$ ไม่ Regular</div>
+          <div class="solution">
+            <p><strong>พิสูจน์โดยใช้ Pumping Lemma:</strong></p>
+            <p>สมมติว่า $L$ เป็น regular และ $p$ คือ pumping length</p>
+            <p>เลือก $s = 0^p 1^p \in L$ (ความยาว $2p \geq p$)</p>
+            <p>โดย Pumping Lemma: $s = xyz$ โดย $|xy| \leq p$, $|y| \geq 1$, $xy^iz \in L$ สำหรับทุก $i \geq 0$</p>
+            <p>เพราะ $|xy| \leq p$: $xy$ อยู่ในส่วน $0^p$ ทั้งหมด ดังนั้น $y = 0^k$ สำหรับบาง $k \geq 1$</p>
+            <p>พิจารณา $i = 2$: $xy^2z = 0^{p+k} 1^p$ (มี 0 มากกว่า 1 เพราะ $k \geq 1$)</p>
+            <p>แต่ $0^{p+k} 1^p \notin L$ เพราะจำนวน 0 ไม่เท่ากับจำนวน 1 — <strong>contradiction!</strong></p>
+            <p>ดังนั้น $L$ ไม่ regular ∎</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.3.4</span> พิสูจน์ว่า $L = \{ww \mid w \in \{a,b\}^*\}$ ไม่ Regular</div>
+          <div class="solution">
+            <p>สมมติว่า $L$ regular และ $p$ คือ pumping length</p>
+            <p>เลือก $s = a^p b a^p b \in L$ (โดย $w = a^p b$)</p>
+            <p>$s = xyz$ โดย $|xy| \leq p \Rightarrow y = a^k$ สำหรับบาง $k \geq 1$ (อยู่ในส่วน $a^p$ แรก)</p>
+            <p>พิจารณา $i = 0$: $xz = a^{p-k} b a^p b$</p>
+            <p>ถ้า $xz \in L$ ต้องมีรูป $ww$ คือ $|xz|$ ต้องเป็นเลขคู่และครึ่งแรก = ครึ่งหลัง</p>
+            <p>แต่ $xz = a^{p-k} b a^p b$ — ส่วนแรกมี $a$ น้อยกว่าส่วนหลัง ($p-k < p$) — ไม่ใช่รูป $ww$ — contradiction ∎</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kleene's Theorem -->
+      <div id="kleene" class="subsec">
+        <h3>Kleene's Theorem — การเชื่อมโยงทุกอย่างเข้าด้วยกัน</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท Kleene (สรุปสูงสุดของบทนี้)</h4>
+          <p>สำหรับ language $L \subseteq \Sigma^*$ สามเงื่อนไขต่อไปนี้สมมูลกัน:</p>
+          <ol style="padding-left:20px; line-height:2; font-size:15px;">
+            <li>$L$ เป็น <strong>Regular Language</strong> — มี DFA $M$ ที่ $L(M) = L$</li>
+            <li>$L$ อธิบายได้ด้วย <strong>Regular Expression</strong> — มี RE $r$ ที่ $L(r) = L$</li>
+            <li>$L$ รับได้โดย <strong>NFA</strong> บางตัว</li>
+          </ol>
+        </div>
+
+        <div class="dfa-diagram">
+          <div class="dfa-diagram-title">วงจรการเปลี่ยนระหว่างแบบจำลอง</div>
+          <div class="dfa-svg-wrap">
+            <svg width="500" height="160" viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" font-family="Sarabun, sans-serif" font-size="13">
+              <defs>
+                <marker id="arr3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L8,3 z" fill="#6d28d9"/>
+                </marker>
+              </defs>
+              <!-- RE box -->
+              <rect x="30" y="55" width="120" height="50" rx="10" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/>
+              <text x="90" y="78" text-anchor="middle" fill="#4c1d95" font-weight="700" font-size="14">Regular</text>
+              <text x="90" y="96" text-anchor="middle" fill="#4c1d95" font-weight="700" font-size="14">Expression</text>
+              <!-- NFA box -->
+              <rect x="190" y="55" width="120" height="50" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+              <text x="250" y="78" text-anchor="middle" fill="#1e40af" font-weight="700" font-size="14">NFA</text>
+              <text x="250" y="96" text-anchor="middle" fill="#1e40af" font-size="12">(with ε-transitions)</text>
+              <!-- DFA box -->
+              <rect x="350" y="55" width="120" height="50" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+              <text x="410" y="78" text-anchor="middle" fill="#15803d" font-weight="700" font-size="14">DFA</text>
+              <text x="410" y="96" text-anchor="middle" fill="#15803d" font-size="12">(Minimal)</text>
+
+              <!-- RE -> NFA -->
+              <line x1="150" y1="72" x2="190" y2="72" stroke="#6d28d9" stroke-width="2" marker-end="url(#arr3)"/>
+              <text x="170" y="65" text-anchor="middle" fill="#374151" font-size="11">Thompson</text>
+              <!-- NFA -> DFA -->
+              <line x1="310" y1="80" x2="350" y2="80" stroke="#6d28d9" stroke-width="2" marker-end="url(#arr3)"/>
+              <text x="330" y="73" text-anchor="middle" fill="#374151" font-size="11">Subset</text>
+              <!-- DFA -> RE -->
+              <path d="M370,105 Q250,150 130,105" fill="none" stroke="#6d28d9" stroke-width="2" marker-end="url(#arr3)"/>
+              <text x="250" y="148" text-anchor="middle" fill="#374151" font-size="11">State Elimination</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <p><strong>Thompson Construction:</strong> แปลง RE เป็น NFA (with ε-transitions) อย่างเป็นระบบ</p>
+          <p><strong>Subset Construction:</strong> แปลง NFA เป็น DFA สมมูล (อาจมี states มากขึ้น)</p>
+          <p><strong>State Elimination:</strong> แปลง DFA กลับเป็น RE (ลบ states ทีละตัว สร้าง RE สำหรับ transition)</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 12.3.5</span> ตัวอย่างภาษาที่ Regular และไม่ Regular</div>
+          <div class="solution">
+            <table class="eq-table">
+              <thead>
+                <tr><th>Language</th><th>Regular?</th><th>เหตุผล</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>$(0|1)^*01(0|1)^*$</td><td style="color:#15803d; font-weight:700;">ใช่ ✓</td><td>มี RE โดยตรง</td></tr>
+                <tr><td>$\{w \mid |w| \equiv 0 \pmod{5}\}$</td><td style="color:#15803d; font-weight:700;">ใช่ ✓</td><td>DFA ที่นับ mod 5 (5 states)</td></tr>
+                <tr><td>$\{0^n 1^n \mid n \geq 0\}$</td><td style="color:#dc2626; font-weight:700;">ไม่ ✗</td><td>Pumping Lemma (ต้องการ "นับ")</td></tr>
+                <tr><td>$\{w \mid w = w^R\}$ (palindrome)</td><td style="color:#dc2626; font-weight:700;">ไม่ ✗</td><td>Pumping Lemma (ต้องเปรียบเทียบสองส่วน)</td></tr>
+                <tr><td>$\{a^{p} \mid p \text{ เป็นจำนวนเฉพาะ}\}$</td><td style="color:#dc2626; font-weight:700;">ไม่ ✗</td><td>Pumping Lemma / Myhill-Nerode</td></tr>
+                <tr><td>$\emptyset$ และ $\Sigma^*$</td><td style="color:#15803d; font-weight:700;">ใช่ ✓</td><td>DFA ที่ reject/accept ทุกอย่าง</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SUMMARY -->
+    <!-- ============================================================ -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#6d28d9">
+        <span class="sec-num">📋</span>
+        <div>
+          <h2>สรุปบทที่ 12</h2>
+          <p>Regular Expressions and Finite-State Automata</p>
+        </div>
+      </div>
+
+      <div class="ch12-summary-grid">
+        <div class="ch12-summary-card">
+          <h4>12.1 Regular Expressions</h4>
+          <ul>
+            <li>$\Sigma$: Alphabet, $\Sigma^*$: ทุกสตริง</li>
+            <li>Language $L \subseteq \Sigma^*$</li>
+            <li>RE: $\emptyset, \lambda, a \in \Sigma$</li>
+            <li>$(rs)$ — concatenation</li>
+            <li>$(r|s)$ — union/alternation</li>
+            <li>$(r^*)$ — Kleene star</li>
+            <li>$r^+ = rr^*$, $r? = r|\lambda$</li>
+          </ul>
+        </div>
+        <div class="ch12-summary-card">
+          <h4>12.2 DFA / NFA</h4>
+          <ul>
+            <li>DFA $M = (Q, \Sigma, \delta, q_0, F)$</li>
+            <li>$\delta: Q \times \Sigma \to Q$ (deterministic)</li>
+            <li>$L(M)$ = language ที่ DFA รับ</li>
+            <li>NFA: $\delta: Q \times (\Sigma \cup \{\varepsilon\}) \to \mathcal{P}(Q)$</li>
+            <li>NFA $\equiv$ DFA (Rabin-Scott)</li>
+            <li>Subset Construction: NFA → DFA</li>
+            <li>Double circle = accept state</li>
+          </ul>
+        </div>
+        <div class="ch12-summary-card">
+          <h4>12.3 Simplification</h4>
+          <ul>
+            <li>Minimization: ลบ unreachable, merge equivalent</li>
+            <li>Table-filling algorithm</li>
+            <li>Myhill-Nerode: classes = states</li>
+            <li>Pumping Lemma: พิสูจน์ไม่ regular</li>
+            <li>Kleene's Theorem: RE ↔ NFA ↔ DFA</li>
+            <li>Regular languages ปิดภายใต้ ∪, ∩, complement</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="final-banner">
+        <h3>🎓 จบหลักสูตร Discrete Mathematics</h3>
+        <p>ตลอดหลักสูตรนี้ เราได้ศึกษาตั้งแต่ Logic &amp; Proof, Sets &amp; Relations, Functions, Induction, Combinatorics, Graph Theory ไปจนถึง Regular Languages — ซึ่งล้วนเป็นรากฐานสำคัญของวิทยาการคอมพิวเตอร์</p>
+        <p style="margin-top:14px;">Regular Expression และ Finite-State Automata เชื่อมทฤษฎีคณิตศาสตร์เข้ากับการประยุกต์ใช้จริงในการเขียน compiler, ตรวจสอบ input, และออกแบบระบบดิจิทัล — เป็นสะพานสำคัญสู่วิชา Theory of Computation, Compiler Design และ Formal Verification</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- EXERCISES -->
+    <!-- ============================================================ -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#ea580c">
+        <span class="sec-num">✏️</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>จากหนังสือ Discrete Mathematics with Applications — Susanna S. Epp</p>
+        </div>
+      </div>
+
+      <div class="exercises-list">
+        <div class="exercise-item">
+          <span class="ex-num">12.1</span>
+          <div class="ex-content">
+            <strong>Regular Expressions:</strong> ให้ $\Sigma = \{a, b\}$ เขียน RE สำหรับ languages ต่อไปนี้:
+            (1) สตริงทั้งหมดที่มีความยาวอย่างน้อย 2 และเริ่มต้นด้วย $a$
+            (2) สตริงที่ประกอบด้วย $a$ และ $b$ สลับกันเสมอ (เช่น $ab, ba, abab, baba$)
+            (3) สตริงที่ไม่มี $aa$ เป็น substring
+            (4) สตริงที่มีจำนวน $a$ หารด้วย 3 ลงตัว
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">12.2</span>
+          <div class="ex-content">
+            <strong>Language ของ RE:</strong> อธิบาย language ที่ RE ต่อไปนี้แทน (บน $\{0,1\}$):
+            (1) $(00|11)^*$
+            (2) $(0|1)^*0(0|1)(0|1)$
+            (3) $0^*10^*10^*10^*$
+            (4) $(0^*1)^*0^*$
+            และทดสอบว่า $w = 010110$ อยู่ใน language (3) หรือไม่
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">12.3</span>
+          <div class="ex-content">
+            <strong>DFA Construction:</strong> ออกแบบ DFA บน $\{0,1\}$ สำหรับ:
+            (1) $L = \{w \mid w \text{ ลงท้ายด้วย "00"}\}$
+            (2) $L = \{w \mid w \text{ มีจำนวน 1 หารด้วย 2 ลงตัว}\}$
+            (3) $L = \{w \mid |w| \equiv 2 \pmod{3}\}$
+            (4) $L = \{w \mid w \text{ แทน binary ที่หารด้วย 4 ลงตัว}\}$
+            สำหรับแต่ละ DFA วาด state diagram และเขียน transition table
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">12.4</span>
+          <div class="ex-content">
+            <strong>DFA Simulation:</strong> ให้ DFA $M$ บน $\{a,b\}$: $Q=\{q_0,q_1,q_2\}$, $q_0$ = start, $F=\{q_0\}$, $\delta(q_0,a)=q_1$, $\delta(q_0,b)=q_0$, $\delta(q_1,a)=q_2$, $\delta(q_1,b)=q_0$, $\delta(q_2,a)=q_1$, $\delta(q_2,b)=q_2$
+            (1) จำลองการทำงานบน $w = abba$, $w = aba$, $w = aab$
+            (2) อธิบาย $L(M)$ เป็น Regular Expression
+            (3) หา Minimal DFA (ถ้า DFA นี้ยังไม่ minimal)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">12.5</span>
+          <div class="ex-content">
+            <strong>NFA และ Subset Construction:</strong> ให้ NFA บน $\{0,1\}$ มี states $\{p,q,r\}$, start $p$, accept $\{r\}$, $\delta(p,0)=\{p,q\}$, $\delta(p,1)=\{p\}$, $\delta(q,0)=\emptyset$, $\delta(q,1)=\{r\}$, $\delta(r,0)=\{r\}$, $\delta(r,1)=\{r\}$
+            (1) อธิบาย $L(N)$ (language ที่ NFA รับ)
+            (2) ใช้ Subset Construction เพื่อแปลงเป็น DFA สมมูล
+            (3) Minimize DFA ที่ได้
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">12.6</span>
+          <div class="ex-content">
+            <strong>Pumping Lemma:</strong> ใช้ Pumping Lemma พิสูจน์ว่า languages ต่อไปนี้ไม่ regular:
+            (1) $L = \{0^{n^2} \mid n \geq 0\}$ — สตริง 0 ยาวที่เป็นกำลังสอง
+            (2) $L = \{a^n b^m \mid n > m\}$
+            (3) $L = \{w \in \{a,b\}^* \mid \#_a(w) = \#_b(w)\}$ — สตริงที่มี $a$ เท่ากับ $b$
+            (4) อธิบายว่าทำไม Pumping Lemma เพียงอย่างเดียวไม่พอที่จะ<em>พิสูจน์ว่า language เป็น regular</em>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER NAV -->
+    <div class="chapter-nav">
+      <a href="chapter11.html" class="nav-btn prev-btn">← บทที่ 11</a>
+      <a href="../index.html" class="nav-btn next-btn">กลับหน้าหลัก →</a>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง — บทที่ 12: Regular Expressions and Finite-State Automata</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล · ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ · มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 · เนื้อหาจาก <em>Discrete Mathematics with Applications</em> — Susanna S. Epp</p>
+</footer>
+
+<script>
+  const SCROLL_OFFSET = 80;
+  document.querySelectorAll('.ch-toc a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'instant' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
+  const sections = document.querySelectorAll('.ch-section, .subsec');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (s.id && window.scrollY >= s.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET - 10) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('ch-sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

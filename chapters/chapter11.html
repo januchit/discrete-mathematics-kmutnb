@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 11 – Analysis of Algorithm Efficiency | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+  <style>
+    /* ---- Chapter 11 color variable ---- */
+    :root { --ch11: #0369a1; }
+
+    /* ---- def-box / thm-box / note-box ---- */
+    .def-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 4px solid #0369a1;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+    .def-box h4 { font-size: 14px; font-weight: 700; color: #0369a1; margin-bottom: 10px; }
+    .def-box p, .def-box ul, .def-box ol { font-size: 15px; line-height: 1.8; }
+    .def-box ul, .def-box ol { padding-left: 20px; margin-top: 6px; }
+
+    .thm-box {
+      background: #fdf4ff;
+      border: 1.5px solid #e9d5ff;
+      border-left: 4px solid #7c3aed;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+    .thm-box h4 { font-size: 14px; font-weight: 700; color: #6d28d9; margin-bottom: 10px; }
+    .thm-box p, .thm-box ul { font-size: 15px; line-height: 1.8; }
+    .thm-box ul { padding-left: 20px; }
+
+    .note-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #16a34a;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ---- Complexity / growth-rate table ---- */
+    .complexity-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 16px 0;
+    }
+    .complexity-table th {
+      background: #0369a1;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .complexity-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+    .complexity-table tr:nth-child(even) td { background: #f0f9ff; }
+
+    /* Color-coded complexity badges */
+    .badge-o1    { background:#dcfce7; color:#15803d; padding:2px 8px; border-radius:12px; font-size:13px; font-family:'JetBrains Mono',monospace; font-weight:700; }
+    .badge-log   { background:#d1fae5; color:#065f46; padding:2px 8px; border-radius:12px; font-size:13px; font-family:'JetBrains Mono',monospace; font-weight:700; }
+    .badge-n     { background:#fef9c3; color:#854d0e; padding:2px 8px; border-radius:12px; font-size:13px; font-family:'JetBrains Mono',monospace; font-weight:700; }
+    .badge-nlog  { background:#fed7aa; color:#9a3412; padding:2px 8px; border-radius:12px; font-size:13px; font-family:'JetBrains Mono',monospace; font-weight:700; }
+    .badge-n2    { background:#fecaca; color:#991b1b; padding:2px 8px; border-radius:12px; font-size:13px; font-family:'JetBrains Mono',monospace; font-weight:700; }
+    .badge-exp   { background:#fce7f3; color:#9d174d; padding:2px 8px; border-radius:12px; font-size:13px; font-family:'JetBrains Mono',monospace; font-weight:700; }
+
+    /* ---- Growth hierarchy visual ---- */
+    .growth-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 18px 0;
+    }
+    .growth-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .growth-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      min-width: 90px;
+      color: #1e3a5f;
+    }
+    .growth-bar {
+      height: 22px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 12px;
+      color: white;
+      font-weight: 600;
+      transition: width 0.3s;
+    }
+
+    /* ---- Algorithm comparison table ---- */
+    .algo-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 14px 0;
+    }
+    .algo-table th {
+      background: #1e3a5f;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .algo-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+    .algo-table tr:nth-child(even) td { background: #f8fafc; }
+
+    /* ---- Step-count table ---- */
+    .step-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 12px 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .step-table th {
+      background: #475569;
+      color: white;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    .step-table td {
+      padding: 7px 12px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+    .step-table tr:nth-child(even) td { background: #f8fafc; }
+
+    /* ---- Code block ---- */
+    .code-block {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      margin: 14px 0;
+      overflow-x: auto;
+    }
+    .code-block .kw  { color: #818cf8; }
+    .code-block .fn  { color: #34d399; }
+    .code-block .cm  { color: #64748b; font-style: italic; }
+    .code-block .num { color: #fb923c; }
+    .code-block .var { color: #fbbf24; }
+
+    /* ---- Proof box ---- */
+    .proof-box {
+      background: #f5f3ff;
+      border: 1.5px solid #c4b5fd;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin: 14px 0;
+    }
+    .proof-box .proof-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #5b21b6;
+      margin-bottom: 12px;
+    }
+    .proof-step { margin: 8px 0; padding: 10px 14px; border-radius: 8px; }
+    .proof-step.assume  { background: #f0fdf4; border-left: 4px solid #16a34a; }
+    .proof-step.derive  { background: #eff6ff; border-left: 4px solid #2563eb; }
+    .proof-step.conclude{ background: #fdf4ff; border-left: 4px solid #9333ea; }
+    .proof-step h5 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .proof-step.assume h5  { color: #15803d; }
+    .proof-step.derive h5  { color: #1d4ed8; }
+    .proof-step.conclude h5{ color: #7e22ce; }
+    .proof-step p { font-size: 14px; line-height: 1.7; margin: 3px 0; }
+    .qed { text-align: right; font-style: italic; color: #5b21b6; font-weight: 600; margin-top: 8px; }
+
+    /* ---- Big-O cards ---- */
+    .notation-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .notation-card {
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      border: 2px solid;
+    }
+    .notation-card .nc-sym {
+      font-size: 28px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .notation-card .nc-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .notation-card .nc-def  { font-size: 13px; line-height: 1.6; color: #475569; }
+    .nc-bigo  { background: #eff6ff; border-color: #3b82f6; }
+    .nc-bigo  .nc-sym { color: #2563eb; }
+    .nc-omega { background: #f0fdf4; border-color: #22c55e; }
+    .nc-omega .nc-sym { color: #16a34a; }
+    .nc-theta { background: #fdf4ff; border-color: #a855f7; }
+    .nc-theta .nc-sym { color: #7e22ce; }
+
+    /* ---- Complexity hierarchy visual ---- */
+    .hierarchy-visual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin: 20px 0;
+    }
+    .hier-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      border-radius: 8px;
+      margin: 2px 0;
+      font-size: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: white;
+      min-width: 200px;
+      justify-content: center;
+    }
+    .hier-arrow { color: #94a3b8; font-size: 18px; }
+
+    @media (max-width: 768px) {
+      .notation-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="chapter10.html" class="ch-nav-link">← บทที่ 10</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 11</span>
+      <span class="ch-nav-divider">|</span>
+      <a href="chapter12.html" class="ch-nav-link">บทที่ 12 →</a>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#0369a1">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 11</div>
+      <div class="chapter-hero-icon">📊</div>
+      <h1 class="chapter-hero-title">Analysis of Algorithm Efficiency</h1>
+      <p class="chapter-hero-subtitle">การวิเคราะห์ประสิทธิภาพของอัลกอริทึม</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec111">11.1 Real-Valued Functions &amp; Graphs</a>
+          <ul>
+            <li><a href="#floor-ceil">Floor และ Ceiling</a></li>
+            <li><a href="#growth-types">ประเภทฟังก์ชัน</a></li>
+            <li><a href="#growth-compare">เปรียบเทียบอัตราการเติบโต</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec112">11.2 O-, Ω-, Θ-Notations</a>
+          <ul>
+            <li><a href="#big-o">Big-O Notation</a></li>
+            <li><a href="#big-omega">Big-Ω Notation</a></li>
+            <li><a href="#big-theta">Big-Θ Notation</a></li>
+            <li><a href="#notation-props">สมบัติของ Notations</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec113">11.3 Algorithm Efficiency I</a>
+          <ul>
+            <li><a href="#loop-analysis">การวิเคราะห์ Loop</a></li>
+            <li><a href="#seq-search">Sequential Search</a></li>
+            <li><a href="#insertion-sort">Insertion Sort</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec114">11.4 Exp &amp; Log Functions</a>
+          <ul>
+            <li><a href="#exp-props">ฟังก์ชัน Exponential</a></li>
+            <li><a href="#log-props">ฟังก์ชัน Logarithmic</a></li>
+            <li><a href="#orders-hierarchy">Hierarchy ของ Orders</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec115">11.5 Algorithm Efficiency II</a>
+          <ul>
+            <li><a href="#binary-search">Binary Search</a></li>
+            <li><a href="#merge-sort">Merge Sort</a></li>
+            <li><a href="#master-theorem">Master Theorem</a></li>
+            <li><a href="#comparison">ตาราง Complexity</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 11</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 11</h2>
+        <p>บทนี้ศึกษา <strong>การวิเคราะห์ประสิทธิภาพของอัลกอริทึม (Analysis of Algorithm Efficiency)</strong> ซึ่งเป็นหัวใจสำคัญของวิทยาการคอมพิวเตอร์ เราจะเรียนรู้สัญลักษณ์ Big-O, Omega, Theta ที่ใช้อธิบายพฤติกรรมของฟังก์ชันเมื่อ input มีขนาดใหญ่ขึ้น และนำไปประยุกต์วิเคราะห์อัลกอริทึมคลาสสิก เช่น Sequential Search, Binary Search, Insertion Sort และ Merge Sort</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">📈</span>
+            <strong>11.1 Real Functions &amp; Graphs</strong>
+            <p>Floor, Ceiling, อัตราการเติบโต: $1 \ll \log n \ll n \ll n^2 \ll 2^n$</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">𝒪</span>
+            <strong>11.2 O, Ω, Θ Notations</strong>
+            <p>นิยามอย่างเป็นทางการ, สมบัติ, การพิสูจน์ upper/lower/tight bounds</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">🔍</span>
+            <strong>11.3 Efficiency I</strong>
+            <p>Loop analysis, Sequential Search $O(n)$, Insertion Sort $O(n^2)$</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">🪵</span>
+            <strong>11.4 Exp &amp; Log</strong>
+            <p>คุณสมบัติ $a^x$, $\log_a n$, change of base, orders ของ magnitude</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">⚡</span>
+            <strong>11.5 Efficiency II</strong>
+            <p>Binary Search $O(\log n)$, Merge Sort $O(n\log n)$, Master Theorem</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 11.1 ===================== -->
+    <section id="sec111" class="ch-section">
+      <div class="section-header" style="--ch-color:#0369a1">
+        <span class="sec-num">11.1</span>
+        <div>
+          <h2>Real-Valued Functions of a Real Variable and Their Graphs</h2>
+          <p>ฟังก์ชันค่าจริง, กราฟ, Floor, Ceiling, และการเปรียบเทียบอัตราการเติบโต</p>
+        </div>
+      </div>
+
+      <div id="floor-ceil" class="subsec">
+        <h3>Floor และ Ceiling Functions</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Floor Function (ฟังก์ชันพื้น)</h4>
+          <p>สำหรับจำนวนจริง $x$ นิยาม <strong>Floor</strong> ของ $x$ คือ</p>
+          $$\lfloor x \rfloor = \text{จำนวนเต็มที่มากที่สุดที่ไม่เกิน } x$$
+          <p>นั่นคือ $\lfloor x \rfloor = n$ ก็ต่อเมื่อ $n \leq x < n+1$ โดยที่ $n \in \mathbb{Z}$</p>
+        </div>
+
+        <div class="def-box">
+          <h4>นิยาม: Ceiling Function (ฟังก์ชันเพดาน)</h4>
+          <p>สำหรับจำนวนจริง $x$ นิยาม <strong>Ceiling</strong> ของ $x$ คือ</p>
+          $$\lceil x \rceil = \text{จำนวนเต็มที่น้อยที่สุดที่ไม่น้อยกว่า } x$$
+          <p>นั่นคือ $\lceil x \rceil = n$ ก็ต่อเมื่อ $n - 1 < x \leq n$ โดยที่ $n \in \mathbb{Z}$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.1.1</span> คำนวณ Floor และ Ceiling</div>
+          <p>คำนวณค่า floor และ ceiling ของจำนวนต่อไปนี้</p>
+          <div class="solution">
+            <table class="step-table">
+              <thead><tr><th>$x$</th><th>$\lfloor x \rfloor$</th><th>$\lceil x \rceil$</th><th>หมายเหตุ</th></tr></thead>
+              <tbody>
+                <tr><td>$3.7$</td><td>$3$</td><td>$4$</td><td>$3 \leq 3.7 < 4$</td></tr>
+                <tr><td>$-2.1$</td><td>$-3$</td><td>$-2$</td><td>$-3 \leq -2.1 < -2$</td></tr>
+                <tr><td>$5$</td><td>$5$</td><td>$5$</td><td>จำนวนเต็ม: floor = ceil = ตัวเอง</td></tr>
+                <tr><td>$-0.5$</td><td>$-1$</td><td>$0$</td><td>$-1 \leq -0.5 < 0$</td></tr>
+                <tr><td>$\pi \approx 3.14159$</td><td>$3$</td><td>$4$</td><td>$3 \leq \pi < 4$</td></tr>
+              </tbody>
+            </table>
+            <p><strong>ข้อสังเกต:</strong> ถ้า $x$ เป็นจำนวนเต็ม $\lfloor x \rfloor = \lceil x \rceil = x$; ถ้าไม่ใช่ $\lfloor x \rfloor + 1 = \lceil x \rceil$</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.1.2</span> Floor ในการเขียนโปรแกรม</div>
+          <p>ในภาษา Python/C: <code style="background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:13px;">n // 2</code> คือ $\lfloor n/2 \rfloor$ และ <code style="background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:13px;">math.ceil(n/2)</code> คือ $\lceil n/2 \rceil$</p>
+          <div class="solution">
+            <p>สำหรับ $n = 7$: $\lfloor 7/2 \rfloor = 3$ (ผลหารจำนวนเต็ม) และ $\lceil 7/2 \rceil = 4$</p>
+            <p>ใช้ใน Binary Search: midpoint $= \lfloor (lo + hi) / 2 \rfloor$</p>
+            <p>ใช้ใน Merge Sort: แบ่ง array ขนาด $n$ ออกเป็น $\lfloor n/2 \rfloor$ และ $\lceil n/2 \rceil$</p>
+          </div>
+        </div>
+
+        <div class="thm-box">
+          <h4>สมบัติสำคัญของ Floor และ Ceiling</h4>
+          <ul>
+            <li>$\lfloor x \rfloor \leq x < \lfloor x \rfloor + 1$</li>
+            <li>$\lceil x \rceil - 1 < x \leq \lceil x \rceil$</li>
+            <li>$\lfloor -x \rfloor = -\lceil x \rceil$ และ $\lceil -x \rceil = -\lfloor x \rfloor$</li>
+            <li>$\lfloor x + n \rfloor = \lfloor x \rfloor + n$ สำหรับ $n \in \mathbb{Z}$</li>
+            <li>$\lfloor n/2 \rfloor + \lceil n/2 \rceil = n$ สำหรับ $n \in \mathbb{Z}$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.1.3</span> พิสูจน์สมบัติ $\lfloor n/2 \rfloor + \lceil n/2 \rceil = n$</div>
+          <div class="solution">
+            <p><strong>กรณี $n$ คู่:</strong> $n = 2k$ ดังนั้น $\lfloor 2k/2 \rfloor + \lceil 2k/2 \rceil = k + k = 2k = n$ ✓</p>
+            <p><strong>กรณี $n$ คี่:</strong> $n = 2k+1$ ดังนั้น $\lfloor (2k+1)/2 \rfloor + \lceil (2k+1)/2 \rceil = k + (k+1) = 2k+1 = n$ ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="growth-types" class="subsec">
+        <h3>ประเภทของฟังก์ชันและกราฟ</h3>
+
+        <p>ในการวิเคราะห์อัลกอริทึม เราสนใจฟังก์ชันหลักหลายประเภทที่แสดงถึงจำนวน "ขั้นตอน" ที่อัลกอริทึมใช้เมื่อ input มีขนาด $n$</p>
+
+        <div class="def-formal">
+          <span class="def-label">นิยาม</span>
+          <p><strong>ฟังก์ชัน Polynomial:</strong> $f(n) = a_k n^k + a_{k-1} n^{k-1} + \cdots + a_1 n + a_0$ โดย $a_k \neq 0$</p>
+          <p><strong>ฟังก์ชัน Exponential:</strong> $f(n) = b^n$ โดย $b > 1$ เช่น $2^n$, $3^n$, $10^n$</p>
+          <p><strong>ฟังก์ชัน Logarithmic:</strong> $f(n) = \log_b n$ โดย $b > 1, b \neq 1$ เช่น $\log_2 n$, $\ln n$</p>
+          <p><strong>ฟังก์ชัน Factorial:</strong> $f(n) = n! = 1 \cdot 2 \cdot 3 \cdots n$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.1.4</span> คำนวณค่าฟังก์ชันหลายประเภท</div>
+          <div class="solution">
+            <table class="step-table">
+              <thead><tr><th>$n$</th><th>$\log_2 n$</th><th>$n$</th><th>$n\log_2 n$</th><th>$n^2$</th><th>$2^n$</th><th>$n!$</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>2</td><td>1</td></tr>
+                <tr><td>4</td><td>2</td><td>4</td><td>8</td><td>16</td><td>16</td><td>24</td></tr>
+                <tr><td>8</td><td>3</td><td>8</td><td>24</td><td>64</td><td>256</td><td>40,320</td></tr>
+                <tr><td>16</td><td>4</td><td>16</td><td>64</td><td>256</td><td>65,536</td><td>$\approx 2\times10^{13}$</td></tr>
+                <tr><td>32</td><td>5</td><td>32</td><td>160</td><td>1,024</td><td>$\approx 4.3\times10^9$</td><td>ใหญ่มาก</td></tr>
+              </tbody>
+            </table>
+            <p>สังเกต: $2^n$ และ $n!$ โตเร็วมาก ในขณะที่ $\log_2 n$ โตช้ามาก</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="growth-compare" class="subsec">
+        <h3>การเปรียบเทียบอัตราการเติบโต</h3>
+
+        <div class="key-box">
+          <h4>ลำดับการเติบโต (Growth Rate Hierarchy)</h4>
+          <p style="font-size:15px;margin-bottom:10px;">เมื่อ $n \to \infty$ ฟังก์ชันต่อไปนี้เรียงจากโตช้าไปโตเร็ว:</p>
+          $$1 \;<\; \log n \;<\; \sqrt{n} \;<\; n \;<\; n\log n \;<\; n^2 \;<\; n^3 \;<\; 2^n \;<\; n!$$
+        </div>
+
+        <div class="growth-chart">
+          <div class="growth-row">
+            <span class="growth-label">$O(1)$</span>
+            <div class="growth-bar" style="width:40px; background:#16a34a;">คงที่</div>
+          </div>
+          <div class="growth-row">
+            <span class="growth-label">$O(\log n)$</span>
+            <div class="growth-bar" style="width:80px; background:#0891b2;">log</div>
+          </div>
+          <div class="growth-row">
+            <span class="growth-label">$O(\sqrt{n})$</span>
+            <div class="growth-bar" style="width:130px; background:#0369a1;">sqrt</div>
+          </div>
+          <div class="growth-row">
+            <span class="growth-label">$O(n)$</span>
+            <div class="growth-bar" style="width:180px; background:#7c3aed;">linear</div>
+          </div>
+          <div class="growth-row">
+            <span class="growth-label">$O(n\log n)$</span>
+            <div class="growth-bar" style="width:240px; background:#ca8a04;">n log n</div>
+          </div>
+          <div class="growth-row">
+            <span class="growth-label">$O(n^2)$</span>
+            <div class="growth-bar" style="width:310px; background:#ea580c;">quadratic</div>
+          </div>
+          <div class="growth-row">
+            <span class="growth-label">$O(2^n)$</span>
+            <div class="growth-bar" style="width:400px; background:#dc2626;">exponential</div>
+          </div>
+          <div class="growth-row">
+            <span class="growth-label">$O(n!)$</span>
+            <div class="growth-bar" style="width:480px; background:#9d174d;">factorial</div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.1.5</span> พิสูจน์ว่า $\log_2 n < \sqrt{n}$ สำหรับ $n \geq 1$</div>
+          <div class="solution">
+            <p>ต้องการแสดง $\log_2 n < \sqrt{n}$ เทียบเท่า $n < 2^{\sqrt{n}}$ (ยกกำลัง 2 ทั้งสองข้าง)</p>
+            <p>ให้ $m = \sqrt{n}$ ดังนั้นต้องแสดง $m^2 < 2^m$ สำหรับ $m \geq 1$</p>
+            <p>ตรวจสอบ: $m=1: 1 < 2$ ✓; $m=2: 4 < 4$... เท่ากัน! ดังนั้นต้อง $n \geq 5$ (หรือ $m > 2$)</p>
+            <p>สำหรับ $m \geq 4$: $m^2 < 2^m$ พิสูจน์โดย induction (ฐาน $m=4: 16 = 2^4$ ✓; ขั้นอุปนัย: $(m+1)^2 = m^2 + 2m + 1 < 2^m + 2m + 1 < 2\cdot 2^m = 2^{m+1}$)</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.1.6</span> เวลาที่ใช้จริงสำหรับ $n = 10^6$</div>
+          <p>สมมติคอมพิวเตอร์ทำได้ $10^9$ ops/วินาที และ $n = 1{,}000{,}000$:</p>
+          <div class="solution">
+            <table class="complexity-table">
+              <thead><tr><th>Complexity</th><th>จำนวน ops</th><th>เวลาโดยประมาณ</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge-o1">O(1)</span></td><td>$1$</td><td>ทันที</td></tr>
+                <tr><td><span class="badge-log">O(log n)</span></td><td>$\approx 20$</td><td>ทันที</td></tr>
+                <tr><td><span class="badge-n">O(n)</span></td><td>$10^6$</td><td>$\approx 1$ ms</td></tr>
+                <tr><td><span class="badge-nlog">O(n log n)</span></td><td>$\approx 2\times10^7$</td><td>$\approx 20$ ms</td></tr>
+                <tr><td><span class="badge-n2">O(n²)</span></td><td>$10^{12}$</td><td>$\approx 17$ นาที</td></tr>
+                <tr><td><span class="badge-exp">O(2ⁿ)</span></td><td>$2^{10^6}$</td><td>นานกว่าอายุจักรวาล</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 11.2 ===================== -->
+    <section id="sec112" class="ch-section">
+      <div class="section-header" style="--ch-color:#0369a1">
+        <span class="sec-num">11.2</span>
+        <div>
+          <h2>O-, Ω-, and Θ-Notations</h2>
+          <p>สัญลักษณ์ Big-O, Big-Omega, Big-Theta — นิยามอย่างเป็นทางการและการพิสูจน์</p>
+        </div>
+      </div>
+
+      <div class="notation-cards">
+        <div class="notation-card nc-bigo">
+          <span class="nc-sym">O</span>
+          <div class="nc-name">Big-O (Upper Bound)</div>
+          <div class="nc-def">$f(n) = O(g(n))$: $f$ โตไม่เร็วกว่า $g$ (asymptotically)</div>
+        </div>
+        <div class="notation-card nc-omega">
+          <span class="nc-sym">Ω</span>
+          <div class="nc-name">Big-Ω (Lower Bound)</div>
+          <div class="nc-def">$f(n) = \Omega(g(n))$: $f$ โตไม่ช้ากว่า $g$ (asymptotically)</div>
+        </div>
+        <div class="notation-card nc-theta">
+          <span class="nc-sym">Θ</span>
+          <div class="nc-name">Big-Θ (Tight Bound)</div>
+          <div class="nc-def">$f(n) = \Theta(g(n))$: $f$ โตเร็วเท่ากับ $g$ (asymptotically)</div>
+        </div>
+      </div>
+
+      <div id="big-o" class="subsec">
+        <h3>Big-O Notation (สัญลักษณ์โอใหญ่)</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Big-O</h4>
+          <p>ให้ $f, g: \mathbb{Z}^+ \to \mathbb{R}^+$ เป็นฟังก์ชัน เราบอกว่า <strong>$f(n)$ คือ $O(g(n))$</strong> (อ่านว่า "$f$ คือ Big-O ของ $g$") ก็ต่อเมื่อ</p>
+          $$\exists\, c > 0,\; \exists\, n_0 \in \mathbb{Z}^+ \text{ such that } f(n) \leq c \cdot g(n) \text{ for all } n \geq n_0$$
+          <p>นั่นคือ $f(n)$ ถูก "ขอบเขตบน" โดย $c \cdot g(n)$ เมื่อ $n$ ใหญ่พอ</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.2.1</span> พิสูจน์ว่า $5n^2 + 3n + 1 = O(n^2)$</div>
+          <div class="solution">
+            <div class="proof-box">
+              <div class="proof-title">การพิสูจน์</div>
+              <div class="proof-step assume">
+                <h5>กำหนด</h5>
+                <p>ต้องการหา $c > 0$ และ $n_0$ ที่ทำให้ $5n^2 + 3n + 1 \leq c \cdot n^2$ สำหรับ $n \geq n_0$</p>
+              </div>
+              <div class="proof-step derive">
+                <h5>หา Bound</h5>
+                <p>สำหรับ $n \geq 1$: $3n \leq 3n^2$ และ $1 \leq n^2$</p>
+                <p>ดังนั้น $5n^2 + 3n + 1 \leq 5n^2 + 3n^2 + n^2 = 9n^2$</p>
+              </div>
+              <div class="proof-step conclude">
+                <h5>สรุป</h5>
+                <p>เลือก $c = 9$ และ $n_0 = 1$: สำหรับทุก $n \geq 1$ มี $5n^2 + 3n + 1 \leq 9n^2$</p>
+                <p>ดังนั้น $5n^2 + 3n + 1 = O(n^2)$ ∎</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.2.2</span> พิสูจน์ว่า $n^2 \neq O(n)$</div>
+          <div class="solution">
+            <p>สมมติ (เพื่อหา contradiction) ว่า $n^2 = O(n)$ หมายความว่ามี $c > 0$ และ $n_0$ ที่ $n^2 \leq cn$ สำหรับ $n \geq n_0$</p>
+            <p>นั่นคือ $n \leq c$ สำหรับ $n \geq n_0$ ซึ่งขัดแย้งกับ $n$ สามารถใหญ่ได้ไม่จำกัด</p>
+            <p>ดังนั้น $n^2 \neq O(n)$ ∎</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.2.3</span> พิสูจน์ว่า $100n + \log n = O(n)$</div>
+          <div class="solution">
+            <p>สำหรับ $n \geq 2$: $\log_2 n \leq n$ (เห็นได้จากกราฟ)</p>
+            <p>ดังนั้น $100n + \log_2 n \leq 100n + n = 101n$</p>
+            <p>เลือก $c = 101$ และ $n_0 = 2$: จึงได้ $100n + \log n = O(n)$ ∎</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.2.4</span> แสดงว่า $\log_2 n = O(\sqrt{n})$</div>
+          <div class="solution">
+            <p>ใช้ผลจากตัวอย่าง 11.1.5: $\log_2 n \leq \sqrt{n}$ สำหรับ $n \geq 4$</p>
+            <p>เลือก $c = 1$ และ $n_0 = 4$: จึงได้ $\log_2 n = O(\sqrt{n})$ ∎</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="big-omega" class="subsec">
+        <h3>Big-Ω Notation (สัญลักษณ์โอเมก้าใหญ่)</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Big-Ω</h4>
+          <p>เราบอกว่า <strong>$f(n)$ คือ $\Omega(g(n))$</strong> ก็ต่อเมื่อ</p>
+          $$\exists\, c > 0,\; \exists\, n_0 \in \mathbb{Z}^+ \text{ such that } f(n) \geq c \cdot g(n) \text{ for all } n \geq n_0$$
+          <p>กล่าวคือ $f(n) = \Omega(g(n)) \iff g(n) = O(f(n))$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.2.5</span> พิสูจน์ว่า $3n^2 + 2n = \Omega(n^2)$</div>
+          <div class="solution">
+            <p>ต้องหา $c > 0$ และ $n_0$ ที่ $3n^2 + 2n \geq c \cdot n^2$ สำหรับ $n \geq n_0$</p>
+            <p>เนื่องจาก $3n^2 + 2n \geq 3n^2$ สำหรับ $n \geq 0$</p>
+            <p>เลือก $c = 3$ และ $n_0 = 1$: จึงได้ $3n^2 + 2n = \Omega(n^2)$ ∎</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="big-theta" class="subsec">
+        <h3>Big-Θ Notation (สัญลักษณ์ทีตาใหญ่)</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Big-Θ</h4>
+          <p>เราบอกว่า <strong>$f(n)$ คือ $\Theta(g(n))$</strong> ก็ต่อเมื่อ $f(n) = O(g(n))$ <em>และ</em> $f(n) = \Omega(g(n))$</p>
+          <p>เทียบเท่า: $\exists\, c_1, c_2 > 0,\; n_0$ ที่ $c_1 \cdot g(n) \leq f(n) \leq c_2 \cdot g(n)$ สำหรับทุก $n \geq n_0$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.2.6</span> พิสูจน์ว่า $3n^2 + 2n = \Theta(n^2)$</div>
+          <div class="solution">
+            <div class="proof-box">
+              <div class="proof-title">พิสูจน์ทั้ง Upper และ Lower Bound</div>
+              <div class="proof-step derive">
+                <h5>Upper Bound: $3n^2 + 2n = O(n^2)$</h5>
+                <p>สำหรับ $n \geq 1$: $2n \leq 2n^2$ ดังนั้น $3n^2 + 2n \leq 5n^2$</p>
+                <p>เลือก $c_2 = 5$, $n_0 = 1$</p>
+              </div>
+              <div class="proof-step derive">
+                <h5>Lower Bound: $3n^2 + 2n = \Omega(n^2)$</h5>
+                <p>$3n^2 + 2n \geq 3n^2$ สำหรับทุก $n \geq 0$</p>
+                <p>เลือก $c_1 = 3$, $n_0 = 1$</p>
+              </div>
+              <div class="proof-step conclude">
+                <h5>สรุป</h5>
+                <p>มี $3n^2 \leq 3n^2 + 2n \leq 5n^2$ สำหรับ $n \geq 1$</p>
+                <p>ดังนั้น $3n^2 + 2n = \Theta(n^2)$ ∎</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.2.7</span> Polynomial ทุกตัวมี Theta</div>
+          <p>ให้ $p(n) = a_k n^k + a_{k-1} n^{k-1} + \cdots + a_0$ โดย $a_k > 0$ แล้ว $p(n) = \Theta(n^k)$</p>
+          <div class="solution">
+            <p><strong>Upper bound:</strong> $|p(n)| \leq (|a_k| + |a_{k-1}| + \cdots + |a_0|) n^k = c_2 n^k$ สำหรับ $n \geq 1$</p>
+            <p><strong>Lower bound:</strong> สำหรับ $n$ ใหญ่พอ เทอม $a_k n^k$ ครองทั้งหมด: $p(n) \geq \frac{a_k}{2} n^k$</p>
+            <p>ดังนั้น $p(n) = \Theta(n^k)$ ∎</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="notation-props" class="subsec">
+        <h3>สมบัติสำคัญของ O, Ω, Θ</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Transitivity (สกรรมภาพ)</h4>
+          <p>ถ้า $f = O(g)$ และ $g = O(h)$ แล้ว $f = O(h)$ (เช่นเดียวกันสำหรับ Ω และ Θ)</p>
+        </div>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Sum Rule (กฎผลรวม)</h4>
+          <p>ถ้า $f_1 = O(g_1)$ และ $f_2 = O(g_2)$ แล้ว $f_1 + f_2 = O(\max(g_1, g_2))$</p>
+          <p><em>ตัวอย่าง:</em> $O(n^2) + O(n) = O(n^2)$ (เทอมที่โตเร็วกว่าครองทั้งหมด)</p>
+        </div>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Product Rule (กฎผลคูณ)</h4>
+          <p>ถ้า $f_1 = O(g_1)$ และ $f_2 = O(g_2)$ แล้ว $f_1 \cdot f_2 = O(g_1 \cdot g_2)$</p>
+          <p><em>ตัวอย่าง:</em> Loop ซ้อน: $O(n) \times O(n) = O(n^2)$</p>
+        </div>
+
+        <div class="highlight-box">
+          <strong>ตารางคลาส Complexity ที่พบบ่อย:</strong>
+          <table class="complexity-table" style="margin-top:10px;">
+            <thead><tr><th>สัญลักษณ์</th><th>ชื่อ</th><th>ตัวอย่างอัลกอริทึม</th><th>ประสิทธิภาพ</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge-o1">O(1)</span></td><td>Constant</td><td>Array index, hash lookup</td><td>ดีเยี่ยม</td></tr>
+              <tr><td><span class="badge-log">O(log n)</span></td><td>Logarithmic</td><td>Binary search, balanced BST</td><td>ดีมาก</td></tr>
+              <tr><td><span class="badge-n">O(n)</span></td><td>Linear</td><td>Linear search, sum of array</td><td>ดี</td></tr>
+              <tr><td><span class="badge-nlog">O(n log n)</span></td><td>Linearithmic</td><td>Merge sort, Heap sort, FFT</td><td>พอใช้</td></tr>
+              <tr><td><span class="badge-n2">O(n²)</span></td><td>Quadratic</td><td>Bubble/Insertion/Selection sort</td><td>แย่สำหรับ n ใหญ่</td></tr>
+              <tr><td><span class="badge-n2">O(n³)</span></td><td>Cubic</td><td>Matrix multiplication (naive)</td><td>แย่</td></tr>
+              <tr><td><span class="badge-exp">O(2ⁿ)</span></td><td>Exponential</td><td>Brute-force subset, TSP</td><td>แย่มาก</td></tr>
+              <tr><td><span class="badge-exp">O(n!)</span></td><td>Factorial</td><td>Permutation generation</td><td>แย่ที่สุด</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 11.3 ===================== -->
+    <section id="sec113" class="ch-section">
+      <div class="section-header" style="--ch-color:#0369a1">
+        <span class="sec-num">11.3</span>
+        <div>
+          <h2>Application: Analysis of Algorithm Efficiency I</h2>
+          <p>การวิเคราะห์ประสิทธิภาพส่วนที่ 1 — การนับ Basic Operations, Loop Analysis</p>
+        </div>
+      </div>
+
+      <div class="key-box">
+        <h4>หลักการวิเคราะห์อัลกอริทึม</h4>
+        <ul>
+          <li><strong>Basic Operation:</strong> คือ operation ที่ใช้เวลา $O(1)$ เช่น การเปรียบเทียบ, การบวก, การ assign ค่า</li>
+          <li><strong>Worst-case:</strong> จำนวน ops สูงสุดที่เป็นไปได้สำหรับ input ขนาด $n$</li>
+          <li><strong>Best-case:</strong> จำนวน ops น้อยที่สุดที่เป็นไปได้</li>
+          <li><strong>Average-case:</strong> ค่าเฉลี่ยของ ops เหนือ distribution ของ input ทั้งหมด</li>
+        </ul>
+      </div>
+
+      <div id="loop-analysis" class="subsec">
+        <h3>การวิเคราะห์ Loop</h3>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.3.1</span> นับ Basic Operations ใน Single Loop</div>
+          <div class="code-block">
+<span class="cm">// หาผลรวม array</span>
+<span class="kw">sum</span> = <span class="num">0</span>                      <span class="cm">// 1 op</span>
+<span class="kw">for</span> i = <span class="num">1</span> <span class="kw">to</span> n:          <span class="cm">// loop n ครั้ง</span>
+    sum = sum + a[i]       <span class="cm">// 1 op ต่อรอบ (บวก + assign)</span>
+<span class="kw">return</span> sum                 <span class="cm">// 1 op</span>
+          </div>
+          <div class="solution">
+            <p><strong>การนับ:</strong> 1 (init) + $n$ (loop body) + 1 (return) $= n + 2$ ops</p>
+            <p><strong>Complexity:</strong> $T(n) = n + 2 = O(n)$ — Linear</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.3.2</span> นับ Operations ใน Nested Loop</div>
+          <div class="code-block">
+<span class="kw">for</span> i = <span class="num">1</span> <span class="kw">to</span> n:
+    <span class="kw">for</span> j = <span class="num">1</span> <span class="kw">to</span> n:
+        A[i][j] = i * j    <span class="cm">// 1 op</span>
+          </div>
+          <div class="solution">
+            <p><strong>การนับ:</strong> outer loop รัน $n$ ครั้ง, inner loop รัน $n$ ครั้งต่อหนึ่งรอบ outer</p>
+            <p>รวมทั้งหมด: $n \times n = n^2$ ops</p>
+            <p><strong>Complexity:</strong> $T(n) = n^2 = O(n^2)$ — Quadratic</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.3.3</span> Loop ที่มีจำนวนรอบไม่เท่ากัน</div>
+          <div class="code-block">
+<span class="kw">for</span> i = <span class="num">1</span> <span class="kw">to</span> n:
+    <span class="kw">for</span> j = <span class="num">1</span> <span class="kw">to</span> i:    <span class="cm">// j วิ่งจาก 1 ถึง i</span>
+        count++
+          </div>
+          <div class="solution">
+            <p><strong>การนับ:</strong> เมื่อ $i=1$: $j$ รัน 1 รอบ; $i=2$: 2 รอบ; $\ldots$; $i=n$: $n$ รอบ</p>
+            <p>รวม: $1 + 2 + 3 + \cdots + n = \dfrac{n(n+1)}{2}$ ops</p>
+            <p><strong>Complexity:</strong> $T(n) = \dfrac{n(n+1)}{2} = O(n^2)$ ถึงแม้จะดีกว่า nested loop เต็มประมาณ 2 เท่า</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.3.4</span> Loop ที่ตัวนับเพิ่มแบบ Geometric</div>
+          <div class="code-block">
+<span class="kw">for</span> i = <span class="num">1</span>; i &lt;= n; i = i * <span class="num">2</span>:
+    print(i)
+          </div>
+          <div class="solution">
+            <p><strong>การนับ:</strong> $i$ ผ่านค่า $1, 2, 4, 8, \ldots, 2^k$ จนกว่า $2^k > n$</p>
+            <p>$2^k \leq n \Rightarrow k \leq \log_2 n$ ดังนั้นจำนวนรอบ $= \lfloor \log_2 n \rfloor + 1$</p>
+            <p><strong>Complexity:</strong> $T(n) = O(\log n)$ — Logarithmic!</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="seq-search" class="subsec">
+        <h3>Sequential Search (การค้นหาเชิงเส้น)</h3>
+
+        <div class="code-block">
+<span class="cm">// Sequential Search — หา target ใน array a[1..n]</span>
+<span class="fn">sequential_search</span>(a, n, target):
+    <span class="kw">for</span> i = <span class="num">1</span> <span class="kw">to</span> n:
+        <span class="kw">if</span> a[i] == target:      <span class="cm">// การเปรียบเทียบ (basic op)</span>
+            <span class="kw">return</span> i           <span class="cm">// พบ!</span>
+    <span class="kw">return</span> -<span class="num">1</span>                 <span class="cm">// ไม่พบ</span>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.3.5</span> วิเคราะห์ Sequential Search</div>
+          <div class="solution">
+            <table class="algo-table">
+              <thead><tr><th>กรณี</th><th>เมื่อใด</th><th>จำนวนการเปรียบเทียบ</th><th>Complexity</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Best Case</strong></td><td>target อยู่ตำแหน่งที่ 1</td><td>$1$</td><td>$O(1)$</td></tr>
+                <tr><td><strong>Worst Case</strong></td><td>target ไม่อยู่ใน array หรืออยู่ท้ายสุด</td><td>$n$</td><td>$O(n)$</td></tr>
+                <tr><td><strong>Average Case</strong></td><td>target อยู่ตำแหน่งสุ่ม</td><td>$\approx n/2$</td><td>$O(n)$</td></tr>
+              </tbody>
+            </table>
+            <p><strong>สรุป:</strong> Sequential Search มี worst-case complexity $O(n)$ เหมาะสำหรับ unsorted data ขนาดเล็กหรือ search ครั้งเดียว</p>
+          </div>
+        </div>
+
+        <div class="note-box">
+          <strong>ในทางปฏิบัติ:</strong> ถ้าค้นหา 1 ล้านครั้งใน array 1 ล้านตัว (unsorted) จะใช้เวลาเฉลี่ย $10^{12}$ ops ≈ 17 นาที แต่ถ้า sort ก่อนแล้วใช้ binary search จะใช้แค่ $10^6 \times 20 = 2 \times 10^7$ ops ≈ 0.02 วินาที
+        </div>
+      </div>
+
+      <div id="insertion-sort" class="subsec">
+        <h3>Insertion Sort (การเรียงลำดับแบบแทรก)</h3>
+
+        <div class="code-block">
+<span class="cm">// Insertion Sort — เรียง array a[1..n]</span>
+<span class="fn">insertion_sort</span>(a, n):
+    <span class="kw">for</span> i = <span class="num">2</span> <span class="kw">to</span> n:              <span class="cm">// loop ภายนอก</span>
+        key = a[i]
+        j = i - <span class="num">1</span>
+        <span class="kw">while</span> j &gt;= <span class="num">1</span> <span class="kw">and</span> a[j] &gt; key:  <span class="cm">// loop ภายใน</span>
+            a[j+<span class="num">1</span>] = a[j]            <span class="cm">// เลื่อนขวา</span>
+            j = j - <span class="num">1</span>
+        a[j+<span class="num">1</span>] = key               <span class="cm">// แทรก key</span>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.3.6</span> วิเคราะห์ Insertion Sort</div>
+          <div class="solution">
+            <table class="algo-table">
+              <thead><tr><th>กรณี</th><th>สภาวะ</th><th>จำนวนการเปรียบเทียบ (inner loop)</th><th>Complexity</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Best Case</strong></td><td>array เรียงลำดับอยู่แล้ว</td><td>$n - 1$ (ตรวจแต่ละตัวครั้งเดียว)</td><td>$O(n)$</td></tr>
+                <tr><td><strong>Worst Case</strong></td><td>array เรียงย้อนกลับ</td><td>$1 + 2 + \cdots + (n-1) = \frac{n(n-1)}{2}$</td><td>$O(n^2)$</td></tr>
+                <tr><td><strong>Average Case</strong></td><td>random input</td><td>$\approx \frac{n^2}{4}$</td><td>$O(n^2)$</td></tr>
+              </tbody>
+            </table>
+            <p><strong>Worst case trace</strong> สำหรับ $[4, 3, 2, 1]$:</p>
+            <table class="step-table">
+              <thead><tr><th>i</th><th>key</th><th>การเปรียบเทียบ</th><th>Array หลัง</th></tr></thead>
+              <tbody>
+                <tr><td>2</td><td>3</td><td>1 (ย้าย 4)</td><td>[3, 4, 2, 1]</td></tr>
+                <tr><td>3</td><td>2</td><td>2 (ย้าย 4, 3)</td><td>[2, 3, 4, 1]</td></tr>
+                <tr><td>4</td><td>1</td><td>3 (ย้าย 4, 3, 2)</td><td>[1, 2, 3, 4]</td></tr>
+              </tbody>
+            </table>
+            <p>รวม: $1 + 2 + 3 = 6 = \frac{4 \times 3}{2}$ การเปรียบเทียบ → ยืนยัน $O(n^2)$</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 11.4 ===================== -->
+    <section id="sec114" class="ch-section">
+      <div class="section-header" style="--ch-color:#0369a1">
+        <span class="sec-num">11.4</span>
+        <div>
+          <h2>Exponential and Logarithmic Functions: Graphs and Orders</h2>
+          <p>ฟังก์ชัน Exponential และ Logarithmic — คุณสมบัติและลำดับ magnitude</p>
+        </div>
+      </div>
+
+      <div id="exp-props" class="subsec">
+        <h3>ฟังก์ชัน Exponential</h3>
+
+        <div class="def-formal">
+          <span class="def-label">คุณสมบัติ</span>
+          <p>สำหรับ $a > 0, a \neq 1$ และ $m, n \in \mathbb{R}$:</p>
+          <ul>
+            <li>$a^{m+n} = a^m \cdot a^n$</li>
+            <li>$a^{m-n} = a^m / a^n$</li>
+            <li>$(a^m)^n = a^{mn}$</li>
+            <li>$(ab)^n = a^n b^n$</li>
+            <li>$a^0 = 1$, $a^1 = a$</li>
+            <li>ถ้า $a > 1$: $a^x$ เป็น strictly increasing; ถ้า $0 < a < 1$: $a^x$ เป็น strictly decreasing</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.4.1</span> ค่า $2^n$ สำหรับ $n$ ต่างๆ</div>
+          <div class="solution">
+            <table class="step-table">
+              <thead><tr><th>$n$</th><th>$2^n$</th><th>ความหมาย</th></tr></thead>
+              <tbody>
+                <tr><td>10</td><td>1,024</td><td>$\approx$ 1 พัน (1K)</td></tr>
+                <tr><td>20</td><td>1,048,576</td><td>$\approx$ 1 ล้าน (1M)</td></tr>
+                <tr><td>30</td><td>1,073,741,824</td><td>$\approx$ 1 พันล้าน (1G)</td></tr>
+                <tr><td>32</td><td>4,294,967,296</td><td>$\approx$ 4G (int unsigned)</td></tr>
+                <tr><td>64</td><td>$\approx 1.8 \times 10^{19}$</td><td>$\approx$ 18E (long long unsigned)</td></tr>
+              </tbody>
+            </table>
+            <p>ตรวจสอบ: $2^{10} = 1024 \approx 10^3$ ดังนั้น $2^{10k} \approx 10^{3k}$</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.4.2</span> พิสูจน์ว่า $n^k = O(a^n)$ สำหรับ $a > 1$, $k \geq 1$</div>
+          <div class="solution">
+            <p>Polynomial ทุกตัวโตช้ากว่า exponential เสมอ ไม่ว่า degree จะสูงแค่ไหน</p>
+            <p>ใช้ L'Hôpital's rule (calculus): $\lim_{n\to\infty} \dfrac{n^k}{a^n} = 0$ เพราะ $a^n$ โตเร็วกว่า $n^k$ เสมอ</p>
+            <p>หมายความว่า: $n^k \leq a^n$ สำหรับ $n$ ใหญ่พอ ดังนั้น $n^k = O(a^n)$ ∎</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="log-props" class="subsec">
+        <h3>ฟังก์ชัน Logarithmic</h3>
+
+        <div class="def-formal">
+          <span class="def-label">คุณสมบัติ</span>
+          <p>สำหรับ $a > 0, a \neq 1$ และ $x, y > 0$:</p>
+          <ul>
+            <li>$\log_a(xy) = \log_a x + \log_a y$</li>
+            <li>$\log_a(x/y) = \log_a x - \log_a y$</li>
+            <li>$\log_a(x^r) = r \log_a x$</li>
+            <li>$\log_a 1 = 0$, $\log_a a = 1$</li>
+            <li><strong>Change of Base:</strong> $\log_a n = \dfrac{\log_b n}{\log_b a}$ สำหรับ $b > 0, b \neq 1$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.4.3</span> $2^{10} = 1024$ และ $\log_2(1024) = 10$</div>
+          <div class="solution">
+            <p>ตรวจสอบ: $\log_2(1024) = \log_2(2^{10}) = 10 \cdot \log_2 2 = 10$ ✓</p>
+            <p>Change of base: $\log_2(1024) = \dfrac{\ln 1024}{\ln 2} = \dfrac{6.931\ldots}{0.693\ldots} = 10$ ✓</p>
+            <p>ความหมายใน CS: ต้องใช้ $\lceil \log_2 n \rceil$ bits เพื่อ represent จำนวนเต็ม $n$ ตัว</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.4.4</span> ทำไม log ทุก base จึงเป็น $\Theta$ เดียวกัน</div>
+          <div class="solution">
+            <p>จาก Change of Base: $\log_a n = \dfrac{\log_b n}{\log_b a} = \dfrac{1}{\log_b a} \cdot \log_b n$</p>
+            <p>เนื่องจาก $\dfrac{1}{\log_b a}$ เป็นค่าคงที่ (ไม่ขึ้นกับ $n$)</p>
+            <p>ดังนั้น $\log_a n = \Theta(\log_b n)$ สำหรับทุก $a, b > 1$</p>
+            <p><strong>ข้อสรุป:</strong> ใน Big-O notation เราสามารถเขียน $O(\log n)$ โดยไม่ต้องระบุ base เพราะ base ต่างกันให้ผลต่างกันแค่ constant factor</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.4.5</span> log โตช้ากว่า polynomial ทุกตัว</div>
+          <div class="solution">
+            <p>พิสูจน์: $\log_2 n = O(n^\epsilon)$ สำหรับทุก $\epsilon > 0$</p>
+            <p>ใช้ substitution $n = 2^m$: $\log_2(2^m) = m$ และ $(2^m)^\epsilon = 2^{\epsilon m}$</p>
+            <p>ต้องแสดง $m \leq c \cdot 2^{\epsilon m}$ ซึ่งเป็นจริงสำหรับ $m$ ใหญ่พอ (เพราะ exponential โตเร็วกว่า linear)</p>
+            <p>ตัวเลข: $\log_2(10^9) \approx 30$ ในขณะที่ $(10^9)^{0.01} = 10^{0.09} \approx 1.23$ — เล็กกว่า! แต่สำหรับ $n$ ใหญ่มากพอ $(10^{100})^{0.01} = 10$ ยังน้อยกว่า $\log_2(10^{100}) \approx 332$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="orders-hierarchy" class="subsec">
+        <h3>Hierarchy ของ Orders of Magnitude</h3>
+
+        <div class="hierarchy-visual">
+          <div class="hier-row" style="background:#16a34a; width:120px;">$O(1)$</div>
+          <div class="hier-arrow">⊂</div>
+          <div class="hier-row" style="background:#0891b2; width:160px;">$O(\log n)$</div>
+          <div class="hier-arrow">⊂</div>
+          <div class="hier-row" style="background:#0369a1; width:200px;">$O(\sqrt{n})$</div>
+          <div class="hier-arrow">⊂</div>
+          <div class="hier-row" style="background:#4f46e5; width:240px;">$O(n)$</div>
+          <div class="hier-arrow">⊂</div>
+          <div class="hier-row" style="background:#7c3aed; width:280px;">$O(n \log n)$</div>
+          <div class="hier-arrow">⊂</div>
+          <div class="hier-row" style="background:#ca8a04; width:320px;">$O(n^2)$</div>
+          <div class="hier-arrow">⊂</div>
+          <div class="hier-row" style="background:#ea580c; width:360px;">$O(n^3)$</div>
+          <div class="hier-arrow">⊂</div>
+          <div class="hier-row" style="background:#dc2626; width:400px;">$O(2^n)$</div>
+          <div class="hier-arrow">⊂</div>
+          <div class="hier-row" style="background:#9d174d; width:440px;">$O(n!)$</div>
+        </div>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Order Relations</h4>
+          <ul>
+            <li>$O(\log n) \subsetneq O(n^\epsilon)$ สำหรับทุก $\epsilon > 0$</li>
+            <li>$O(n^k) \subsetneq O(n^{k+1})$ สำหรับทุก $k \geq 0$</li>
+            <li>$O(n^k) \subsetneq O(a^n)$ สำหรับทุก $k \geq 0$ และ $a > 1$</li>
+            <li>$O(a^n) \subsetneq O(n!)$ สำหรับ $a > 1$</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SECTION 11.5 ===================== -->
+    <section id="sec115" class="ch-section">
+      <div class="section-header" style="--ch-color:#0369a1">
+        <span class="sec-num">11.5</span>
+        <div>
+          <h2>Application: Analysis of Algorithm Efficiency II</h2>
+          <p>การวิเคราะห์ประสิทธิภาพส่วนที่ 2 — Binary Search, Merge Sort, Master Theorem</p>
+        </div>
+      </div>
+
+      <div id="binary-search" class="subsec">
+        <h3>Binary Search และการพิสูจน์ $O(\log n)$</h3>
+
+        <div class="code-block">
+<span class="cm">// Binary Search — หา target ใน sorted array a[1..n]</span>
+<span class="fn">binary_search</span>(a, n, target):
+    lo = <span class="num">1</span>
+    hi = n
+    <span class="kw">while</span> lo &lt;= hi:
+        mid = (lo + hi) // <span class="num">2</span>      <span class="cm">// floor((lo+hi)/2)</span>
+        <span class="kw">if</span> a[mid] == target:
+            <span class="kw">return</span> mid          <span class="cm">// พบ!</span>
+        <span class="kw">elif</span> a[mid] &lt; target:
+            lo = mid + <span class="num">1</span>         <span class="cm">// ค้นครึ่งขวา</span>
+        <span class="kw">else</span>:
+            hi = mid - <span class="num">1</span>         <span class="cm">// ค้นครึ่งซ้าย</span>
+    <span class="kw">return</span> -<span class="num">1</span>                   <span class="cm">// ไม่พบ</span>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.5.1</span> Trace Binary Search บน $[2, 5, 8, 12, 16, 23, 38, 56, 72, 91]$, target = 23</div>
+          <div class="solution">
+            <table class="step-table">
+              <thead><tr><th>ขั้น</th><th>lo</th><th>hi</th><th>mid</th><th>a[mid]</th><th>การกระทำ</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>1</td><td>10</td><td>5</td><td>16</td><td>16 &lt; 23 → lo = 6</td></tr>
+                <tr><td>2</td><td>6</td><td>10</td><td>8</td><td>56</td><td>56 &gt; 23 → hi = 7</td></tr>
+                <tr><td>3</td><td>6</td><td>7</td><td>6</td><td>23</td><td>พบ! return 6</td></tr>
+              </tbody>
+            </table>
+            <p>ใช้เพียง 3 การเปรียบเทียบสำหรับ $n = 10$ (vs Sequential Search อาจใช้ถึง 10)</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.5.2</span> พิสูจน์ Binary Search $= O(\log n)$ (Worst Case)</div>
+          <div class="solution">
+            <div class="proof-box">
+              <div class="proof-title">การพิสูจน์</div>
+              <div class="proof-step assume">
+                <h5>สังเกต</h5>
+                <p>แต่ละรอบ while loop ขนาดของ search space ($hi - lo + 1$) ลดลงครึ่งหนึ่ง</p>
+              </div>
+              <div class="proof-step derive">
+                <h5>นับรอบ Loop</h5>
+                <p>เริ่มต้น: search space $= n$</p>
+                <p>หลังรอบที่ 1: $\leq \lfloor n/2 \rfloor$</p>
+                <p>หลังรอบที่ 2: $\leq \lfloor n/4 \rfloor$</p>
+                <p>หลังรอบที่ $k$: $\leq \lfloor n/2^k \rfloor$</p>
+                <p>Loop หยุดเมื่อ search space $= 0$, คือเมื่อ $n/2^k < 1$ หรือ $2^k > n$</p>
+                <p>นั่นคือ $k > \log_2 n$ ดังนั้น loop รันอย่างมาก $\lfloor \log_2 n \rfloor + 1$ รอบ</p>
+              </div>
+              <div class="proof-step conclude">
+                <h5>สรุป</h5>
+                <p>จำนวนการเปรียบเทียบ (worst case) $= \lfloor \log_2 n \rfloor + 1 = O(\log n)$ ∎</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.5.3</span> Linear vs Binary Search บน 1 Billion Records</div>
+          <p>ค้นหาข้อมูลใน database ที่มี $n = 10^9$ records (เรียงลำดับแล้ว) คอมพิวเตอร์ทำได้ $10^9$ comparisons/วินาที:</p>
+          <div class="solution">
+            <table class="algo-table">
+              <thead><tr><th>วิธีการ</th><th>Worst-case ops</th><th>เวลา</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Linear Search</strong></td><td>$10^9$ comparisons</td><td>$\approx$ 1 วินาที</td></tr>
+                <tr><td><strong>Binary Search</strong></td><td>$\log_2(10^9) \approx 30$ comparisons</td><td>$\approx$ 30 nanoseconds</td></tr>
+              </tbody>
+            </table>
+            <p><strong>Binary Search เร็วกว่า $\approx 33{,}000{,}000$ เท่า!</strong></p>
+            <p>ยิ่งไปกว่านั้น: ถ้า $n$ เพิ่มเป็น $10^{18}$, Binary Search ยังใช้แค่ $\log_2(10^{18}) \approx 60$ ops แต่ Linear Search ต้องใช้ $10^{18}$ ops $\approx$ 31 ปี!</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="merge-sort" class="subsec">
+        <h3>Merge Sort และ Recurrence Relation</h3>
+
+        <div class="code-block">
+<span class="cm">// Merge Sort — เรียง array a[lo..hi]</span>
+<span class="fn">merge_sort</span>(a, lo, hi):
+    <span class="kw">if</span> lo &lt; hi:
+        mid = (lo + hi) // <span class="num">2</span>
+        merge_sort(a, lo, mid)        <span class="cm">// แบ่งซ้าย</span>
+        merge_sort(a, mid+<span class="num">1</span>, hi)     <span class="cm">// แบ่งขวา</span>
+        merge(a, lo, mid, hi)        <span class="cm">// รวมกลับ O(n)</span>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.5.4</span> พิสูจน์ Merge Sort $= O(n \log n)$</div>
+          <div class="solution">
+            <div class="proof-box">
+              <div class="proof-title">วิเคราะห์ผ่าน Recurrence Relation</div>
+              <div class="proof-step assume">
+                <h5>ตั้ง Recurrence</h5>
+                <p>ให้ $T(n)$ = จำนวน comparisons ทั้งหมดสำหรับ input ขนาด $n$</p>
+                <p>$T(1) = 0$ (base case: 1 element ไม่ต้องทำอะไร)</p>
+                <p>$T(n) = 2T(n/2) + n$ สำหรับ $n \geq 2$</p>
+                <p>(แบ่ง 2 ส่วน $\Rightarrow 2T(n/2)$; merge $\Rightarrow n$ comparisons)</p>
+              </div>
+              <div class="proof-step derive">
+                <h5>แก้ด้วย Unrolling</h5>
+                <p>$T(n) = 2T(n/2) + n$</p>
+                <p>$\quad = 2[2T(n/4) + n/2] + n = 4T(n/4) + 2n$</p>
+                <p>$\quad = 4[2T(n/8) + n/4] + 2n = 8T(n/8) + 3n$</p>
+                <p>$\quad = 2^k T(n/2^k) + kn$</p>
+                <p>เมื่อ $2^k = n$ (คือ $k = \log_2 n$): $T(n) = n \cdot T(1) + n \log_2 n = 0 + n\log_2 n$</p>
+              </div>
+              <div class="proof-step conclude">
+                <h5>สรุป</h5>
+                <p>$T(n) = n \log_2 n = \Theta(n \log n)$ ∎</p>
+                <p>Merge Sort เร็วกว่า Insertion Sort อย่างมากสำหรับ $n$ ใหญ่</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.5.5</span> Recursion Tree ของ Merge Sort ($n = 8$)</div>
+          <div class="solution">
+            <div class="code-block" style="font-family:'Sarabun',sans-serif; font-size:13px; line-height:1.9;">
+Level 0:  [8 elements]                     = n = 8 ops (merge)
+Level 1:  [4] [4]                          = n = 8 ops (merge)
+Level 2:  [2][2] [2][2]                    = n = 8 ops (merge)
+Level 3:  [1][1][1][1][1][1][1][1]         = 0 ops (base case)
+
+จำนวน level = log₂(8) = 3
+ops ต่อ level = 8 = n
+รวม = n × log₂(n) = 8 × 3 = 24 ops
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="master-theorem" class="subsec">
+        <h3>Master Theorem (เบื้องต้น)</h3>
+
+        <div class="def-box">
+          <h4>Master Theorem</h4>
+          <p>ให้ recurrence $T(n) = aT(n/b) + f(n)$ โดย $a \geq 1$, $b > 1$, $f(n) \geq 0$ แล้ว:</p>
+          <ul>
+            <li><strong>กรณีที่ 1:</strong> ถ้า $f(n) = O(n^c)$ โดย $c < \log_b a$ แล้ว $T(n) = \Theta(n^{\log_b a})$</li>
+            <li><strong>กรณีที่ 2:</strong> ถ้า $f(n) = \Theta(n^{\log_b a})$ แล้ว $T(n) = \Theta(n^{\log_b a} \log n)$</li>
+            <li><strong>กรณีที่ 3:</strong> ถ้า $f(n) = \Omega(n^c)$ โดย $c > \log_b a$ แล้ว $T(n) = \Theta(f(n))$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.5.6</span> ใช้ Master Theorem กับ Recurrences ต่างๆ</div>
+          <div class="solution">
+            <table class="algo-table">
+              <thead><tr><th>Recurrence</th><th>$a$</th><th>$b$</th><th>$f(n)$</th><th>$\log_b a$</th><th>กรณี</th><th>$T(n)$</th></tr></thead>
+              <tbody>
+                <tr><td>Merge Sort: $2T(n/2)+n$</td><td>2</td><td>2</td><td>$n$</td><td>1</td><td>2</td><td>$\Theta(n\log n)$</td></tr>
+                <tr><td>Binary Search: $T(n/2)+1$</td><td>1</td><td>2</td><td>$1$</td><td>0</td><td>2</td><td>$\Theta(\log n)$</td></tr>
+                <tr><td>Strassen: $7T(n/2)+n^2$</td><td>7</td><td>2</td><td>$n^2$</td><td>$\approx 2.807$</td><td>1</td><td>$\Theta(n^{2.807})$</td></tr>
+                <tr><td>$4T(n/2)+n^3$</td><td>4</td><td>2</td><td>$n^3$</td><td>2</td><td>3</td><td>$\Theta(n^3)$</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="comparison" class="subsec">
+        <h3>ตาราง Complexity เปรียบเทียบอัลกอริทึม</h3>
+
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>อัลกอริทึม</th>
+              <th>Best Case</th>
+              <th>Average Case</th>
+              <th>Worst Case</th>
+              <th>Space</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Linear Search</strong></td>
+              <td><span class="badge-o1">O(1)</span></td>
+              <td><span class="badge-n">O(n)</span></td>
+              <td><span class="badge-n">O(n)</span></td>
+              <td><span class="badge-o1">O(1)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Binary Search</strong></td>
+              <td><span class="badge-o1">O(1)</span></td>
+              <td><span class="badge-log">O(log n)</span></td>
+              <td><span class="badge-log">O(log n)</span></td>
+              <td><span class="badge-o1">O(1)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Bubble Sort</strong></td>
+              <td><span class="badge-n">O(n)</span></td>
+              <td><span class="badge-n2">O(n²)</span></td>
+              <td><span class="badge-n2">O(n²)</span></td>
+              <td><span class="badge-o1">O(1)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Selection Sort</strong></td>
+              <td><span class="badge-n2">O(n²)</span></td>
+              <td><span class="badge-n2">O(n²)</span></td>
+              <td><span class="badge-n2">O(n²)</span></td>
+              <td><span class="badge-o1">O(1)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Insertion Sort</strong></td>
+              <td><span class="badge-n">O(n)</span></td>
+              <td><span class="badge-n2">O(n²)</span></td>
+              <td><span class="badge-n2">O(n²)</span></td>
+              <td><span class="badge-o1">O(1)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Merge Sort</strong></td>
+              <td><span class="badge-nlog">O(n log n)</span></td>
+              <td><span class="badge-nlog">O(n log n)</span></td>
+              <td><span class="badge-nlog">O(n log n)</span></td>
+              <td><span class="badge-n">O(n)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Quick Sort</strong></td>
+              <td><span class="badge-nlog">O(n log n)</span></td>
+              <td><span class="badge-nlog">O(n log n)</span></td>
+              <td><span class="badge-n2">O(n²)</span></td>
+              <td><span class="badge-log">O(log n)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Heap Sort</strong></td>
+              <td><span class="badge-nlog">O(n log n)</span></td>
+              <td><span class="badge-nlog">O(n log n)</span></td>
+              <td><span class="badge-nlog">O(n log n)</span></td>
+              <td><span class="badge-o1">O(1)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Hash Table (get/put)</strong></td>
+              <td><span class="badge-o1">O(1)</span></td>
+              <td><span class="badge-o1">O(1)</span></td>
+              <td><span class="badge-n">O(n)</span></td>
+              <td><span class="badge-n">O(n)</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 11.5.7</span> เลือกอัลกอริทึมที่เหมาะสม</div>
+          <p>สถานการณ์: ต้องการค้นหาในฐานข้อมูลหลายครั้งมาก วิเคราะห์ว่าควร sort ก่อนหรือไม่</p>
+          <div class="solution">
+            <p><strong>ถ้า search $q$ ครั้ง:</strong></p>
+            <ul>
+              <li><strong>ไม่ sort:</strong> $q \times O(n)$ total $= O(qn)$</li>
+              <li><strong>Sort แล้ว Binary Search:</strong> $O(n\log n) + q \times O(\log n) = O(n\log n + q\log n) = O((n+q)\log n)$</li>
+            </ul>
+            <p>เมื่อ $q \gg \log n$: ควร sort! เพราะ $O((n+q)\log n) \ll O(qn)$</p>
+            <p>Rule of thumb: ถ้า $q \geq 1$ และ $n \geq 100$ ควร sort เสมอ (แม้จะ search ครั้งเดียว เพราะ sort cost $O(n\log n)$ และ search $O(\log n)$ รวมน้อยกว่า $O(n)$ สำหรับ $n$ ใหญ่)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#0369a1">
+        <span class="sec-num">📋</span>
+        <div>
+          <h2>สรุปบทที่ 11</h2>
+          <p>Analysis of Algorithm Efficiency — สัญลักษณ์ O, Ω, Θ และการวิเคราะห์อัลกอริทึม</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h4>11.1 Real Functions</h4>
+          <ul>
+            <li>$\lfloor x \rfloor$ = จำนวนเต็มที่ใหญ่ที่สุดที่ $\leq x$</li>
+            <li>$\lceil x \rceil$ = จำนวนเต็มที่เล็กที่สุดที่ $\geq x$</li>
+            <li>$\lfloor n/2 \rfloor + \lceil n/2 \rceil = n$</li>
+            <li>Growth: $1 \ll \log n \ll \sqrt{n} \ll n \ll n\log n \ll n^2 \ll 2^n \ll n!$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>11.2 O, Ω, Θ</h4>
+          <ul>
+            <li>$O$: upper bound — $f \leq c\cdot g$ สำหรับ $n \geq n_0$</li>
+            <li>$\Omega$: lower bound — $f \geq c\cdot g$ สำหรับ $n \geq n_0$</li>
+            <li>$\Theta$: tight bound — $c_1 g \leq f \leq c_2 g$</li>
+            <li>$p(n) = \Theta(n^{\deg p})$ สำหรับ polynomial ทุกตัว</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>11.3 Algorithm Analysis I</h4>
+          <ul>
+            <li>นับ basic operations เป็น function ของ input size $n$</li>
+            <li>Linear Search: $O(n)$ worst, $O(1)$ best</li>
+            <li>Insertion Sort: $O(n^2)$ worst, $O(n)$ best (sorted)</li>
+            <li>Loop ซ้อน: $O(n^k)$ สำหรับ $k$ ระดับ</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>11.4 Exp &amp; Log</h4>
+          <ul>
+            <li>$\log_a n = \log n / \log a$ (change of base)</li>
+            <li>$O(\log_a n) = O(\log_b n)$ (base เปลี่ยนแค่ constant)</li>
+            <li>$n^k = O(a^n)$ สำหรับ $a > 1$ (polynomial โตช้ากว่า exp)</li>
+            <li>$\log n = O(n^\epsilon)$ สำหรับทุก $\epsilon > 0$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>11.5 Algorithm Analysis II</h4>
+          <ul>
+            <li>Binary Search: $O(\log n)$ — แต่ละรอบลด search space ครึ่งหนึ่ง</li>
+            <li>Merge Sort: $T(n) = 2T(n/2) + n \Rightarrow \Theta(n\log n)$</li>
+            <li>Master Theorem: แก้ $T(n) = aT(n/b) + f(n)$</li>
+            <li>Binary Search เร็วกว่า Linear Search $\approx n / \log n$ เท่า</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#ea580c">
+        <span class="sec-num">✏️</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>จากหนังสือ Discrete Mathematics with Applications — บทที่ 11</p>
+        </div>
+      </div>
+
+      <div class="exercises-list">
+        <div class="exercise-item">
+          <span class="ex-num">11.1</span>
+          <div class="ex-content">
+            <strong>Floor &amp; Ceiling:</strong> (1) คำนวณ $\lfloor 7.9 \rfloor$, $\lceil -3.2 \rceil$, $\lfloor -\pi \rfloor$, $\lceil e \rceil$ (2) พิสูจน์ว่า $\lfloor 2x \rfloor = 2\lfloor x \rfloor$ ถ้า $x \in \mathbb{Z}$ และ $\lfloor 2x \rfloor = 2\lfloor x \rfloor + 1$ ถ้า $x \notin \mathbb{Z}$ โดย $x - \lfloor x \rfloor \geq 0.5$ (3) หาค่า $n$ ทั้งหมดที่ทำให้ $\lfloor \sqrt{n} \rfloor = 3$ (4) ในโปรแกรม array index $0$ ถึง $n-1$: midpoint ที่ปลอดภัย (ไม่ overflow) คือ $lo + \lfloor (hi - lo)/2 \rfloor$ — พิสูจน์ว่าให้ผลเหมือนกับ $\lfloor (lo + hi)/2 \rfloor$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">11.2</span>
+          <div class="ex-content">
+            <strong>Big-O Proofs:</strong> พิสูจน์หรือหา counterexample สำหรับแต่ละข้อ: (1) $7n^3 + 5n^2 - 2n + 10 = O(n^3)$ (2) $n^2 \log n = O(n^3)$ (3) $2^{n+1} = O(2^n)$ (4) $(n+1)! = O(n!)$ หรือไม่? (5) $\log_3 n = O(\log_2 n)$ — พิสูจน์โดยใช้ change of base (6) ถ้า $f(n) = O(g(n))$ และ $g(n) = O(h(n))$ แล้วพิสูจน์ว่า $f(n) = O(h(n))$ (transitivity)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">11.3</span>
+          <div class="ex-content">
+            <strong>Loop Analysis:</strong> วิเคราะห์ complexity ของ pseudocode ต่อไปนี้ (นับการเปรียบเทียบ): (1) หา max element ใน array ขนาด $n$ (2) Matrix multiplication ของ matrix $n \times n$ สองอัน (3) Bubble Sort: นับจำนวนการ swap ในกรณี worst case และ best case (4) Code ต่อไปนี้: <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px;">for i=1 to n: for j=i to n: for k=1 to j: count++</code> — หา $T(n)$ อย่างแม่นยำ และ Big-O
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">11.4</span>
+          <div class="ex-content">
+            <strong>Exponential &amp; Logarithm:</strong> (1) แสดงว่า $\log_2(n!) = \Theta(n \log n)$ (hint: ใช้ Stirling's approximation $n! \approx \sqrt{2\pi n}(n/e)^n$) (2) พิสูจน์ว่า $n^{\log n} = O(2^n)$ (3) เรียงลำดับฟังก์ชันต่อไปนี้จากโตช้าไปโตเร็ว: $n^2$, $2^n$, $n!$, $n^{1.5}$, $(\log n)^{10}$, $n \log n$, $\sqrt{2^n}$, $n^{\log\log n}$ (4) แสดงว่า $\log n = O(n^{0.001})$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">11.5</span>
+          <div class="ex-content">
+            <strong>Algorithm Efficiency:</strong> (1) Binary search บน array ขนาด 1,000 ต้องการการเปรียบเทียบไม่เกินกี่ครั้งใน worst case? (2) แก้ recurrence $T(n) = 3T(n/3) + n$ โดย unrolling และตรวจสอบด้วย Master Theorem (3) อัลกอริทึมหนึ่งมี $T(n) = T(n-1) + n$ — หา closed form และ Big-Θ (4) เปรียบเทียบ: ถ้า array มี $10^6$ elements และค้นหา $10^6$ ครั้ง ควรใช้ sequential หรือ binary search? คำนวณ operations ทั้งหมดสำหรับทั้งสองวิธี (รวม sorting cost สำหรับ binary search)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">11.6</span>
+          <div class="ex-content">
+            <strong>Θ Proofs:</strong> พิสูจน์ว่าแต่ละฟังก์ชันต่อไปนี้เป็น Θ ของฟังก์ชันที่กำหนด: (1) $\frac{1}{2}n^2 - 3n = \Theta(n^2)$ (2) $6 \cdot 2^n + n^2 = \Theta(2^n)$ (3) $\lfloor n/2 \rfloor \cdot \lceil n/2 \rceil = \Theta(n^2)$ (4) $1 + 2 + 4 + 8 + \cdots + 2^n = \Theta(2^n)$ — พิสูจน์ exact formula ก่อน แล้วค่อย หา Θ
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER NAV -->
+    <div class="chapter-nav">
+      <a href="chapter10.html" class="nav-btn prev-btn">← บทที่ 10</a>
+      <a href="chapter12.html" class="nav-btn next-btn">บทที่ 12 →</a>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง — บทที่ 11: Analysis of Algorithm Efficiency</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล · ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ · มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 · เนื้อหาจาก <em>Discrete Mathematics with Applications</em> — Susanna S. Epp</p>
+</footer>
+
+<script>
+  const SCROLL_OFFSET = 80;
+  document.querySelectorAll('.ch-toc a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'instant' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
+  const sections = document.querySelectorAll('.ch-section, .subsec');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (s.id && window.scrollY >= s.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET - 10) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('ch-sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

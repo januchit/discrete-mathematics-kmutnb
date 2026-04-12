@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 8 – Relations | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>↔</text></svg>">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+  <style>
+    .rel-matrix { border-collapse:collapse; font-family:monospace; font-size:14px; margin:12px 0; }
+    .rel-matrix td, .rel-matrix th { padding:8px 12px; border:1px solid #e2e8f0; text-align:center; }
+    .rel-matrix th { background:#be185d; color:white; }
+    .prop-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:16px 0; }
+    .prop-card { border:2px solid #be185d; border-radius:10px; padding:14px; background:white; }
+    .prop-card h5 { color:#be185d; font-size:13px; font-weight:700; margin-bottom:8px; }
+    .prop-card p { font-size:13px; line-height:1.6; }
+    .hasse-svg { display:block; margin:16px auto; }
+    .prop-table { width:100%; border-collapse:collapse; font-size:13px; margin:12px 0; }
+    .prop-table th { background:#be185d; color:white; padding:8px 12px; text-align:center; }
+    .prop-table td { padding:7px 12px; border-bottom:1px solid #e2e8f0; text-align:center; }
+    .prop-table tr:nth-child(even) td { background:#fff1f5; }
+    .yes { color:#16a34a; font-weight:700; }
+    .no  { color:#dc2626; font-weight:700; }
+    .cipher-row { display:flex; gap:6px; flex-wrap:wrap; margin:10px 0; }
+    .cipher-cell { background:#fff1f5; border:1px solid #be185d; border-radius:6px; padding:6px 10px; font-family:monospace; font-size:13px; text-align:center; min-width:36px; }
+    .cipher-cell small { display:block; color:#9d174d; font-size:10px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="chapter7.html" class="ch-nav-link">← บทที่ 7</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 8</span>
+      <span class="ch-nav-divider">|</span>
+      <a href="chapter9.html" class="ch-nav-link">บทที่ 9 →</a>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#be185d">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 8</div>
+      <div class="chapter-hero-icon">↔</div>
+      <h1 class="chapter-hero-title">Relations</h1>
+      <p class="chapter-hero-subtitle">ความสัมพันธ์</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec81">8.1 Relations on Sets</a>
+          <ul>
+            <li><a href="#rel-def">นิยามและสัญลักษณ์</a></li>
+            <li><a href="#rel-matrix">Matrix Representation</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec82">8.2 Properties of Relations</a>
+          <ul>
+            <li><a href="#four-props">4 สมบัติหลัก</a></li>
+            <li><a href="#props-table">ตารางสรุป</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec83">8.3 Equivalence Relations</a>
+          <ul>
+            <li><a href="#equiv-def">นิยาม</a></li>
+            <li><a href="#equiv-class">Equivalence Classes</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec84">8.4 Modular Arithmetic</a>
+          <ul>
+            <li><a href="#mod-def">Congruence mod n</a></li>
+            <li><a href="#caesar">Caesar Cipher</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec85">8.5 Partial Order Relations</a>
+          <ul>
+            <li><a href="#poset-def">นิยาม Poset</a></li>
+            <li><a href="#hasse">Hasse Diagram</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 8</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 8</h2>
+        <p>บทนี้ศึกษา <strong>ความสัมพันธ์ (Relations)</strong> บนเซต ซึ่งเป็นการขยายแนวคิดของฟังก์ชันให้กว้างขึ้น ครอบคลุมตั้งแต่นิยาม สมบัติ Reflexive/Symmetric/Transitive ไปจนถึง Equivalence Relations, Modular Arithmetic และ Partial Order พร้อม Hasse Diagram</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">⊆</span>
+            <strong>8.1 Relations</strong>
+            <p>$R \subseteq A \times B$, Matrix representation, นิยามอย่างเป็นทางการ</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">↔</span>
+            <strong>8.2 Properties</strong>
+            <p>Reflexive, Symmetric, Antisymmetric, Transitive และการพิสูจน์</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">≡</span>
+            <strong>8.3 Equivalence</strong>
+            <p>Equivalence class $[a]$, Partition, ตัวอย่าง mod 3</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">🔐</span>
+            <strong>8.4 Modular Arithmetic</strong>
+            <p>$a \equiv b \pmod{n}$, Caesar cipher, การเข้ารหัสเบื้องต้น</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">⪯</span>
+            <strong>8.5 Partial Order</strong>
+            <p>Poset, Hasse diagram, Total order vs Partial order</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 8.1 -->
+    <section id="sec81" class="ch-section">
+      <div class="section-header" style="--ch-color:#be185d">
+        <span class="sec-num">8.1</span>
+        <div>
+          <h2>Relations on Sets</h2>
+          <p>ความสัมพันธ์บนเซต, นิยาม, Matrix Representation</p>
+        </div>
+      </div>
+
+      <div id="rel-def" class="subsec">
+        <h3>นิยามและสัญลักษณ์</h3>
+        <div class="def-formal">
+          <span class="def-label">นิยาม</span>
+          <p>ให้ $A$ และ $B$ เป็นเซต <strong>ความสัมพันธ์จาก $A$ ไป $B$</strong> คือเซตย่อย $R \subseteq A \times B$ ถ้า $(a,b) \in R$ เขียนว่า $aRb$ (อ่านว่า "$a$ สัมพันธ์กับ $b$")</p>
+          <p><strong>Relation on a set:</strong> กรณีพิเศษที่ $A = B$ จะได้ $R \subseteq A \times A$ เรียกว่า "ความสัมพันธ์บน $A$"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">ตัวอย่าง 8.1.1</div>
+          <p>กำหนด $A = \{1,2,3\}$ และ $R = \{(1,2),(1,3),(2,3)\}$ บน $A$</p>
+          <p>จะเห็นว่า $1R2$, $1R3$, $2R3$ แต่ $(2,1) \notin R$ ดังนั้น $R$ ไม่ใช่ Symmetric</p>
+          <p>ความสัมพันธ์นี้สามารถมองได้ว่า "$a \, R \, b$ ก็ต่อเมื่อ $a &lt; b$"</p>
+        </div>
+      </div>
+
+      <div id="rel-matrix" class="subsec">
+        <h3>Matrix Representation</h3>
+        <div class="key-box">
+          <h4>เมทริกซ์แทนความสัมพันธ์ (0/1 Matrix)</h4>
+          <p style="font-size:14px;line-height:1.7">กำหนด $M_R$ เป็นเมทริกซ์ขนาด $|A| \times |B|$ โดย $(M_R)_{ij} = 1$ ถ้า $(a_i, b_j) \in R$ และ $= 0$ ถ้าไม่ใช่</p>
+        </div>
+        <p style="font-size:14px">สำหรับ $R = \{(1,2),(1,3),(2,3)\}$ บน $A = \{1,2,3\}$:</p>
+        <table class="rel-matrix">
+          <tr><th>R</th><th>1</th><th>2</th><th>3</th></tr>
+          <tr><th>1</th><td>0</td><td>1</td><td>1</td></tr>
+          <tr><th>2</th><td>0</td><td>0</td><td>1</td></tr>
+          <tr><th>3</th><td>0</td><td>0</td><td>0</td></tr>
+        </table>
+        <p style="font-size:13px;color:#64748b">แถวคือ element ต้นทาง (domain), คอลัมน์คือ element ปลายทาง (codomain)</p>
+      </div>
+    </section>
+
+    <!-- SECTION 8.2 -->
+    <section id="sec82" class="ch-section">
+      <div class="section-header" style="--ch-color:#be185d">
+        <span class="sec-num">8.2</span>
+        <div>
+          <h2>Properties of Relations</h2>
+          <p>Reflexive, Symmetric, Antisymmetric, Transitive</p>
+        </div>
+      </div>
+
+      <div id="four-props" class="subsec">
+        <h3>4 สมบัติหลักของความสัมพันธ์</h3>
+        <div class="def-formal">
+          <span class="def-label">นิยาม</span>
+          <p>ให้ $R$ เป็นความสัมพันธ์บนเซต $A$ กำหนดสมบัติดังนี้:</p>
+        </div>
+        <div class="prop-grid">
+          <div class="prop-card">
+            <h5>Reflexive (การสะท้อน)</h5>
+            <p>$\forall x \in A,\ (x,x) \in R$</p>
+            <p style="color:#64748b;font-size:12px;margin-top:6px">ทุก element สัมพันธ์กับตัวเอง บนเมทริกซ์คือ diagonal ทั้งหมดเป็น 1</p>
+          </div>
+          <div class="prop-card">
+            <h5>Symmetric (การสมมาตร)</h5>
+            <p>$\forall x,y \in A,\ (x,y)\in R \Rightarrow (y,x)\in R$</p>
+            <p style="color:#64748b;font-size:12px;margin-top:6px">เมทริกซ์สมมาตรตาม diagonal</p>
+          </div>
+          <div class="prop-card">
+            <h5>Antisymmetric (การสมมาตรทางเดียว)</h5>
+            <p>$(x,y)\in R \wedge (y,x)\in R \Rightarrow x = y$</p>
+            <p style="color:#64748b;font-size:12px;margin-top:6px">คู่ $(x,y)$ และ $(y,x)$ อยู่ใน $R$ พร้อมกันได้ก็ต่อเมื่อ $x=y$</p>
+          </div>
+          <div class="prop-card">
+            <h5>Transitive (การถ่ายทอด)</h5>
+            <p>$(x,y)\in R \wedge (y,z)\in R \Rightarrow (x,z)\in R$</p>
+            <p style="color:#64748b;font-size:12px;margin-top:6px">ถ้า $x$ ถึง $y$ และ $y$ ถึง $z$ ได้ ต้องถึง $z$ จาก $x$ ได้เสมอ</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">ตัวอย่าง 8.2.1 — พิสูจน์ $\leq$ บน $\mathbb{R}$</div>
+          <p><strong>Reflexive:</strong> $\forall x \in \mathbb{R},\ x \leq x$ &nbsp;✓</p>
+          <p><strong>Antisymmetric:</strong> ถ้า $x \leq y$ และ $y \leq x$ ดังนั้น $x = y$ &nbsp;✓</p>
+          <p><strong>Transitive:</strong> ถ้า $x \leq y$ และ $y \leq z$ ดังนั้น $x \leq z$ &nbsp;✓</p>
+          <p><strong>Symmetric:</strong> $1 \leq 2$ แต่ $2 \not\leq 1$ ดังนั้น <em>ไม่ใช่</em> Symmetric &nbsp;✗</p>
+        </div>
+      </div>
+
+      <div id="props-table" class="subsec">
+        <h3>ตารางสรุปสมบัติของความสัมพันธ์ทั่วไป</h3>
+        <table class="prop-table">
+          <tr><th>ความสัมพันธ์</th><th>Reflexive</th><th>Symmetric</th><th>Antisymmetric</th><th>Transitive</th></tr>
+          <tr><td>$=$ (เท่ากัน)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>$\leq$ (น้อยกว่าเท่ากับ)</td><td class="yes">✓</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>$&lt;$ (น้อยกว่า)</td><td class="no">✗</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>$|$ (หารลงตัว)</td><td class="yes">✓</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 8.3 -->
+    <section id="sec83" class="ch-section">
+      <div class="section-header" style="--ch-color:#be185d">
+        <span class="sec-num">8.3</span>
+        <div>
+          <h2>Equivalence Relations</h2>
+          <p>ความสัมพันธ์สมมูล และ Equivalence Classes</p>
+        </div>
+      </div>
+
+      <div id="equiv-def" class="subsec">
+        <h3>นิยาม Equivalence Relation</h3>
+        <div class="def-formal">
+          <span class="def-label">นิยาม</span>
+          <p>ความสัมพันธ์ $R$ บนเซต $A$ เรียกว่า <strong>Equivalence Relation</strong> ก็ต่อเมื่อมีสมบัติครบทั้ง 3 ข้อ:</p>
+          <ol>
+            <li><strong>Reflexive:</strong> $\forall x \in A,\ xRx$</li>
+            <li><strong>Symmetric:</strong> $xRy \Rightarrow yRx$</li>
+            <li><strong>Transitive:</strong> $xRy \wedge yRz \Rightarrow xRz$</li>
+          </ol>
+        </div>
+      </div>
+
+      <div id="equiv-class" class="subsec">
+        <h3>Equivalence Classes และ Partition</h3>
+        <div class="key-box">
+          <h4>Equivalence Class ของ $a$</h4>
+          <p style="font-size:14px;line-height:1.8">$[a] = \{x \in A \mid xRa\}$ คือเซตของสมาชิกทั้งหมดที่สมมูลกับ $a$</p>
+          <p style="font-size:14px;line-height:1.8"><strong>ทฤษฎีบท:</strong> Equivalence classes ก่อให้เกิด <em>partition</em> ของ $A$ กล่าวคือ: ทุก class ไม่ว่าง, classes ไม่ทับซ้อนกัน, และ union ของ classes ทั้งหมดคือ $A$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">ตัวอย่าง 8.3.1 — $\equiv \pmod{3}$ บน $\mathbb{Z}$</div>
+          <p>กำหนด $aRb$ ก็ต่อเมื่อ $3 \mid (a-b)$ ความสัมพันธ์นี้เป็น Equivalence Relation</p>
+          <p>ได้ equivalence classes 3 คลาส:</p>
+          <ul style="font-size:14px;line-height:2;padding-left:20px">
+            <li>$[0] = \{\ldots,-6,-3,0,3,6,\ldots\}$ (หาร 3 ลงตัว)</li>
+            <li>$[1] = \{\ldots,-5,-2,1,4,7,\ldots\}$ (เหลือเศษ 1)</li>
+            <li>$[2] = \{\ldots,-4,-1,2,5,8,\ldots\}$ (เหลือเศษ 2)</li>
+          </ul>
+          <p style="font-size:13px;color:#64748b">$[0] \cup [1] \cup [2] = \mathbb{Z}$ และ classes ไม่ทับซ้อนกัน ยืนยันว่าเป็น partition</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 8.4 -->
+    <section id="sec84" class="ch-section">
+      <div class="section-header" style="--ch-color:#be185d">
+        <span class="sec-num">8.4</span>
+        <div>
+          <h2>Modular Arithmetic</h2>
+          <p>เลขคณิต Modulo และ Caesar Cipher</p>
+        </div>
+      </div>
+
+      <div id="mod-def" class="subsec">
+        <h3>Congruence mod n</h3>
+        <div class="def-formal">
+          <span class="def-label">นิยาม</span>
+          <p>กำหนด $n \in \mathbb{Z}^+$ กล่าวว่า $a$ <strong>สมภาค</strong> $b$ modulo $n$ เขียน $a \equiv b \pmod{n}$ ก็ต่อเมื่อ $n \mid (a-b)$</p>
+          <p style="margin-top:10px"><strong>การคำนวณ:</strong></p>
+          <ul>
+            <li>$(a + b) \bmod n = ((a \bmod n) + (b \bmod n)) \bmod n$</li>
+            <li>$(a \cdot b) \bmod n = ((a \bmod n) \cdot (b \bmod n)) \bmod n$</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">ตัวอย่าง 8.4.1</div>
+          <p>$17 \equiv 5 \pmod{6}$ เพราะ $6 \mid (17-5) = 12$ &nbsp;✓</p>
+          <p>$(14 + 9) \bmod 5 = 23 \bmod 5 = 3$ &nbsp; หรือ &nbsp; $(4 + 4) \bmod 5 = 8 \bmod 5 = 3$ &nbsp;✓</p>
+        </div>
+      </div>
+
+      <div id="caesar" class="subsec">
+        <h3>Caesar Cipher — การเข้ารหัสด้วย Modular Arithmetic</h3>
+        <div class="highlight-box">
+          <strong>สูตร:</strong> เข้ารหัสตัวอักษร $m$ (0–25) ด้วยกุญแจ $k$: &nbsp; $c = (m + k) \bmod 26$<br>
+          ถอดรหัส: $m = (c - k) \bmod 26$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">ตัวอย่าง 8.4.2 — เข้ารหัส "HELLO" ด้วย shift = 3</div>
+          <p style="font-size:13px;margin-bottom:8px">A=0, B=1, …, Z=25 &nbsp;|&nbsp; H=7, E=4, L=11, L=11, O=14</p>
+          <div class="cipher-row">
+            <div class="cipher-cell">H<small>7→10</small></div>
+            <div class="cipher-cell">E<small>4→7</small></div>
+            <div class="cipher-cell">L<small>11→14</small></div>
+            <div class="cipher-cell">L<small>11→14</small></div>
+            <div class="cipher-cell">O<small>14→17</small></div>
+            <div class="cipher-cell" style="background:#fdf4ff;border-color:#9333ea">→</div>
+            <div class="cipher-cell" style="background:#fdf4ff;border-color:#9333ea;color:#7e22ce;font-weight:700">K</div>
+            <div class="cipher-cell" style="background:#fdf4ff;border-color:#9333ea;color:#7e22ce;font-weight:700">H</div>
+            <div class="cipher-cell" style="background:#fdf4ff;border-color:#9333ea;color:#7e22ce;font-weight:700">O</div>
+            <div class="cipher-cell" style="background:#fdf4ff;border-color:#9333ea;color:#7e22ce;font-weight:700">O</div>
+            <div class="cipher-cell" style="background:#fdf4ff;border-color:#9333ea;color:#7e22ce;font-weight:700">R</div>
+          </div>
+          <p style="font-size:13px;color:#64748b">ผลลัพธ์: <strong>HELLO → KHOOR</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 8.5 -->
+    <section id="sec85" class="ch-section">
+      <div class="section-header" style="--ch-color:#be185d">
+        <span class="sec-num">8.5</span>
+        <div>
+          <h2>Partial Order Relations</h2>
+          <p>Partial Order, Hasse Diagram, Total Order</p>
+        </div>
+      </div>
+
+      <div id="poset-def" class="subsec">
+        <h3>นิยาม Partial Order และ Poset</h3>
+        <div class="def-formal">
+          <span class="def-label">นิยาม</span>
+          <p>ความสัมพันธ์ $R$ บน $A$ เรียกว่า <strong>Partial Order</strong> ก็ต่อเมื่อ $R$ เป็น Reflexive, Antisymmetric และ Transitive</p>
+          <p style="margin-top:8px">คู่ $(A, R)$ เรียกว่า <strong>Partially Ordered Set (Poset)</strong> เขียน $a \preceq b$ แทน $aRb$</p>
+          <p style="margin-top:8px"><strong>Total Order:</strong> Partial order ที่ทุกคู่ $(a,b)$ เปรียบเทียบกันได้ ($a \preceq b$ หรือ $b \preceq a$)</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header">ตัวอย่าง 8.5.1 — Divisibility บน $\{1,2,3,6\}$</div>
+          <p>กำหนด $a \mid b$ (หารลงตัว) เป็นความสัมพันธ์บน $A = \{1,2,3,6\}$</p>
+          <p style="font-size:14px">$R = \{(1,1),(2,2),(3,3),(6,6),(1,2),(1,3),(1,6),(2,6),(3,6)\}$</p>
+          <p>ตรวจสมบัติ: Reflexive ✓, Antisymmetric ✓, Transitive ✓ → เป็น Partial Order</p>
+          <p style="font-size:13px;color:#be185d">แต่ 2 และ 3 เปรียบเทียบกันไม่ได้ ($2 \nmid 3$ และ $3 \nmid 2$) → ไม่ใช่ Total Order</p>
+        </div>
+      </div>
+
+      <div id="hasse" class="subsec">
+        <h3>Hasse Diagram</h3>
+        <div class="key-box">
+          <h4>วิธีวาด Hasse Diagram</h4>
+          <ul style="font-size:14px;line-height:2">
+            <li>วาง element ที่ "ใหญ่กว่า" ไว้ด้านบน</li>
+            <li>ลากเส้นเฉพาะความสัมพันธ์ที่ "ติดกัน" (cover relation) — ไม่ต้องวาดลูกศรที่มาจาก transitivity หรือ reflexivity</li>
+          </ul>
+        </div>
+
+        <p style="font-size:14px">Hasse diagram สำหรับ divisibility บน $\{1,2,3,4,6,12\}$:</p>
+        <svg class="hasse-svg" width="200" height="220" viewBox="0 0 200 220">
+          <!-- nodes -->
+          <circle cx="100" cy="20"  r="16" fill="#be185d"/>
+          <text x="100" y="25" text-anchor="middle" fill="white" font-size="13" font-weight="bold">12</text>
+          <circle cx="55"  cy="80"  r="16" fill="#f9a8d4"/>
+          <text x="55"  y="85" text-anchor="middle" fill="#9d174d" font-size="13" font-weight="bold">4</text>
+          <circle cx="145" cy="80"  r="16" fill="#f9a8d4"/>
+          <text x="145" y="85" text-anchor="middle" fill="#9d174d" font-size="13" font-weight="bold">6</text>
+          <circle cx="55"  cy="150" r="16" fill="#fce7f3"/>
+          <text x="55"  y="155" text-anchor="middle" fill="#be185d" font-size="13" font-weight="bold">2</text>
+          <circle cx="145" cy="150" r="16" fill="#fce7f3"/>
+          <text x="145" y="155" text-anchor="middle" fill="#be185d" font-size="13" font-weight="bold">3</text>
+          <circle cx="100" cy="200" r="16" fill="#fff1f5"/>
+          <text x="100" y="205" text-anchor="middle" fill="#be185d" font-size="13" font-weight="bold">1</text>
+          <!-- edges -->
+          <line x1="100" y1="36"  x2="63"  y2="65"  stroke="#be185d" stroke-width="2"/>
+          <line x1="100" y1="36"  x2="137" y2="65"  stroke="#be185d" stroke-width="2"/>
+          <line x1="55"  y1="96"  x2="55"  y2="134" stroke="#be185d" stroke-width="2"/>
+          <line x1="145" y1="96"  x2="63"  y2="134" stroke="#be185d" stroke-width="2"/>
+          <line x1="145" y1="96"  x2="145" y2="134" stroke="#be185d" stroke-width="2"/>
+          <line x1="55"  y1="166" x2="92"  y2="184" stroke="#be185d" stroke-width="2"/>
+          <line x1="145" y1="166" x2="108" y2="184" stroke="#be185d" stroke-width="2"/>
+        </svg>
+        <p style="font-size:13px;color:#64748b;text-align:center">1 อยู่ล่างสุด, 12 อยู่บนสุด เส้นแสดง cover relation</p>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#be185d">
+        <span class="sec-num">∑</span>
+        <div>
+          <h2>สรุปบทที่ 8</h2>
+          <p>Relations — ความสัมพันธ์ครบวงจร</p>
+        </div>
+      </div>
+      <div class="key-box">
+        <h4>ประเด็นสำคัญที่ต้องจำ</h4>
+        <ul>
+          <li>$R \subseteq A \times B$ คือความสัมพันธ์ แทนด้วย 0/1 matrix หรือ graph</li>
+          <li>สมบัติ 4 ข้อ: Reflexive, Symmetric, Antisymmetric, Transitive</li>
+          <li><strong>Equivalence Relation</strong> = Reflexive + Symmetric + Transitive → สร้าง partition</li>
+          <li><strong>Partial Order</strong> = Reflexive + Antisymmetric + Transitive → วาด Hasse diagram</li>
+          <li>$a \equiv b \pmod{n}$ คือ equivalence relation ที่ใช้จริงใน cryptography</li>
+          <li>Total order คือ partial order ที่ทุกคู่เปรียบเทียบกันได้ (เช่น $\leq$ บน $\mathbb{R}$)</li>
+        </ul>
+      </div>
+      <table class="prop-table">
+        <tr><th>ประเภท</th><th>Refl</th><th>Sym</th><th>Antisym</th><th>Trans</th></tr>
+        <tr><td>Equivalence</td><td class="yes">✓</td><td class="yes">✓</td><td>–</td><td class="yes">✓</td></tr>
+        <tr><td>Partial Order</td><td class="yes">✓</td><td>–</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Total Order</td><td class="yes">✓</td><td>–</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+      </table>
+    </section>
+
+    <!-- EXERCISES -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#be185d">
+        <span class="sec-num">✎</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>ฝึกทำเพื่อความเข้าใจที่มั่นคง</p>
+        </div>
+      </div>
+      <ol style="font-size:15px;line-height:2.2;padding-left:20px">
+        <li>กำหนด $A = \{1,2,3,4\}$ และ $R = \{(a,b) \mid a \leq b\}$ เขียน $R$ เป็นเซต แล้วสร้าง 0/1 matrix แทน $R$</li>
+        <li>พิสูจน์ว่า $R = \{(a,b) \in \mathbb{Z}^2 \mid 2 \mid (a-b)\}$ เป็น equivalence relation และระบุ equivalence classes ทั้งหมด</li>
+        <li>ตรวจสอบว่า $R = \{(a,b) \mid a \text{ หาร } b \text{ ลงตัว}\}$ บน $\{2,4,8,16\}$ เป็น total order หรือ partial order</li>
+        <li>คำนวณ $(7 \cdot 11) \bmod 13$ และ $(25 + 37) \bmod 8$ โดยใช้สมบัติ modular arithmetic</li>
+        <li>ถอดรหัส "KHOOR" โดยใช้ Caesar cipher ด้วยกุญแจ $k = 3$</li>
+        <li>วาด Hasse diagram สำหรับ divisibility บน $\{1,2,3,4,6,8,12,24\}$</li>
+      </ol>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer style="background:#0f172a;color:#94a3b8;text-align:center;padding:32px 24px;font-size:13px;margin-top:40px">
+  <p>Discrete Mathematics · KMUTNB · ภาคเรียนที่ 1/2569</p>
+  <p style="margin-top:8px">
+    <a href="chapter7.html" style="color:#f472b6;text-decoration:none">← บทที่ 7: Functions</a>
+    &nbsp;·&nbsp;
+    <a href="../index.html" style="color:#94a3b8;text-decoration:none">หน้าหลัก</a>
+    &nbsp;·&nbsp;
+    <a href="chapter9.html" style="color:#f472b6;text-decoration:none">บทที่ 9 →</a>
+  </p>
+</footer>
+
+<script>
+  // Sidebar toggle for mobile
+  const toggle = document.getElementById('menu-toggle');
+  const sidebar = document.getElementById('ch-sidebar');
+  if (toggle && sidebar) {
+    toggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+  }
+
+  // Active TOC highlighting
+  const sections = document.querySelectorAll('[id]');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-80px 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
