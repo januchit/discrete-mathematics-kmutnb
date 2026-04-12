@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 5 – Sequences, Mathematical Induction, and Recursion | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔁</text></svg>">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+  <style>
+    .seq-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0; }
+    .seq-table th { background: #d97706; color: white; padding: 10px 14px; text-align: center; }
+    .seq-table td { padding: 9px 14px; border-bottom: 1px solid #e2e8f0; text-align: center; font-family: 'JetBrains Mono', monospace; }
+    .seq-table tr:nth-child(even) td { background: #fffbeb; }
+
+    .proof-box {
+      background: #fff8f0;
+      border: 2px solid #d97706;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 16px 0;
+    }
+    .proof-box .proof-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #92400e;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proof-step {
+      margin: 10px 0;
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+    .proof-step.basis { background: #f0fdf4; border-left: 4px solid #16a34a; }
+    .proof-step.hypothesis { background: #eff6ff; border-left: 4px solid #2563eb; }
+    .proof-step.inductive { background: #fdf4ff; border-left: 4px solid #9333ea; }
+    .proof-step h5 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .proof-step.basis h5 { color: #15803d; }
+    .proof-step.hypothesis h5 { color: #1d4ed8; }
+    .proof-step.inductive h5 { color: #7e22ce; }
+    .proof-step p { font-size: 14px; line-height: 1.7; margin: 4px 0; }
+
+    .qed { text-align: right; font-style: italic; color: #92400e; font-weight: 600; margin-top: 8px; }
+
+    .fib-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+      text-align: center;
+    }
+    .fib-cell {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 8px 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+    .fib-cell .n-label { font-size: 10px; color: #92400e; }
+    .fib-cell .fib-val { font-size: 15px; font-weight: 700; color: #b45309; }
+
+    .rec-card {
+      background: white;
+      border: 1px solid #fcd34d;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 10px 0;
+      box-shadow: 0 2px 6px rgba(217,119,6,0.08);
+    }
+    .rec-card h5 { color: #b45309; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="chapter4.html" class="ch-nav-link">← บทที่ 4</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 5</span>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#d97706">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 5</div>
+      <div class="chapter-hero-icon">🔁</div>
+      <h1 class="chapter-hero-title">Sequences, Mathematical Induction, and Recursion</h1>
+      <p class="chapter-hero-subtitle">ลำดับ การอุปนัยเชิงคณิตศาสตร์ และการเวียนเกิด</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec51">5.1 Sequences</a>
+          <ul>
+            <li><a href="#seq-def">นิยามและสัญลักษณ์</a></li>
+            <li><a href="#arith-geo">Arithmetic &amp; Geometric</a></li>
+            <li><a href="#summation">Summation Σ และ Product Π</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec52">5.2 Mathematical Induction I</a>
+          <ul>
+            <li><a href="#pmi">Principle of Induction</a></li>
+            <li><a href="#sum-formula">พิสูจน์สูตร 1+2+…+n</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec53">5.3 Mathematical Induction II</a>
+          <ul>
+            <li><a href="#sum-squares">Sum of Squares</a></li>
+            <li><a href="#geo-series">Geometric Series</a></li>
+            <li><a href="#inequality-proof">Inequality: $2^n &gt; n$</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec54">5.4 Strong Mathematical Induction</a>
+          <ul>
+            <li><a href="#well-ordering">Well-Ordering Principle</a></li>
+            <li><a href="#strong-induction">Strong Induction</a></li>
+            <li><a href="#prime-factorization">Prime Factorization</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec55">5.5 Recursive Definitions</a>
+          <ul>
+            <li><a href="#rec-seq">Recursive Sequences</a></li>
+            <li><a href="#fibonacci">Fibonacci</a></li>
+            <li><a href="#factorial">Factorial</a></li>
+            <li><a href="#iteration">Solving by Iteration</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 5</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 5</h2>
+        <p>บทนี้แนะนำ <strong>ลำดับ (Sequences)</strong> ซึ่งเป็นพื้นฐานของการวิเคราะห์อัลกอริทึม จากนั้นศึกษา <strong>การอุปนัยเชิงคณิตศาสตร์ (Mathematical Induction)</strong> ซึ่งเป็นเทคนิคการพิสูจน์ที่ทรงพลังที่สุดในคณิตศาสตร์ไม่ต่อเนื่อง และปิดท้ายด้วย <strong>การนิยามเวียนเกิด (Recursive Definitions)</strong> ซึ่งเชื่อมโยงสู่การเขียนโปรแกรมเชิง recursive โดยตรง</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">∑</span>
+            <strong>5.1 Sequences</strong>
+            <p>นิยามลำดับ, Arithmetic/Geometric, Summation $\sum$ และ Product $\prod$</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">①</span>
+            <strong>5.2 Induction I</strong>
+            <p>หลักการอุปนัย 3 ขั้น: Basis, Hypothesis, Inductive Step</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">②</span>
+            <strong>5.3 Induction II</strong>
+            <p>ตัวอย่างเพิ่มเติม: sum of squares, geometric series, อสมการ</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">💪</span>
+            <strong>5.4 Strong Induction</strong>
+            <p>Well-ordering, Strong Induction, ทุก $n>1$ เป็น prime หรือ product of primes</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">🔁</span>
+            <strong>5.5 Recursive Definitions</strong>
+            <p>Fibonacci, Factorial, การแก้ recurrence relations ด้วย iteration</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5.1 -->
+    <section id="sec51" class="ch-section">
+      <div class="section-header" style="--ch-color:#d97706">
+        <span class="sec-num">5.1</span>
+        <div>
+          <h2>Sequences</h2>
+          <p>ลำดับ, สัญลักษณ์, และ Summation/Product Notation</p>
+        </div>
+      </div>
+
+      <div id="seq-def" class="subsec">
+        <h3>นิยามลำดับและสัญลักษณ์</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Sequence (ลำดับ)</h4>
+          <p><strong>ลำดับ (sequence)</strong> คือฟังก์ชันจากเซตย่อยของจำนวนเต็ม (มักเป็น $\{1, 2, 3, \ldots\}$ หรือ $\{0, 1, 2, \ldots\}$) ไปยังเซตใด ๆ $S$</p>
+          <p>สัญลักษณ์: เขียน $a_n$ แทนค่าของลำดับที่ตำแหน่ง $n$ (เรียกว่า <strong>พจน์ที่ $n$</strong> หรือ <strong>$n$th term</strong>) และเขียนทั้งลำดับเป็น $a_1, a_2, a_3, \ldots$ หรือ $(a_n)_{n \geq 1}$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.1.1</span> ลำดับจากสูตรทั่วไป</div>
+          <p>ให้ $a_n = 2n - 1$ สำหรับ $n = 1, 2, 3, \ldots$</p>
+          <div class="solution">
+            <table class="seq-table">
+              <tr><th>$n$</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+              <tr><td>$a_n = 2n-1$</td><td>1</td><td>3</td><td>5</td><td>7</td><td>9</td><td>11</td></tr>
+            </table>
+            <p>นี่คือลำดับของ <strong>จำนวนคี่บวก</strong>: $1, 3, 5, 7, 9, 11, \ldots$</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.1.2</span> การหา explicit formula จากรูปแบบ</div>
+          <p>กำหนดลำดับ: $\dfrac{1}{2},\ \dfrac{2}{3},\ \dfrac{3}{4},\ \dfrac{4}{5},\ \ldots$</p>
+          <div class="solution">
+            <p>สังเกตว่าพจน์ที่ $n$ มีตัวเศษ $= n$ และตัวส่วน $= n+1$ ดังนั้น</p>
+            $$a_n = \frac{n}{n+1}, \quad n = 1, 2, 3, \ldots$$
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>หมายเหตุ:</strong> Index ของลำดับอาจเริ่มที่ 0 ได้ เช่น ถ้า $a_k = k^2$ สำหรับ $k = 0, 1, 2, \ldots$ จะได้ $0, 1, 4, 9, 16, \ldots$ ซึ่งสะดวกในวิทยาการคอมพิวเตอร์ที่นับจาก 0
+        </div>
+      </div>
+
+      <div id="arith-geo" class="subsec">
+        <h3>Arithmetic Sequences และ Geometric Sequences</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Arithmetic Sequence (ลำดับเลขคณิต)</h4>
+          <p>ลำดับ $a_1, a_2, a_3, \ldots$ เป็น <strong>arithmetic sequence</strong> ถ้ามีจำนวนคงที่ $d$ (เรียกว่า <strong>common difference</strong>) โดยที่</p>
+          $$a_n = a_{n-1} + d \quad \text{สำหรับทุก}\ n \geq 2$$
+          <p>สูตรทั่วไป: $a_n = a_1 + (n-1)d$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.1.3</span> Arithmetic Sequence</div>
+          <p>ลำดับ $5, 8, 11, 14, 17, \ldots$ มี $a_1 = 5$ และ $d = 3$</p>
+          <div class="solution">
+            <p>สูตรทั่วไป: $a_n = 5 + (n-1) \cdot 3 = 3n + 2$</p>
+            <p>พจน์ที่ 10: $a_{10} = 3(10) + 2 = 32$</p>
+          </div>
+        </div>
+
+        <div class="def-box">
+          <h4>นิยาม: Geometric Sequence (ลำดับเรขาคณิต)</h4>
+          <p>ลำดับ $a_1, a_2, a_3, \ldots$ เป็น <strong>geometric sequence</strong> ถ้ามีจำนวนคงที่ $r \neq 0$ (เรียกว่า <strong>common ratio</strong>) โดยที่</p>
+          $$a_n = r \cdot a_{n-1} \quad \text{สำหรับทุก}\ n \geq 2$$
+          <p>สูตรทั่วไป: $a_n = a_1 \cdot r^{n-1}$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.1.4</span> Geometric Sequence</div>
+          <p>ลำดับ $3, 6, 12, 24, 48, \ldots$ มี $a_1 = 3$ และ $r = 2$</p>
+          <div class="solution">
+            <p>สูตรทั่วไป: $a_n = 3 \cdot 2^{n-1}$</p>
+            <p>พจน์ที่ 8: $a_8 = 3 \cdot 2^7 = 3 \cdot 128 = 384$</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.1.5</span> Geometric Sequence ที่ $r < 1$</div>
+          <p>ลำดับ $1, \dfrac{1}{2}, \dfrac{1}{4}, \dfrac{1}{8}, \ldots$ มี $a_1 = 1$ และ $r = \dfrac{1}{2}$</p>
+          <div class="solution">
+            <p>สูตรทั่วไป: $a_n = \left(\dfrac{1}{2}\right)^{n-1}$</p>
+            <p>ลำดับนี้ลู่เข้าหาศูนย์เมื่อ $n \to \infty$ เพราะ $|r| < 1$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="summation" class="subsec">
+        <h3>Summation Notation $\Sigma$ และ Product Notation $\Pi$</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Summation Notation (สัญลักษณ์ผลบวก)</h4>
+          <p>ถ้า $m \leq n$ เป็นจำนวนเต็ม ผลบวก $a_m + a_{m+1} + \cdots + a_n$ เขียนเป็น</p>
+          $$\sum_{k=m}^{n} a_k$$
+          <p>โดย $k$ เรียกว่า <strong>index of summation</strong>, $m$ คือ <strong>lower limit</strong>, และ $n$ คือ <strong>upper limit</strong></p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.1.6</span> การคำนวณ Summation</div>
+          <div class="solution">
+            <p><strong>a.</strong> $\displaystyle\sum_{k=1}^{5} k^2 = 1^2 + 2^2 + 3^2 + 4^2 + 5^2 = 1 + 4 + 9 + 16 + 25 = 55$</p>
+            <p><strong>b.</strong> $\displaystyle\sum_{i=0}^{4} 2^i = 2^0 + 2^1 + 2^2 + 2^3 + 2^4 = 1 + 2 + 4 + 8 + 16 = 31$</p>
+            <p><strong>c.</strong> $\displaystyle\sum_{j=1}^{n} 1 = \underbrace{1 + 1 + \cdots + 1}_{n\ \text{พจน์}} = n$</p>
+          </div>
+        </div>
+
+        <div class="def-box">
+          <h4>นิยาม: Product Notation (สัญลักษณ์ผลคูณ)</h4>
+          <p>ผลคูณ $a_m \cdot a_{m+1} \cdots a_n$ เขียนเป็น</p>
+          $$\prod_{k=m}^{n} a_k$$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.1.7</span> Product Notation และ Factorial</div>
+          <div class="solution">
+            <p>$\displaystyle\prod_{k=1}^{5} k = 1 \cdot 2 \cdot 3 \cdot 4 \cdot 5 = 120 = 5!$</p>
+            <p>โดยทั่วไป: $n! = \displaystyle\prod_{k=1}^{n} k = 1 \cdot 2 \cdot 3 \cdots n$</p>
+            <p>กำหนด $0! = 1$ โดยนิยาม (ผลคูณว่าง)</p>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>สูตร Summation ที่ควรจำ:</strong>
+          $$\sum_{k=1}^{n} k = \frac{n(n+1)}{2}, \quad \sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6}, \quad \sum_{k=0}^{n} r^k = \frac{r^{n+1}-1}{r-1}\ (r \neq 1)$$
+          เราจะพิสูจน์สูตรเหล่านี้ด้วย Mathematical Induction ในหัวข้อถัดไป
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5.2 -->
+    <section id="sec52" class="ch-section">
+      <div class="section-header" style="--ch-color:#d97706">
+        <span class="sec-num">5.2</span>
+        <div>
+          <h2>Mathematical Induction I</h2>
+          <p>หลักการอุปนัยเชิงคณิตศาสตร์และการพิสูจน์สูตรผลบวก</p>
+        </div>
+      </div>
+
+      <div id="pmi" class="subsec">
+        <h3>Principle of Mathematical Induction (PMI)</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Principle of Mathematical Induction</h4>
+          <p>ให้ $P(n)$ เป็นประโยคที่มีตัวแปร $n$ ซึ่งเป็นจำนวนเต็ม ถ้า</p>
+          <ol>
+            <li><strong>(Basis Step)</strong> $P(1)$ เป็นจริง และ</li>
+            <li><strong>(Inductive Step)</strong> สำหรับทุก $k \geq 1$: ถ้า $P(k)$ เป็นจริง (Inductive Hypothesis) แล้ว $P(k+1)$ ก็เป็นจริง</li>
+          </ol>
+          <p>แล้ว $P(n)$ เป็นจริงสำหรับทุกจำนวนเต็ม $n \geq 1$</p>
+        </div>
+
+        <div class="info-box">
+          <strong>โครงสร้าง 3 ขั้นของการพิสูจน์ด้วย Induction:</strong>
+          <ol>
+            <li><strong>Basis Step:</strong> แสดงว่า $P(1)$ เป็นจริง (หรือ $P(0)$ ถ้าเริ่มจาก 0)</li>
+            <li><strong>Inductive Hypothesis:</strong> สมมติว่า $P(k)$ เป็นจริงสำหรับ $k$ ที่กำหนด ($k \geq 1$)</li>
+            <li><strong>Inductive Step:</strong> พิสูจน์ว่า $P(k+1)$ เป็นจริงโดยใช้ Inductive Hypothesis</li>
+          </ol>
+        </div>
+
+        <div class="highlight-box">
+          <strong>อุปมาอุปไมย:</strong> Induction เหมือนการล้มโดมิโน — ถ้าแผ่นที่ 1 ล้ม (Basis) และทุกครั้งที่แผ่นที่ $k$ ล้มจะทำให้แผ่นที่ $k+1$ ล้มด้วย (Inductive Step) แล้วแผ่นทุกแผ่นจะล้มในที่สุด
+        </div>
+      </div>
+
+      <div id="sum-formula" class="subsec">
+        <h3>พิสูจน์สูตร $1 + 2 + 3 + \cdots + n = \dfrac{n(n+1)}{2}$</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท 5.2.1</h4>
+          <p>สำหรับทุกจำนวนเต็ม $n \geq 1$:</p>
+          $$\sum_{i=1}^{n} i = 1 + 2 + 3 + \cdots + n = \frac{n(n+1)}{2}$$
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">✍ การพิสูจน์ด้วย Mathematical Induction</div>
+
+          <div class="proof-step basis">
+            <h5>ขั้นที่ 1: Basis Step ($n = 1$)</h5>
+            <p>ฝั่งซ้าย (LHS): $\displaystyle\sum_{i=1}^{1} i = 1$</p>
+            <p>ฝั่งขวา (RHS): $\dfrac{1 \cdot (1+1)}{2} = \dfrac{2}{2} = 1$</p>
+            <p>$\text{LHS} = \text{RHS} = 1$ ดังนั้น $P(1)$ เป็นจริง ✓</p>
+          </div>
+
+          <div class="proof-step hypothesis">
+            <h5>ขั้นที่ 2: Inductive Hypothesis</h5>
+            <p>สมมติว่า $P(k)$ เป็นจริงสำหรับ $k \geq 1$ บางค่า กล่าวคือ</p>
+            $$1 + 2 + 3 + \cdots + k = \frac{k(k+1)}{2} \quad \cdots (*)$$
+          </div>
+
+          <div class="proof-step inductive">
+            <h5>ขั้นที่ 3: Inductive Step (พิสูจน์ $P(k+1)$)</h5>
+            <p>ต้องการแสดงว่า: $1 + 2 + \cdots + k + (k+1) = \dfrac{(k+1)(k+2)}{2}$</p>
+            <p>เริ่มจากฝั่งซ้ายของ $P(k+1)$:</p>
+            $$1 + 2 + \cdots + k + (k+1) = \underbrace{(1 + 2 + \cdots + k)}_{\text{ใช้ I.H. }(*)} + (k+1)$$
+            $$= \frac{k(k+1)}{2} + (k+1) = \frac{k(k+1)}{2} + \frac{2(k+1)}{2}$$
+            $$= \frac{k(k+1) + 2(k+1)}{2} = \frac{(k+1)(k+2)}{2}$$
+            <p>ซึ่งเท่ากับ RHS ของ $P(k+1)$ พอดี ✓</p>
+          </div>
+
+          <p>โดยหลักการ Induction, $P(n)$ เป็นจริงสำหรับทุก $n \geq 1$</p>
+          <div class="qed">∎</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.2.2</span> ทดสอบสูตร</div>
+          <p>คำนวณ $1 + 2 + 3 + \cdots + 100$ โดยใช้สูตร</p>
+          <div class="solution">
+            $$\sum_{i=1}^{100} i = \frac{100 \cdot 101}{2} = 5050$$
+            <p>สอดคล้องกับเรื่องราวอันโด่งดังของ <strong>Gauss</strong> ที่คำนวณได้ในคราวเดียวตอนอายุ 9 ขวบ</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5.3 -->
+    <section id="sec53" class="ch-section">
+      <div class="section-header" style="--ch-color:#d97706">
+        <span class="sec-num">5.3</span>
+        <div>
+          <h2>Mathematical Induction II</h2>
+          <p>ตัวอย่างเพิ่มเติม: Sum of Squares, Geometric Series, และอสมการ</p>
+        </div>
+      </div>
+
+      <div id="sum-squares" class="subsec">
+        <h3>พิสูจน์สูตร Sum of Squares</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท 5.3.1</h4>
+          <p>สำหรับทุกจำนวนเต็ม $n \geq 1$:</p>
+          $$\sum_{i=1}^{n} i^2 = 1^2 + 2^2 + \cdots + n^2 = \frac{n(n+1)(2n+1)}{6}$$
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">✍ การพิสูจน์ด้วย Mathematical Induction</div>
+
+          <div class="proof-step basis">
+            <h5>Basis Step ($n = 1$)</h5>
+            <p>LHS $= 1^2 = 1$</p>
+            <p>RHS $= \dfrac{1 \cdot 2 \cdot 3}{6} = 1$</p>
+            <p>$P(1)$ เป็นจริง ✓</p>
+          </div>
+
+          <div class="proof-step hypothesis">
+            <h5>Inductive Hypothesis</h5>
+            <p>สมมติ $P(k)$: $1^2 + 2^2 + \cdots + k^2 = \dfrac{k(k+1)(2k+1)}{6}$</p>
+          </div>
+
+          <div class="proof-step inductive">
+            <h5>Inductive Step (พิสูจน์ $P(k+1)$)</h5>
+            <p>ต้องการแสดง: $1^2 + \cdots + k^2 + (k+1)^2 = \dfrac{(k+1)(k+2)(2k+3)}{6}$</p>
+            $$1^2 + \cdots + k^2 + (k+1)^2 = \frac{k(k+1)(2k+1)}{6} + (k+1)^2$$
+            $$= \frac{k(k+1)(2k+1) + 6(k+1)^2}{6} = \frac{(k+1)\bigl[k(2k+1) + 6(k+1)\bigr]}{6}$$
+            $$= \frac{(k+1)(2k^2 + 7k + 6)}{6} = \frac{(k+1)(k+2)(2k+3)}{6}$$
+            <p>ซึ่งตรงกับ RHS ของ $P(k+1)$ ✓</p>
+          </div>
+
+          <div class="qed">∎</div>
+        </div>
+      </div>
+
+      <div id="geo-series" class="subsec">
+        <h3>พิสูจน์ผลบวก Geometric Series</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท 5.3.2</h4>
+          <p>สำหรับจำนวนจริง $r \neq 1$ และจำนวนเต็ม $n \geq 0$:</p>
+          $$\sum_{i=0}^{n} r^i = 1 + r + r^2 + \cdots + r^n = \frac{r^{n+1} - 1}{r - 1}$$
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">✍ การพิสูจน์ด้วย Mathematical Induction</div>
+
+          <div class="proof-step basis">
+            <h5>Basis Step ($n = 0$)</h5>
+            <p>LHS $= r^0 = 1$</p>
+            <p>RHS $= \dfrac{r^1 - 1}{r - 1} = \dfrac{r-1}{r-1} = 1$ (เพราะ $r \neq 1$)</p>
+            <p>$P(0)$ เป็นจริง ✓</p>
+          </div>
+
+          <div class="proof-step hypothesis">
+            <h5>Inductive Hypothesis</h5>
+            <p>สมมติ $P(k)$: $\displaystyle\sum_{i=0}^{k} r^i = \dfrac{r^{k+1}-1}{r-1}$</p>
+          </div>
+
+          <div class="proof-step inductive">
+            <h5>Inductive Step (พิสูจน์ $P(k+1)$)</h5>
+            $$\sum_{i=0}^{k+1} r^i = \underbrace{\sum_{i=0}^{k} r^i}_{\text{I.H.}} + r^{k+1} = \frac{r^{k+1}-1}{r-1} + r^{k+1}$$
+            $$= \frac{r^{k+1}-1 + r^{k+1}(r-1)}{r-1} = \frac{r^{k+1} - 1 + r^{k+2} - r^{k+1}}{r-1} = \frac{r^{k+2}-1}{r-1}$$
+            <p>ซึ่งตรงกับ RHS ของ $P(k+1)$ ✓</p>
+          </div>
+
+          <div class="qed">∎</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.3.3</span> ประยุกต์ใช้สูตร</div>
+          <p>คำนวณ $1 + 2 + 4 + 8 + 16 + 32 = \displaystyle\sum_{i=0}^{5} 2^i$</p>
+          <div class="solution">
+            $$\sum_{i=0}^{5} 2^i = \frac{2^6 - 1}{2 - 1} = \frac{64 - 1}{1} = 63$$
+          </div>
+        </div>
+      </div>
+
+      <div id="inequality-proof" class="subsec">
+        <h3>พิสูจน์อสมการ: $2^n > n$ สำหรับทุก $n \geq 1$</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท 5.3.4</h4>
+          <p>สำหรับทุกจำนวนเต็ม $n \geq 1$: $\quad 2^n > n$</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">✍ การพิสูจน์ด้วย Mathematical Induction</div>
+
+          <div class="proof-step basis">
+            <h5>Basis Step ($n = 1$)</h5>
+            <p>$2^1 = 2 > 1$ ✓</p>
+          </div>
+
+          <div class="proof-step hypothesis">
+            <h5>Inductive Hypothesis</h5>
+            <p>สมมติ $2^k > k$ สำหรับ $k \geq 1$ บางค่า</p>
+          </div>
+
+          <div class="proof-step inductive">
+            <h5>Inductive Step (พิสูจน์ $2^{k+1} > k+1$)</h5>
+            $$2^{k+1} = 2 \cdot 2^k > 2 \cdot k \quad \text{(ใช้ I.H.)}$$
+            $$= k + k \geq k + 1 \quad \text{(เพราะ}\ k \geq 1\ \text{ดังนั้น}\ k \geq 1\text{)}$$
+            <p>ดังนั้น $2^{k+1} > k + 1$ ✓</p>
+          </div>
+
+          <div class="qed">∎</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.3.5</span> พิสูจน์ความหารลงตัว</div>
+          <p><strong>ทฤษฎีบท:</strong> สำหรับทุก $n \geq 1$, $6 \mid (n^3 - n)$ (กล่าวคือ $6$ หาร $(n^3 - n)$ ลงตัว)</p>
+          <div class="solution">
+            <p><strong>Basis ($n=1$):</strong> $1^3 - 1 = 0$ และ $6 \mid 0$ ✓</p>
+            <p><strong>I.H.:</strong> สมมติ $6 \mid (k^3 - k)$</p>
+            <p><strong>Inductive Step:</strong></p>
+            $$(k+1)^3 - (k+1) = k^3 + 3k^2 + 3k + 1 - k - 1 = (k^3 - k) + 3k^2 + 3k$$
+            $$= (k^3 - k) + 3k(k+1)$$
+            <p>โดย I.H., $6 \mid (k^3 - k)$ และเนื่องจาก $k(k+1)$ เป็นผลคูณของจำนวนเต็มสองจำนวนที่ต่อเนื่องกัน จึงเป็นเลขคู่ ดังนั้น $6 \mid 3k(k+1)$ ดังนั้น $6 \mid \bigl[(k^3-k) + 3k(k+1)\bigr]$ ✓</p>
+            <div class="qed">∎</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5.4 -->
+    <section id="sec54" class="ch-section">
+      <div class="section-header" style="--ch-color:#d97706">
+        <span class="sec-num">5.4</span>
+        <div>
+          <h2>Strong Mathematical Induction</h2>
+          <p>Well-Ordering Principle และการอุปนัยแบบเข้ม</p>
+        </div>
+      </div>
+
+      <div id="well-ordering" class="subsec">
+        <h3>Well-Ordering Principle (หลักการการเรียงอย่างดี)</h3>
+
+        <div class="def-box">
+          <h4>Well-Ordering Principle</h4>
+          <p>เซตย่อยที่ไม่ว่างใด ๆ ของจำนวนเต็มที่ไม่เป็นลบ $\mathbb{Z}_{\geq 0}$ จะมี <strong>สมาชิกที่น้อยที่สุด (least element)</strong> เสมอ</p>
+          <p>หลักการนี้เป็นสัจพจน์พื้นฐาน (axiom) ของจำนวนเต็ม และใช้เป็นฐานในการพิสูจน์ความถูกต้องของ Mathematical Induction</p>
+        </div>
+
+        <div class="info-box">
+          <strong>ความสัมพันธ์ระหว่าง PMI และ Well-Ordering:</strong><br>
+          Well-Ordering Principle, Principle of Mathematical Induction, และ Strong Induction ทั้งสามข้อนี้ <strong>สมมูลกัน (equivalent)</strong> กล่าวคือ ถ้ายอมรับข้อใดข้อหนึ่ง จะสามารถพิสูจน์อีกสองข้อที่เหลือได้
+        </div>
+      </div>
+
+      <div id="strong-induction" class="subsec">
+        <h3>Strong Mathematical Induction</h3>
+
+        <div class="thm-box">
+          <h4>หลักการ: Strong (Complete) Mathematical Induction</h4>
+          <p>ให้ $P(n)$ เป็นประโยคที่มีตัวแปร $n$ เป็นจำนวนเต็ม ถ้า</p>
+          <ol>
+            <li><strong>(Basis Step)</strong> $P(1)$ เป็นจริง (หรืออาจมี basis หลายพจน์: $P(1), P(2), \ldots, P(b)$) และ</li>
+            <li><strong>(Strong Inductive Step)</strong> สำหรับทุก $k \geq 1$: ถ้า $P(1), P(2), \ldots, P(k)$ <em>ทั้งหมด</em>เป็นจริง แล้ว $P(k+1)$ ก็เป็นจริง</li>
+          </ol>
+          <p>แล้ว $P(n)$ เป็นจริงสำหรับทุก $n \geq 1$</p>
+        </div>
+
+        <div class="info-box">
+          <strong>ความแตกต่างจาก PMI ธรรมดา:</strong><br>
+          ใน <strong>PMI ธรรมดา:</strong> Inductive Hypothesis สมมติเฉพาะ $P(k)$ แล้วพิสูจน์ $P(k+1)$<br>
+          ใน <strong>Strong Induction:</strong> Inductive Hypothesis สมมติ <em>ทุก</em> $P(i)$ สำหรับ $1 \leq i \leq k$ แล้วพิสูจน์ $P(k+1)$<br><br>
+          Strong Induction มีประโยชน์เมื่อการพิสูจน์ $P(k+1)$ ต้องอาศัยพจน์ก่อนหน้าหลายพจน์ ไม่ใช่แค่ $P(k)$
+        </div>
+      </div>
+
+      <div id="prime-factorization" class="subsec">
+        <h3>ตัวอย่าง: ทุกจำนวนเต็ม $n > 1$ เป็น Prime หรือ Product of Primes</h3>
+
+        <div class="thm-box">
+          <h4>ทฤษฎีบท 5.4.1 (Fundamental Theorem of Arithmetic — ส่วนการมีอยู่)</h4>
+          <p>สำหรับทุกจำนวนเต็ม $n \geq 2$, $n$ เป็นจำนวนเฉพาะ (prime) หรือเป็นผลคูณของจำนวนเฉพาะ</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">✍ การพิสูจน์ด้วย Strong Mathematical Induction</div>
+
+          <div class="proof-step basis">
+            <h5>Basis Step ($n = 2$)</h5>
+            <p>$2$ เป็นจำนวนเฉพาะ ดังนั้น $P(2)$ เป็นจริง ✓</p>
+          </div>
+
+          <div class="proof-step hypothesis">
+            <h5>Strong Inductive Hypothesis</h5>
+            <p>สมมติว่าสำหรับจำนวนเต็ม $k \geq 2$ บางค่า ประพจน์ $P(i)$ เป็นจริงสำหรับ <strong>ทุก</strong> $i$ ที่ $2 \leq i \leq k$ กล่าวคือทุกจำนวนเต็มตั้งแต่ 2 ถึง $k$ เป็น prime หรือ product of primes</p>
+          </div>
+
+          <div class="proof-step inductive">
+            <h5>Inductive Step (พิสูจน์ $P(k+1)$)</h5>
+            <p>พิจารณา $k+1$: มีสองกรณี</p>
+            <p><strong>กรณีที่ 1:</strong> $k+1$ เป็นจำนวนเฉพาะ — จบทันที $P(k+1)$ เป็นจริง ✓</p>
+            <p><strong>กรณีที่ 2:</strong> $k+1$ ไม่เป็นจำนวนเฉพาะ — ดังนั้นมีจำนวนเต็ม $a, b$ โดยที่ $k+1 = a \cdot b$ และ $2 \leq a \leq b < k+1$</p>
+            <p>เนื่องจาก $2 \leq a \leq k$ และ $2 \leq b \leq k$ โดย <strong>Strong Inductive Hypothesis</strong>, ทั้ง $a$ และ $b$ เป็น prime หรือ product of primes</p>
+            <p>ดังนั้น $k+1 = a \cdot b$ ก็เป็น product of primes ✓</p>
+          </div>
+
+          <p>โดย Strong Induction, ทุก $n \geq 2$ เป็น prime หรือ product of primes</p>
+          <div class="qed">∎</div>
+        </div>
+
+        <div class="warning-box">
+          <strong>เหตุใดต้องใช้ Strong Induction?</strong><br>
+          ในกรณีที่ 2 เราต้องการ $P(a)$ และ $P(b)$ โดยที่ $a, b &lt; k+1$ แต่ $a$ และ $b$ อาจไม่เท่ากับ $k$ พอดี ดังนั้น Inductive Hypothesis ของ PMI ธรรมดา (ที่รู้แค่ $P(k)$) ไม่เพียงพอ — ต้องใช้ Strong Induction ที่รู้ $P(i)$ สำหรับทุก $2 \leq i \leq k$
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5.5 -->
+    <section id="sec55" class="ch-section">
+      <div class="section-header" style="--ch-color:#d97706">
+        <span class="sec-num">5.5</span>
+        <div>
+          <h2>Recursive Definitions</h2>
+          <p>การนิยามลำดับแบบเวียนเกิด และการแก้ Recurrence Relations</p>
+        </div>
+      </div>
+
+      <div id="rec-seq" class="subsec">
+        <h3>การนิยามลำดับแบบ Recursive</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Recursive Sequence (ลำดับเวียนเกิด)</h4>
+          <p>ลำดับ $a_0, a_1, a_2, \ldots$ นิยามแบบ <strong>recursive</strong> (หรือ <strong>recurrence relation</strong>) ประกอบด้วยสองส่วน:</p>
+          <ol>
+            <li><strong>Initial condition(s):</strong> ค่าเริ่มต้น เช่น $a_0 = c$ หรือ $a_0, a_1$</li>
+            <li><strong>Recurrence relation:</strong> กฎที่นิยาม $a_n$ ในรูปของพจน์ก่อนหน้า เช่น $a_n = f(a_{n-1}, a_{n-2}, \ldots)$</li>
+          </ol>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.5.1</span> Arithmetic Sequence แบบ Recursive</div>
+          <p>$a_1 = 5, \quad a_n = a_{n-1} + 3$ สำหรับ $n \geq 2$</p>
+          <div class="solution">
+            <p>$a_1 = 5,\ a_2 = 8,\ a_3 = 11,\ a_4 = 14, \ldots$</p>
+            <p>Explicit formula: $a_n = 5 + (n-1) \cdot 3 = 3n + 2$</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.5.2</span> Geometric Sequence แบบ Recursive</div>
+          <p>$a_1 = 2, \quad a_n = 3a_{n-1}$ สำหรับ $n \geq 2$</p>
+          <div class="solution">
+            <p>$a_1 = 2,\ a_2 = 6,\ a_3 = 18,\ a_4 = 54, \ldots$</p>
+            <p>Explicit formula: $a_n = 2 \cdot 3^{n-1}$</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="fibonacci" class="subsec">
+        <h3>Fibonacci Sequence (ลำดับฟีโบนัชชี)</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Fibonacci Sequence</h4>
+          <p>ลำดับ <strong>Fibonacci</strong> $F_0, F_1, F_2, \ldots$ นิยามแบบ recursive ดังนี้:</p>
+          $$F_0 = 0, \quad F_1 = 1$$
+          $$F_n = F_{n-1} + F_{n-2} \quad \text{สำหรับทุก}\ n \geq 2$$
+          <p>กล่าวคือแต่ละพจน์เป็นผลบวกของสองพจน์ก่อนหน้า</p>
+        </div>
+
+        <div class="fib-grid">
+          <div class="fib-cell"><div class="n-label">$F_0$</div><div class="fib-val">0</div></div>
+          <div class="fib-cell"><div class="n-label">$F_1$</div><div class="fib-val">1</div></div>
+          <div class="fib-cell"><div class="n-label">$F_2$</div><div class="fib-val">1</div></div>
+          <div class="fib-cell"><div class="n-label">$F_3$</div><div class="fib-val">2</div></div>
+          <div class="fib-cell"><div class="n-label">$F_4$</div><div class="fib-val">3</div></div>
+          <div class="fib-cell"><div class="n-label">$F_5$</div><div class="fib-val">5</div></div>
+          <div class="fib-cell"><div class="n-label">$F_6$</div><div class="fib-val">8</div></div>
+          <div class="fib-cell"><div class="n-label">$F_7$</div><div class="fib-val">13</div></div>
+          <div class="fib-cell"><div class="n-label">$F_8$</div><div class="fib-val">21</div></div>
+          <div class="fib-cell"><div class="n-label">$F_9$</div><div class="fib-val">34</div></div>
+          <div class="fib-cell"><div class="n-label">$F_{10}$</div><div class="fib-val">55</div></div>
+          <div class="fib-cell"><div class="n-label">$F_{11}$</div><div class="fib-val">89</div></div>
+          <div class="fib-cell"><div class="n-label">$F_{12}$</div><div class="fib-val">144</div></div>
+          <div class="fib-cell"><div class="n-label">$F_{13}$</div><div class="fib-val">233</div></div>
+          <div class="fib-cell"><div class="n-label">$F_{14}$</div><div class="fib-val">377</div></div>
+          <div class="fib-cell"><div class="n-label">$F_{15}$</div><div class="fib-val">610</div></div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>Golden Ratio (อัตราส่วนทอง):</strong><br>
+          เมื่อ $n \to \infty$, อัตราส่วน $\dfrac{F_{n+1}}{F_n} \to \phi = \dfrac{1 + \sqrt{5}}{2} \approx 1.61803\ldots$ ซึ่งเรียกว่า <strong>Golden Ratio ($\phi$)</strong><br><br>
+          <strong>Binet's Formula (สูตรปิด):</strong>
+          $$F_n = \frac{\phi^n - \hat{\phi}^n}{\sqrt{5}}, \quad \text{โดยที่}\ \phi = \frac{1+\sqrt{5}}{2},\ \hat{\phi} = \frac{1-\sqrt{5}}{2}$$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.5.3</span> คุณสมบัติของ Fibonacci ที่พิสูจน์ด้วย Induction</div>
+          <p><strong>ทฤษฎีบท:</strong> $F_1 + F_2 + \cdots + F_n = F_{n+2} - 1$ สำหรับทุก $n \geq 1$</p>
+          <div class="solution">
+            <p><strong>Basis ($n=1$):</strong> $F_1 = 1$ และ $F_3 - 1 = 2 - 1 = 1$ ✓</p>
+            <p><strong>I.H.:</strong> $\displaystyle\sum_{i=1}^{k} F_i = F_{k+2} - 1$</p>
+            <p><strong>Inductive Step:</strong></p>
+            $$\sum_{i=1}^{k+1} F_i = \left(\sum_{i=1}^{k} F_i\right) + F_{k+1} = (F_{k+2} - 1) + F_{k+1} = F_{k+3} - 1 \quad \text{(ใช้นิยาม Fibonacci)}$$
+            <div class="qed">∎</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="factorial" class="subsec">
+        <h3>Factorial แบบ Recursive</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Factorial (แฟกทอเรียล)</h4>
+          <p>สำหรับจำนวนเต็มที่ไม่เป็นลบ $n$, <strong>$n$-factorial</strong> (เขียน $n!$) นิยามแบบ recursive ดังนี้:</p>
+          $$0! = 1$$
+          $$n! = n \cdot (n-1)! \quad \text{สำหรับทุก}\ n \geq 1$$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.5.4</span> คำนวณ Factorial</div>
+          <div class="solution">
+            <p>$5! = 5 \cdot 4! = 5 \cdot (4 \cdot 3!) = 5 \cdot 4 \cdot (3 \cdot 2!) = 5 \cdot 4 \cdot 3 \cdot (2 \cdot 1!) = 5 \cdot 4 \cdot 3 \cdot 2 \cdot 1 = 120$</p>
+            <table class="seq-table">
+              <tr><th>$n$</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+              <tr><td>$n!$</td><td>1</td><td>1</td><td>2</td><td>6</td><td>24</td><td>120</td><td>720</td><td>5040</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>Factorial ในวิทยาการคอมพิวเตอร์:</strong><br>
+          Factorial เป็นตัวอย่างคลาสสิกของ <strong>recursive function</strong> ในการเขียนโปรแกรม:
+          <pre style="font-family: 'JetBrains Mono', monospace; font-size: 13px; margin-top: 8px; background: #f8fafc; padding: 10px; border-radius: 6px; overflow-x: auto;">
+def factorial(n):
+    if n == 0:          # base case
+        return 1
+    else:               # recursive case
+        return n * factorial(n - 1)</pre>
+        </div>
+      </div>
+
+      <div id="iteration" class="subsec">
+        <h3>การแก้ Recurrence Relations ด้วย Iteration</h3>
+
+        <p>วิธี <strong>Iteration (การวนซ้ำ)</strong> คือการขยาย recurrence relation โดยแทนค่าซ้ำๆ จนพบรูปแบบ แล้วเดา explicit formula และพิสูจน์ด้วย Induction</p>
+
+        <div class="rec-card">
+          <h5>ตัวอย่าง 5.5.5: $a_n = a_{n-1} + c$ (Arithmetic)</h5>
+          <p>ให้ $a_0 = a$ และ $a_n = a_{n-1} + c$</p>
+          <div style="margin-top: 8px;">
+            $$a_1 = a + c$$
+            $$a_2 = a_1 + c = a + 2c$$
+            $$a_3 = a_2 + c = a + 3c$$
+            $$\vdots$$
+            $$a_n = a + nc$$
+          </div>
+          <p style="margin-top: 8px;">Explicit formula: $a_n = a + nc$ (พิสูจน์ได้ด้วย Induction)</p>
+        </div>
+
+        <div class="rec-card">
+          <h5>ตัวอย่าง 5.5.6: $a_n = r \cdot a_{n-1}$ (Geometric)</h5>
+          <p>ให้ $a_0 = a$ และ $a_n = r \cdot a_{n-1}$</p>
+          <div style="margin-top: 8px;">
+            $$a_1 = ra, \quad a_2 = r^2 a, \quad a_3 = r^3 a, \quad \ldots$$
+          </div>
+          <p style="margin-top: 8px;">Explicit formula: $a_n = r^n \cdot a$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 5.5.7</span> Iteration สำหรับ Recurrence ที่ซับซ้อน</div>
+          <p>ให้ $a_1 = 1$ และ $a_n = 2a_{n-1} + 1$ สำหรับ $n \geq 2$ หา explicit formula</p>
+          <div class="solution">
+            <p><strong>Iterate:</strong></p>
+            $$a_n = 2a_{n-1} + 1 = 2(2a_{n-2} + 1) + 1 = 2^2 a_{n-2} + 2 + 1$$
+            $$= 2^2(2a_{n-3} + 1) + 2 + 1 = 2^3 a_{n-3} + 2^2 + 2 + 1$$
+            $$\vdots$$
+            $$= 2^{n-1} a_1 + 2^{n-2} + \cdots + 2 + 1 = 2^{n-1} + \sum_{k=0}^{n-2} 2^k$$
+            $$= 2^{n-1} + (2^{n-1} - 1) = 2^n - 1$$
+            <p><strong>Explicit formula:</strong> $a_n = 2^n - 1$</p>
+            <p><strong>ตรวจสอบ:</strong> $a_1 = 1 = 2^1 - 1$ ✓; $a_2 = 2(1)+1 = 3 = 2^2-1$ ✓; $a_3 = 2(3)+1 = 7 = 2^3-1$ ✓</p>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>Towers of Hanoi:</strong><br>
+          ปัญหาการเคลื่อนย้ายจาน $n$ ชั้น มีจำนวนการเคลื่อนที่น้อยที่สุดเป็น $m_n$ โดย $m_1 = 1$ และ $m_n = 2m_{n-1} + 1$ ซึ่งแก้ได้ว่า $m_n = 2^n - 1$ ตรงกับตัวอย่างข้างต้นพอดี
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#c8983b">
+        <span class="sec-num">📋</span>
+        <div>
+          <h2>สรุปบทที่ 5</h2>
+          <p>Sequences, Mathematical Induction, and Recursion</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h4>5.1 Sequences</h4>
+          <ul>
+            <li>ลำดับ $(a_n)$: ฟังก์ชันจากจำนวนเต็มไปยัง $S$</li>
+            <li>Arithmetic: $a_n = a_1 + (n-1)d$</li>
+            <li>Geometric: $a_n = a_1 \cdot r^{n-1}$</li>
+            <li>$\displaystyle\sum_{k=m}^{n} a_k$ และ $\displaystyle\prod_{k=m}^{n} a_k$ คือ summation/product notation</li>
+            <li>$\displaystyle\sum_{k=1}^{n} k = \frac{n(n+1)}{2}$, $\displaystyle\sum_{k=0}^{n} r^k = \frac{r^{n+1}-1}{r-1}$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>5.2–5.3 Mathematical Induction</h4>
+          <ul>
+            <li>PMI: Basis + Inductive Hypothesis + Inductive Step</li>
+            <li>$\displaystyle\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$ — พิสูจน์โดย Induction</li>
+            <li>$\displaystyle\sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}$</li>
+            <li>$\displaystyle\sum_{i=0}^{n} r^i = \frac{r^{n+1}-1}{r-1}$</li>
+            <li>$2^n > n$ สำหรับทุก $n \geq 1$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>5.4 Strong Induction</h4>
+          <ul>
+            <li>Well-Ordering: ทุก non-empty subset ของ $\mathbb{Z}_{\geq 0}$ มี minimum</li>
+            <li>Strong I.H.: สมมติ $P(1), \ldots, P(k)$ ทั้งหมด</li>
+            <li>ใช้เมื่อ $P(k+1)$ ต้องอาศัยหลายพจน์ก่อนหน้า</li>
+            <li>ทุก $n \geq 2$ เป็น prime หรือ product of primes</li>
+            <li>PMI, Strong Induction, Well-Ordering สมมูลกัน</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>5.5 Recursive Definitions</h4>
+          <ul>
+            <li>Recursive sequence: Initial condition + Recurrence relation</li>
+            <li>Fibonacci: $F_0=0, F_1=1, F_n = F_{n-1}+F_{n-2}$</li>
+            <li>Factorial: $0!=1, n! = n \cdot (n-1)!$</li>
+            <li>Iteration: ขยายซ้ำ → เดา explicit formula → พิสูจน์</li>
+            <li>Towers of Hanoi: $m_n = 2^n - 1$</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#ea580c">
+        <span class="sec-num">✏️</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>จากหนังสือ Discrete Mathematics with Applications</p>
+        </div>
+      </div>
+
+      <div class="exercises-list">
+        <div class="exercise-item">
+          <span class="ex-num">5.1</span>
+          <div class="ex-content">
+            <strong>ลำดับและ Summation Notation:</strong> (1) หา explicit formula ของลำดับ $2, 5, 10, 17, 26, \ldots$ (2) คำนวณ $\displaystyle\sum_{k=1}^{6} (2k-1)$ และตรวจสอบว่าเท่ากับ $6^2$ หรือไม่ (3) ลำดับ Geometric ที่มี $a_1 = 3$ และ $a_4 = 81$ จงหา $r$ และ $a_7$ (4) เขียนสูตร summation แทน $\frac{1}{2} + \frac{1}{6} + \frac{1}{12} + \frac{1}{20} + \frac{1}{30}$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">5.2</span>
+          <div class="ex-content">
+            <strong>Mathematical Induction I — สูตรผลบวก:</strong> พิสูจน์โดย Mathematical Induction ว่า (1) $1 + 3 + 5 + \cdots + (2n-1) = n^2$ สำหรับทุก $n \geq 1$ (2) $\displaystyle\sum_{i=1}^{n} i \cdot 2^i = (n-1) \cdot 2^{n+1} + 2$ สำหรับทุก $n \geq 1$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">5.3</span>
+          <div class="ex-content">
+            <strong>Mathematical Induction II — อสมการและหารลงตัว:</strong> พิสูจน์โดย Mathematical Induction ว่า (1) $n! > 2^n$ สำหรับทุก $n \geq 4$ (2) $3^n \geq n^2$ สำหรับทุก $n \geq 1$ (3) $4 \mid (5^n - 1)$ สำหรับทุก $n \geq 1$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">5.4</span>
+          <div class="ex-content">
+            <strong>Strong Induction:</strong> (1) พิสูจน์ว่าทุกจำนวนเต็ม $n \geq 2$ สามารถเขียนเป็น $n = 2^a \cdot m$ โดยที่ $a \geq 0$ และ $m$ เป็นจำนวนคี่ (2) ให้ลำดับนิยามโดย $a_1 = 1, a_2 = 3, a_n = a_{n-1} + a_{n-2}$ สำหรับ $n \geq 3$ พิสูจน์โดย Strong Induction ว่า $a_n < 3^n$ สำหรับทุก $n \geq 1$
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">5.5</span>
+          <div class="ex-content">
+            <strong>Fibonacci:</strong> (1) พิสูจน์โดย Strong Induction ว่า $F_n &lt; 2^n$ สำหรับทุก $n \geq 1$ (2) พิสูจน์ว่า $\gcd(F_n, F_{n+1}) = 1$ สำหรับทุก $n \geq 1$ (3) คำนวณ $F_{20}$ โดยใช้ recurrence
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">5.6</span>
+          <div class="ex-content">
+            <strong>Recursive Definitions และ Iteration:</strong> (1) ให้ $b_0 = 1, b_n = b_{n-1} + 2n$ หา explicit formula ด้วย iteration และพิสูจน์ด้วย Induction (2) ให้ $c_1 = 2, c_n = 3c_{n-1} - 1$ หา explicit formula (3) แสดงว่า Towers of Hanoi $n$ ชั้นต้องใช้อย่างน้อย $2^n - 1$ การเคลื่อน
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">5.7</span>
+          <div class="ex-content">
+            <strong>โจทย์ประยุกต์:</strong> ธนาคารให้ดอกเบี้ยทบต้น $r$ ต่อปี เงินเริ่มต้น $P_0$ บาท เขียน recurrence relation และหา explicit formula ของเงินหลังจาก $n$ ปี แล้วคำนวณว่าถ้า $P_0 = 10{,}000$ บาท และ $r = 5\%$ จะมีเงินเท่าไรหลัง 10 ปี
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">5.8</span>
+          <div class="ex-content">
+            <strong>Challenge — Cassini's Identity:</strong> พิสูจน์โดย Strong Induction ว่า $F_{n+1} \cdot F_{n-1} - F_n^2 = (-1)^n$ สำหรับทุก $n \geq 1$ โดยที่ $(F_n)$ คือลำดับ Fibonacci (hint: ใช้นิยาม Fibonacci และ I.H. สำหรับ $P(n)$ และ $P(n-1)$)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER NAV -->
+    <div class="chapter-nav">
+      <a href="chapter4.html" class="nav-btn prev-btn">← บทที่ 4</a>
+      <a href="../index.html" class="nav-btn next-btn">กลับหน้าหลัก →</a>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง — บทที่ 5: Sequences, Mathematical Induction, and Recursion</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล · ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ · มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 · เนื้อหาจาก <em>Discrete Mathematics with Applications</em> — Susanna S. Epp</p>
+</footer>
+
+<script>
+  // Scroll to top for all TOC links
+  const SCROLL_OFFSET = 80;
+  document.querySelectorAll('.ch-toc a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'instant' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
+  // Sticky sidebar highlight
+  const sections = document.querySelectorAll('.ch-section, .subsec');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (s.id && window.scrollY >= s.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET - 10) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('ch-sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บทที่ 4 – Elementary Number Theory and Methods of Proof | Discrete Mathematics</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chapter.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔢</text></svg>">
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+  <style>
+    /* Definition box */
+    .def-box {
+      background: #fdf4ff;
+      border: 1.5px solid #e9d5ff;
+      border-left: 4px solid #9333ea;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin: 16px 0;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .def-box strong.def-title {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #9333ea;
+      margin-bottom: 8px;
+    }
+    /* Theorem box */
+    .thm-box {
+      background: #fff7ed;
+      border: 1.5px solid #fed7aa;
+      border-left: 4px solid #ea580c;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin: 16px 0;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+    .thm-box strong.thm-title {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #ea580c;
+      margin-bottom: 8px;
+    }
+    /* Proof steps */
+    .proof-steps {
+      counter-reset: proof-step;
+      list-style: none;
+      padding-left: 0;
+      margin: 12px 0;
+    }
+    .proof-steps li {
+      counter-increment: proof-step;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 8px 10px;
+      border-radius: 7px;
+      margin-bottom: 6px;
+      background: #f8fafc;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+    .proof-steps li::before {
+      content: counter(proof-step);
+      min-width: 24px;
+      height: 24px;
+      background: #dc2626;
+      color: white;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .proof-qed {
+      text-align: right;
+      font-size: 20px;
+      color: #dc2626;
+      margin-top: 8px;
+      font-weight: 700;
+    }
+    /* Number theory table */
+    .nt-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+    .nt-table th {
+      background: #dc2626;
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .nt-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .nt-table tr:nth-child(even) td { background: #fff1f2; }
+    /* Method comparison grid */
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .method-card {
+      border-radius: 10px;
+      padding: 16px;
+      border: 2px solid;
+    }
+    .method-card.direct { border-color: #16a34a; background: #f0fdf4; }
+    .method-card.contrapos { border-color: #0284c7; background: #f0f9ff; }
+    .method-card.contradiction { border-color: #9333ea; background: #fdf4ff; }
+    .method-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .method-card.direct h4 { color: #15803d; }
+    .method-card.contrapos h4 { color: #0369a1; }
+    .method-card.contradiction h4 { color: #9333ea; }
+    .method-card p { font-size: 13px; line-height: 1.6; }
+    /* Div remainder table */
+    .div-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+    .div-table th {
+      background: #1e3a5f;
+      color: white;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    .div-table td {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .div-table tr:nth-child(even) td { background: #f8fafc; }
+    /* Classical proof highlight */
+    .classical-proof {
+      background: linear-gradient(135deg, #1e3a5f 0%, #dc2626 100%);
+      color: white;
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin: 20px 0;
+    }
+    .classical-proof h4 { color: #fbbf24; font-size: 16px; margin-bottom: 16px; }
+    .classical-proof ol {
+      padding-left: 20px;
+      font-size: 15px;
+      line-height: 2;
+    }
+    .classical-proof .qed { text-align: right; font-size: 22px; color: #fbbf24; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="header-logo" href="../index.html">
+      <div class="logo-icon">∑</div>
+      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
+    </a>
+    <nav class="ch-header-nav">
+      <a href="chapter3.html" class="ch-nav-link">← บทที่ 3</a>
+      <span class="ch-nav-divider">|</span>
+      <span class="ch-nav-current">บทที่ 4</span>
+      <span class="ch-nav-divider">|</span>
+      <a href="chapter5.html" class="ch-nav-link">บทที่ 5 →</a>
+    </nav>
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+  </div>
+</header>
+
+<!-- CHAPTER HERO -->
+<section class="chapter-hero" style="--ch-color:#dc2626">
+  <div class="container">
+    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <div class="chapter-hero-content">
+      <div class="chapter-hero-num">บทที่ 4</div>
+      <div class="chapter-hero-icon">🔢</div>
+      <h1 class="chapter-hero-title">Elementary Number Theory and Methods of Proof</h1>
+      <p class="chapter-hero-subtitle">ทฤษฎีจำนวนเบื้องต้นและวิธีการพิสูจน์</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="ch-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="ch-sidebar" id="ch-sidebar">
+    <div class="ch-sidebar-inner">
+      <h4>เนื้อหาบทนี้</h4>
+      <ul class="ch-toc">
+        <li><a href="#overview">ภาพรวม</a></li>
+        <li><a href="#sec41">4.1 Direct Proof &amp; Counterexample I</a>
+          <ul>
+            <li><a href="#even-odd">Even &amp; Odd Integers</a></li>
+            <li><a href="#divisibility">Divisibility</a></li>
+            <li><a href="#proving-universal">Proving Universal Statements</a></li>
+            <li><a href="#counterexample">Finding Counterexamples</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec42">4.2 Direct Proof &amp; Counterexample II</a>
+          <ul>
+            <li><a href="#rationals">Rational Numbers</a></li>
+            <li><a href="#rational-props">Properties of Rationals</a></li>
+            <li><a href="#irrationality">Irrationality</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec43">4.3 Direct Proof &amp; Counterexample III</a>
+          <ul>
+            <li><a href="#div-def">Divisibility Revisited</a></li>
+            <li><a href="#div-transitivity">Transitivity of Divisibility</a></li>
+            <li><a href="#div-sum-product">Sum &amp; Product Rules</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec44">4.4 Quotient-Remainder Theorem</a>
+          <ul>
+            <li><a href="#div-algorithm">Division Algorithm</a></li>
+            <li><a href="#div-cases">Division into Cases</a></li>
+            <li><a href="#mod-notation">mod Notation</a></li>
+            <li><a href="#parity-proofs">Parity Proofs</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec45">4.5 Indirect Argument</a>
+          <ul>
+            <li><a href="#contradiction">Proof by Contradiction</a></li>
+            <li><a href="#contrapositive">Proof by Contrapositive</a></li>
+            <li><a href="#method-compare">Comparing Methods</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec46">4.6 Two Classical Theorems</a>
+          <ul>
+            <li><a href="#sqrt2">$\sqrt{2}$ is Irrational</a></li>
+            <li><a href="#inf-primes">Infinite Primes (Euclid)</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 4</a></li>
+        <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="ch-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="ch-section">
+      <div class="overview-card">
+        <h2>ภาพรวมบทที่ 4</h2>
+        <p>บทนี้นำเสนอ <strong>ทฤษฎีจำนวนเบื้องต้น (Elementary Number Theory)</strong> และเครื่องมือสำคัญสำหรับ <strong>การพิสูจน์ทางคณิตศาสตร์</strong> เราจะเรียนรู้วิธีพิสูจน์โดยตรง (Direct Proof) การหาตัวอย่างโต้แย้ง (Counterexample) การพิสูจน์โดยอ้อม (Indirect Proof) ทั้ง Contradiction และ Contrapositive รวมถึงทฤษฎีบทคลาสสิกสองข้อที่งดงามที่สุดในคณิตศาสตร์</p>
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="ov-icon">÷</span>
+            <strong>4.1–4.3 Direct Proof</strong>
+            <p>จำนวนคู่/คี่, หาร, จำนวนตรรกยะ, สมบัติการหาร</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">≡</span>
+            <strong>4.4 Quotient-Remainder</strong>
+            <p>Division Algorithm, mod notation, การพิสูจน์แบบแยกกรณี</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">⊥</span>
+            <strong>4.5 Indirect Argument</strong>
+            <p>Proof by Contradiction และ Proof by Contrapositive</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">∞</span>
+            <strong>4.6 Classical Theorems</strong>
+            <p>$\sqrt{2}$ อตรรกยะ และจำนวนเฉพาะมีอนันต์ตัว (ยูคลิด)</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">✗</span>
+            <strong>Counterexamples</strong>
+            <p>วิธีพิสูจน์ว่าข้อความสากลเป็นเท็จด้วยตัวอย่างโต้แย้ง</p>
+          </div>
+          <div class="overview-item">
+            <span class="ov-icon">🔑</span>
+            <strong>Proof Strategies</strong>
+            <p>เปรียบเทียบวิธีพิสูจน์ต่าง ๆ และเลือกวิธีที่เหมาะสม</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4.1 -->
+    <section id="sec41" class="ch-section">
+      <div class="section-header" style="--ch-color:#dc2626">
+        <span class="sec-num">4.1</span>
+        <div>
+          <h2>Direct Proof and Counterexample I</h2>
+          <p>จำนวนคู่/คี่, นิยามหาร, พิสูจน์ข้อความสากล, หาตัวอย่างโต้แย้ง</p>
+        </div>
+      </div>
+
+      <div id="even-odd" class="subsec">
+        <h3>Even and Odd Integers</h3>
+
+        <div class="def-box">
+          <strong class="def-title">นิยาม 4.1.1 — Even and Odd Integers</strong>
+          <p>จำนวนเต็ม $n$ เรียกว่า <strong>จำนวนคู่ (even)</strong> ถ้ามีจำนวนเต็ม $k$ ที่ทำให้ $n = 2k$</p>
+          <p>จำนวนเต็ม $n$ เรียกว่า <strong>จำนวนคี่ (odd)</strong> ถ้ามีจำนวนเต็ม $k$ ที่ทำให้ $n = 2k+1$</p>
+          <p style="margin-top:10px;font-size:14px;color:#7c3aed">ข้อสังเกต: ทุกจำนวนเต็มเป็นจำนวนคู่หรือจำนวนคี่อย่างใดอย่างหนึ่งเสมอ (ไม่ทั้งสอง)</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.1.1</span> การระบุจำนวนคู่/คี่</div>
+          <p>จงตรวจสอบว่าจำนวนต่อไปนี้เป็นจำนวนคู่หรือคี่</p>
+          <div class="solution">
+            <table class="nt-table">
+              <tr><th>จำนวน $n$</th><th>รูปแบบ</th><th>ชนิด</th><th>ค่า $k$</th></tr>
+              <tr><td>$28$</td><td>$28 = 2(14)$</td><td>คู่ (even)</td><td>$k=14$</td></tr>
+              <tr><td>$-3$</td><td>$-3 = 2(-2)+1$</td><td>คี่ (odd)</td><td>$k=-2$</td></tr>
+              <tr><td>$0$</td><td>$0 = 2(0)$</td><td>คู่ (even)</td><td>$k=0$</td></tr>
+              <tr><td>$-17$</td><td>$-17 = 2(-9)+1$</td><td>คี่ (odd)</td><td>$k=-9$</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>หมายเหตุสำคัญ:</strong> นิยาม "even" และ "odd" ใช้กับ <em>จำนวนเต็ม</em> ($\mathbb{Z}$) เท่านั้น ไม่ใช้กับจำนวนจริงทั่วไป คำว่า "2 หาร $n$ ลงตัว" มีความหมายเดียวกับ "$n$ เป็นจำนวนคู่"
+        </div>
+      </div>
+
+      <div id="divisibility" class="subsec">
+        <h3>Divisibility — การหารลงตัว</h3>
+
+        <div class="def-box">
+          <strong class="def-title">นิยาม 4.1.2 — Divisibility</strong>
+          <p>ถ้า $d$ และ $n$ เป็นจำนวนเต็ม โดยที่ $d \neq 0$ เราจะบอกว่า <strong>$d$ หาร $n$ ลงตัว</strong> (หรือ <strong>$d$ เป็นตัวหาร (divisor) ของ $n$</strong>, หรือ <strong>$n$ หารได้ด้วย $d$</strong>) เขียนแทนด้วย $d \mid n$ เมื่อ</p>
+          $$n = d \cdot k \quad \text{สำหรับจำนวนเต็มบางค่า } k$$
+          <p>ถ้า $d$ ไม่หาร $n$ ลงตัว เขียน $d \nmid n$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.1.2</span> การตรวจสอบ Divisibility</div>
+          <div class="solution">
+            <table class="nt-table">
+              <tr><th>ข้อความ</th><th>เหตุผล</th><th>ผล</th></tr>
+              <tr><td>$3 \mid 21$</td><td>$21 = 3 \cdot 7$, $k=7$</td><td>จริง ✓</td></tr>
+              <tr><td>$5 \mid 0$</td><td>$0 = 5 \cdot 0$, $k=0$</td><td>จริง ✓</td></tr>
+              <tr><td>$-4 \mid 20$</td><td>$20 = (-4)(-5)$, $k=-5$</td><td>จริง ✓</td></tr>
+              <tr><td>$7 \mid 50$</td><td>ไม่มีจำนวนเต็ม $k$ ที่ทำให้ $50 = 7k$</td><td>เท็จ ✗</td></tr>
+            </table>
+            <p style="margin-top:10px"><strong>สังเกต:</strong> $d \mid 0$ เป็นจริงเสมอสำหรับ $d \neq 0$ เพราะ $0 = d \cdot 0$</p>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>ข้อควรระวัง:</strong> $d \mid n$ เป็น <em>ความสัมพันธ์ (relation)</em> ระหว่างจำนวนเต็มสองตัว ไม่ใช่การดำเนินการหาร อย่าสับสนกับ $n/d$ (ผลหาร) — $3 \mid 12$ หมายความว่า "3 หาร 12 ลงตัว" ไม่ใช่ "3 หาร 12 เท่ากับอะไร"
+        </div>
+      </div>
+
+      <div id="proving-universal" class="subsec">
+        <h3>Proving Universal Statements by Direct Proof</h3>
+
+        <div class="key-box">
+          <h4>กระบวนการพิสูจน์โดยตรง (Direct Proof)</h4>
+          <p>เพื่อพิสูจน์ $\forall x \in D$, ถ้า $P(x)$ แล้ว $Q(x)$:</p>
+          <ol>
+            <li>ให้ $x$ เป็นสมาชิกใด ๆ ใน $D$ ที่ทำให้ $P(x)$ เป็นจริง (<em>สมมติสมมติฐาน</em>)</li>
+            <li>แสดง (โดยใช้คำนิยาม สัจพจน์ หรือทฤษฎีบทที่พิสูจน์แล้ว) ว่า $Q(x)$ เป็นจริง</li>
+            <li>สรุปว่าข้อความสากลเป็นจริง</li>
+          </ol>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.1.3</span> Direct Proof — ผลรวมของจำนวนคู่สองจำนวน</div>
+          <p><strong>ทฤษฎีบท:</strong> ผลรวมของจำนวนคู่สองจำนวนใด ๆ เป็นจำนวนคู่</p>
+          <p>นั่นคือ $\forall m, n \in \mathbb{Z}$, ถ้า $m$ เป็นคู่และ $n$ เป็นคู่ แล้ว $m + n$ เป็นคู่</p>
+          <div class="solution">
+            <p><strong>พิสูจน์:</strong></p>
+            <ul class="proof-steps">
+              <li>สมมติว่า $m$ และ $n$ เป็นจำนวนคู่ใด ๆ</li>
+              <li>โดยนิยาม: มีจำนวนเต็ม $j$ และ $k$ ที่ทำให้ $m = 2j$ และ $n = 2k$</li>
+              <li>คำนวณผลรวม: $m + n = 2j + 2k = 2(j + k)$</li>
+              <li>เนื่องจาก $j + k$ เป็นจำนวนเต็ม (ผลรวมของจำนวนเต็มสองจำนวน) จึงได้ว่า $m + n = 2(\underbrace{j+k}_{k'})$ ซึ่งอยู่ในรูป $2k'$</li>
+              <li>ดังนั้น $m + n$ เป็นจำนวนคู่ตามนิยาม</li>
+            </ul>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.1.4</span> Direct Proof — ผลคูณของจำนวนคู่และจำนวนคี่</div>
+          <p><strong>ทฤษฎีบท:</strong> ถ้า $m$ เป็นจำนวนคู่และ $n$ เป็นจำนวนใด ๆ แล้ว $mn$ เป็นจำนวนคู่</p>
+          <div class="solution">
+            <p><strong>พิสูจน์:</strong></p>
+            <ul class="proof-steps">
+              <li>สมมติว่า $m$ เป็นจำนวนคู่ และ $n$ เป็นจำนวนเต็มใด ๆ</li>
+              <li>โดยนิยาม: มีจำนวนเต็ม $k$ ที่ทำให้ $m = 2k$</li>
+              <li>จึงได้ $mn = (2k)n = 2(kn)$</li>
+              <li>เนื่องจาก $kn$ เป็นจำนวนเต็ม ดังนั้น $mn$ อยู่ในรูป $2(\text{int})$ จึงเป็นจำนวนคู่</li>
+            </ul>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="counterexample" class="subsec">
+        <h3>Finding Counterexamples</h3>
+
+        <div class="key-box">
+          <h4>วิธีพิสูจน์ว่าข้อความสากลเป็นเท็จ</h4>
+          <p>เพื่อแสดงว่า $\forall x \in D, P(x) \to Q(x)$ เป็นเท็จ ให้หาค่า $x \in D$ ที่ทำให้ $P(x)$ เป็นจริงแต่ $Q(x)$ เป็นเท็จ ค่านั้นเรียกว่า <strong>counterexample (ตัวอย่างโต้แย้ง)</strong></p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.1.5</span> Counterexample</div>
+          <p><strong>ข้อความ:</strong> $\forall m, n \in \mathbb{Z}$, ถ้า $m + n$ เป็นจำนวนคู่ แล้ว $m$ เป็นจำนวนคู่และ $n$ เป็นจำนวนคู่</p>
+          <div class="solution">
+            <p><strong>คำตอบ:</strong> ข้อความนี้ <strong>เท็จ</strong></p>
+            <p><strong>Counterexample:</strong> ให้ $m = 3$, $n = 5$</p>
+            <p>แล้ว $m + n = 3 + 5 = 8$ เป็นจำนวนคู่ (สมมติฐานจริง)</p>
+            <p>แต่ $m = 3$ เป็นจำนวนคี่ ไม่ใช่จำนวนคู่ (สรุปเท็จ)</p>
+            <p>ดังนั้นข้อความสากลนี้เป็นเท็จ ✗</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.1.6</span> Counterexample สำหรับ Divisibility</div>
+          <p><strong>ข้อความ:</strong> $\forall a, b, c \in \mathbb{Z}$, ถ้า $a \mid bc$ แล้ว $a \mid b$ หรือ $a \mid c$</p>
+          <div class="solution">
+            <p><strong>คำตอบ:</strong> ข้อความนี้ <strong>เท็จ</strong></p>
+            <p><strong>Counterexample:</strong> ให้ $a = 4$, $b = 6$, $c = 2$</p>
+            <p>$bc = 6 \cdot 2 = 12$, และ $4 \mid 12$ (เพราะ $12 = 4 \cdot 3$) — สมมติฐานจริง</p>
+            <p>แต่ $4 \nmid 6$ (เพราะ $6 = 4 \cdot 1 + 2$) และ $4 \nmid 2$ (เพราะ $2 < 4$)</p>
+            <p>ดังนั้นข้อความนี้เป็นเท็จ ✗</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4.2 -->
+    <section id="sec42" class="ch-section">
+      <div class="section-header" style="--ch-color:#dc2626">
+        <span class="sec-num">4.2</span>
+        <div>
+          <h2>Direct Proof and Counterexample II</h2>
+          <p>จำนวนตรรกยะ สมบัติ และความอตรรกยะ</p>
+        </div>
+      </div>
+
+      <div id="rationals" class="subsec">
+        <h3>Rational Numbers — จำนวนตรรกยะ</h3>
+
+        <div class="def-box">
+          <strong class="def-title">นิยาม 4.2.1 — จำนวนตรรกยะ</strong>
+          <p>จำนวนจริง $r$ เรียกว่า <strong>จำนวนตรรกยะ (rational number)</strong> เมื่อมีจำนวนเต็ม $p$ และ $q$ โดยที่ $q \neq 0$ ที่ทำให้</p>
+          $$r = \frac{p}{q}$$
+          <p>เซตของจำนวนตรรกยะทั้งหมดเขียนแทนด้วย $\mathbb{Q}$</p>
+          <p>จำนวนจริง $s$ เรียกว่า <strong>จำนวนอตรรกยะ (irrational number)</strong> ถ้า $s$ ไม่ใช่จำนวนตรรกยะ</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.2.1</span> ตัวอย่างจำนวนตรรกยะ</div>
+          <div class="solution">
+            <table class="nt-table">
+              <tr><th>จำนวน</th><th>รูปแบบ $p/q$</th><th>หมายเหตุ</th></tr>
+              <tr><td>$5$</td><td>$5/1$</td><td>จำนวนเต็มทุกตัวเป็นตรรกยะ</td></tr>
+              <tr><td>$-3/7$</td><td>$-3/7$</td><td>เศษส่วนตรรกยะ</td></tr>
+              <tr><td>$0.6$</td><td>$3/5$</td><td>ทศนิยมสิ้นสุดเป็นตรรกยะ</td></tr>
+              <tr><td>$0.\overline{3}$</td><td>$1/3$</td><td>ทศนิยมซ้ำเป็นตรรกยะ</td></tr>
+              <tr><td>$\sqrt{2}$</td><td>—</td><td>อตรรกยะ (จะพิสูจน์ใน 4.6)</td></tr>
+              <tr><td>$\pi$</td><td>—</td><td>อตรรกยะ (Lindemann 1882)</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="rational-props" class="subsec">
+        <h3>Properties of Rational Numbers</h3>
+
+        <div class="thm-box">
+          <strong class="thm-title">ทฤษฎีบท 4.2.1 — ผลรวมของจำนวนตรรกยะ</strong>
+          <p>ผลรวมของจำนวนตรรกยะสองจำนวนใด ๆ เป็นจำนวนตรรกยะ</p>
+          <p>$\forall r, s \in \mathbb{Q},\ r + s \in \mathbb{Q}$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>พิสูจน์ทฤษฎีบท 4.2.1</span></div>
+          <div class="solution">
+            <ul class="proof-steps">
+              <li>สมมติว่า $r$ และ $s$ เป็นจำนวนตรรกยะใด ๆ</li>
+              <li>โดยนิยาม: มีจำนวนเต็ม $a, b, c, d$ ที่ $b \neq 0$, $d \neq 0$ โดยที่ $r = \dfrac{a}{b}$ และ $s = \dfrac{c}{d}$</li>
+              <li>คำนวณผลรวม: $r + s = \dfrac{a}{b} + \dfrac{c}{d} = \dfrac{ad + bc}{bd}$</li>
+              <li>เนื่องจาก $ad + bc$ และ $bd$ เป็นจำนวนเต็ม และ $bd \neq 0$ (เพราะ $b \neq 0$ และ $d \neq 0$)</li>
+              <li>จึงสรุปได้ว่า $r + s$ อยู่ในรูป (จำนวนเต็ม)/(จำนวนเต็มที่ไม่ใช่ศูนย์) ดังนั้น $r + s \in \mathbb{Q}$</li>
+            </ul>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+
+        <div class="thm-box">
+          <strong class="thm-title">ทฤษฎีบท 4.2.2 — ผลคูณของจำนวนตรรกยะ</strong>
+          <p>ผลคูณของจำนวนตรรกยะสองจำนวนใด ๆ เป็นจำนวนตรรกยะ</p>
+          <p>$\forall r, s \in \mathbb{Q},\ r \cdot s \in \mathbb{Q}$</p>
+        </div>
+      </div>
+
+      <div id="irrationality" class="subsec">
+        <h3>Irrationality</h3>
+
+        <div class="warning-box">
+          <strong>ข้อสังเกต:</strong> ผลรวมของจำนวนตรรกยะกับจำนวนอตรรกยะเป็นจำนวนอตรรกยะเสมอ แต่ผลรวมของจำนวนอตรรกยะสองจำนวนอาจเป็นตรรกยะก็ได้ เช่น $\sqrt{2} + (-\sqrt{2}) = 0 \in \mathbb{Q}$
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.2.2</span> ผลรวมตรรกยะ + อตรรกยะ</div>
+          <p><strong>ทฤษฎีบท:</strong> ถ้า $r \in \mathbb{Q}$ และ $s \notin \mathbb{Q}$ แล้ว $r + s \notin \mathbb{Q}$</p>
+          <div class="solution">
+            <p><strong>พิสูจน์ (โดย Contradiction):</strong></p>
+            <ul class="proof-steps">
+              <li>สมมติ (เพื่อขัดแย้ง) ว่า $r + s \in \mathbb{Q}$</li>
+              <li>เนื่องจาก $r \in \mathbb{Q}$ และ $r + s \in \mathbb{Q}$ จาก Theorem 4.2.1: $(r+s) - r \in \mathbb{Q}$</li>
+              <li>แต่ $(r+s) - r = s$ ดังนั้น $s \in \mathbb{Q}$</li>
+              <li>ขัดแย้งกับสมมติที่ว่า $s \notin \mathbb{Q}$!</li>
+              <li>ดังนั้นการสมมติในข้อ 1 ผิด จึงสรุปได้ว่า $r + s \notin \mathbb{Q}$</li>
+            </ul>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4.3 -->
+    <section id="sec43" class="ch-section">
+      <div class="section-header" style="--ch-color:#dc2626">
+        <span class="sec-num">4.3</span>
+        <div>
+          <h2>Direct Proof and Counterexample III</h2>
+          <p>สมบัติการหาร: Transitivity, Sum Rule, Product Rule</p>
+        </div>
+      </div>
+
+      <div id="div-def" class="subsec">
+        <h3>Divisibility — สมบัติพื้นฐาน</h3>
+
+        <div class="info-box">
+          <strong>ทบทวน:</strong> $d \mid n$ (อ่านว่า "$d$ หาร $n$ ลงตัว" หรือ "$d$ divides $n$") หมายความว่า $n = dk$ สำหรับจำนวนเต็มบางค่า $k$ เงื่อนไข $d \neq 0$ จำเป็นเสมอในนิยาม
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.3.1</span> พิสูจน์ด้วย Divisibility</div>
+          <p><strong>ทฤษฎีบท:</strong> $\forall n \in \mathbb{Z}$, ถ้า $6 \mid n$ แล้ว $2 \mid n$ และ $3 \mid n$</p>
+          <div class="solution">
+            <ul class="proof-steps">
+              <li>สมมติว่า $6 \mid n$ สำหรับจำนวนเต็มบางค่า $n$</li>
+              <li>โดยนิยาม: มีจำนวนเต็ม $k$ ที่ทำให้ $n = 6k$</li>
+              <li>เขียนใหม่: $n = 6k = 2(3k) = 3(2k)$</li>
+              <li>เนื่องจาก $3k$ เป็นจำนวนเต็ม จึงได้ $2 \mid n$ ✓</li>
+              <li>เนื่องจาก $2k$ เป็นจำนวนเต็ม จึงได้ $3 \mid n$ ✓</li>
+            </ul>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="div-transitivity" class="subsec">
+        <h3>Transitivity of Divisibility</h3>
+
+        <div class="thm-box">
+          <strong class="thm-title">ทฤษฎีบท 4.3.1 — Transitivity of Divisibility</strong>
+          <p>$\forall a, b, c \in \mathbb{Z}$, ถ้า $a \mid b$ และ $b \mid c$ แล้ว $a \mid c$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>พิสูจน์ทฤษฎีบท 4.3.1</span></div>
+          <div class="solution">
+            <ul class="proof-steps">
+              <li>สมมติว่า $a, b, c$ เป็นจำนวนเต็มใด ๆ โดยที่ $a \mid b$ และ $b \mid c$</li>
+              <li>โดยนิยาม: มีจำนวนเต็ม $j, k$ ที่ทำให้ $b = aj$ และ $c = bk$</li>
+              <li>แทนค่า: $c = bk = (aj)k = a(jk)$</li>
+              <li>เนื่องจาก $jk$ เป็นจำนวนเต็ม (เพราะ $j, k \in \mathbb{Z}$) จึงได้ $a \mid c$ ตามนิยาม</li>
+            </ul>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="div-sum-product" class="subsec">
+        <h3>Divisibility of Sum and Product</h3>
+
+        <div class="thm-box">
+          <strong class="thm-title">ทฤษฎีบท 4.3.2 — Divisibility of Sum</strong>
+          <p>$\forall a, b, c \in \mathbb{Z}$, ถ้า $a \mid b$ และ $a \mid c$ แล้ว $a \mid (b + c)$</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>พิสูจน์ทฤษฎีบท 4.3.2</span></div>
+          <div class="solution">
+            <ul class="proof-steps">
+              <li>สมมติว่า $a \mid b$ และ $a \mid c$</li>
+              <li>โดยนิยาม: มีจำนวนเต็ม $j, k$ ที่ทำให้ $b = aj$ และ $c = ak$</li>
+              <li>จึงได้: $b + c = aj + ak = a(j + k)$</li>
+              <li>เนื่องจาก $j + k \in \mathbb{Z}$ ดังนั้น $a \mid (b+c)$</li>
+            </ul>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+
+        <div class="thm-box">
+          <strong class="thm-title">ทฤษฎีบท 4.3.3 — Divisibility of Linear Combination</strong>
+          <p>$\forall a, b, c, m, n \in \mathbb{Z}$, ถ้า $a \mid b$ และ $a \mid c$ แล้ว $a \mid (mb + nc)$ สำหรับจำนวนเต็ม $m, n$ ใด ๆ</p>
+        </div>
+
+        <div class="highlight-box">
+          <strong>ตารางสรุปสมบัติการหาร:</strong>
+          <table class="nt-table" style="margin-top:10px">
+            <tr><th>สมบัติ</th><th>รูปแบบ</th></tr>
+            <tr><td>Transitivity</td><td>$a \mid b,\ b \mid c \Rightarrow a \mid c$</td></tr>
+            <tr><td>Sum Rule</td><td>$a \mid b,\ a \mid c \Rightarrow a \mid (b+c)$</td></tr>
+            <tr><td>Difference Rule</td><td>$a \mid b,\ a \mid c \Rightarrow a \mid (b-c)$</td></tr>
+            <tr><td>Product Rule</td><td>$a \mid b \Rightarrow a \mid (bc)$ สำหรับทุก $c \in \mathbb{Z}$</td></tr>
+            <tr><td>Linear Combination</td><td>$a \mid b,\ a \mid c \Rightarrow a \mid (mb + nc)$</td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4.4 -->
+    <section id="sec44" class="ch-section">
+      <div class="section-header" style="--ch-color:#dc2626">
+        <span class="sec-num">4.4</span>
+        <div>
+          <h2>Quotient-Remainder Theorem</h2>
+          <p>อัลกอริทึมการหาร, mod notation, การพิสูจน์แบบแยกกรณี</p>
+        </div>
+      </div>
+
+      <div id="div-algorithm" class="subsec">
+        <h3>The Division Algorithm</h3>
+
+        <div class="thm-box">
+          <strong class="thm-title">ทฤษฎีบท 4.4.1 — Quotient-Remainder Theorem (Division Algorithm)</strong>
+          <p>ถ้า $n$ เป็นจำนวนเต็มและ $d$ เป็นจำนวนเต็มบวก แล้วมีจำนวนเต็ม $q$ (quotient, ผลหาร) และ $r$ (remainder, เศษ) ที่ไม่ซ้ำกัน (unique) ที่ทำให้</p>
+          $$n = dq + r \quad \text{โดยที่} \quad 0 \leq r < d$$
+          <p>เราเรียก $q$ ว่า <strong>ผลหาร (quotient)</strong> เมื่อหาร $n$ ด้วย $d$, และ $r$ ว่า <strong>เศษ (remainder)</strong></p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.4.1</span> การใช้ Division Algorithm</div>
+          <div class="solution">
+            <table class="div-table">
+              <tr><th>$n$</th><th>$d$</th><th>$q$</th><th>$r$</th><th>ตรวจสอบ $n = dq + r$</th></tr>
+              <tr><td>$23$</td><td>$5$</td><td>$4$</td><td>$3$</td><td>$5(4)+3 = 23$ ✓</td></tr>
+              <tr><td>$-23$</td><td>$5$</td><td>$-5$</td><td>$2$</td><td>$5(-5)+2 = -23$ ✓</td></tr>
+              <tr><td>$30$</td><td>$6$</td><td>$5$</td><td>$0$</td><td>$6(5)+0 = 30$ ✓</td></tr>
+              <tr><td>$-1$</td><td>$4$</td><td>$-1$</td><td>$3$</td><td>$4(-1)+3 = -1$ ✓</td></tr>
+            </table>
+            <p style="margin-top:8px;font-size:14px;color:#dc2626"><strong>สังเกต:</strong> สำหรับ $n = -23, d = 5$: เศษต้อง $\geq 0$ ดังนั้น $q = -5$ (ไม่ใช่ $-4$) และ $r = 2$ (ไม่ใช่ $-3$)</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="div-cases" class="subsec">
+        <h3>Proof by Division into Cases</h3>
+
+        <div class="key-box">
+          <h4>การพิสูจน์แบบแยกกรณี (Proof by Cases)</h4>
+          <p>เมื่อหาร $n$ ด้วย $d$ เศษที่เป็นไปได้คือ $0, 1, 2, \ldots, d-1$ เราสามารถแยกพิสูจน์เป็น $d$ กรณีตามค่าของเศษ</p>
+          <p>ตัวอย่างที่ใช้บ่อย: หาร $n$ ด้วย $2$ → กรณีที่ $n$ เป็นคู่ ($r=0$) กับกรณีที่ $n$ เป็นคี่ ($r=1$)</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.4.2</span> $n^2 + n$ เป็นจำนวนคู่เสมอ</div>
+          <p><strong>ทฤษฎีบท:</strong> $\forall n \in \mathbb{Z},\ n^2 + n$ เป็นจำนวนคู่</p>
+          <div class="solution">
+            <p><strong>พิสูจน์โดยแยก 2 กรณีตาม $n \mod 2$:</strong></p>
+            <p><strong>กรณีที่ 1:</strong> $n$ เป็นจำนวนคู่ → มี $k \in \mathbb{Z}$ ที่ทำให้ $n = 2k$</p>
+            <p style="padding-left:16px">$n^2 + n = (2k)^2 + (2k) = 4k^2 + 2k = 2(2k^2 + k)$ เป็นจำนวนคู่ ✓</p>
+            <p><strong>กรณีที่ 2:</strong> $n$ เป็นจำนวนคี่ → มี $k \in \mathbb{Z}$ ที่ทำให้ $n = 2k+1$</p>
+            <p style="padding-left:16px">$n^2 + n = (2k+1)^2 + (2k+1) = 4k^2 + 4k + 1 + 2k + 1 = 4k^2 + 6k + 2 = 2(2k^2 + 3k + 1)$ เป็นจำนวนคู่ ✓</p>
+            <p>ในทั้งสองกรณี $n^2 + n$ เป็นจำนวนคู่</p>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="mod-notation" class="subsec">
+        <h3>mod Notation</h3>
+
+        <div class="def-box">
+          <strong class="def-title">นิยาม 4.4.2 — mod Notation</strong>
+          <p>ถ้า $n$ และ $d$ เป็นจำนวนเต็ม โดย $d > 0$ แล้ว</p>
+          $$n \mod d = r$$
+          <p>เมื่อ $r$ คือเศษที่ได้จาก Division Algorithm เมื่อหาร $n$ ด้วย $d$ นั่นคือ $r$ เป็นค่าไม่ติดลบที่น้อยที่สุดที่ทำให้ $n - r$ หารด้วย $d$ ลงตัว</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.4.3</span> การคำนวณ mod</div>
+          <div class="solution">
+            <table class="div-table">
+              <tr><th>นิพจน์</th><th>ค่า</th><th>เหตุผล</th></tr>
+              <tr><td>$23 \mod 5$</td><td>$3$</td><td>$23 = 5(4) + 3$</td></tr>
+              <tr><td>$-23 \mod 5$</td><td>$2$</td><td>$-23 = 5(-5) + 2$</td></tr>
+              <tr><td>$30 \mod 6$</td><td>$0$</td><td>$30 = 6(5) + 0$</td></tr>
+              <tr><td>$100 \mod 7$</td><td>$2$</td><td>$100 = 7(14) + 2$</td></tr>
+              <tr><td>$-1 \mod 4$</td><td>$3$</td><td>$-1 = 4(-1) + 3$</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>สัมพันธ์ระหว่าง mod กับ divisibility:</strong>
+          $$d \mid n \iff n \mod d = 0$$
+          นั่นคือ "$d$ หาร $n$ ลงตัว" เท่ากับ "เมื่อหาร $n$ ด้วย $d$ เศษเป็น 0"
+        </div>
+      </div>
+
+      <div id="parity-proofs" class="subsec">
+        <h3>Parity Proofs — การพิสูจน์ด้วยสมบัติคู่-คี่</h3>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.4.4</span> ผลคูณของจำนวนคี่สองจำนวนเป็นคี่</div>
+          <p><strong>ทฤษฎีบท:</strong> ถ้า $m$ และ $n$ เป็นจำนวนคี่ แล้ว $mn$ เป็นจำนวนคี่</p>
+          <div class="solution">
+            <ul class="proof-steps">
+              <li>สมมติ $m = 2j + 1$ และ $n = 2k + 1$ สำหรับจำนวนเต็ม $j, k$</li>
+              <li>$mn = (2j+1)(2k+1) = 4jk + 2j + 2k + 1 = 2(2jk + j + k) + 1$</li>
+              <li>เนื่องจาก $2jk + j + k \in \mathbb{Z}$ ดังนั้น $mn$ อยู่ในรูป $2(\text{int}) + 1$ จึงเป็นจำนวนคี่</li>
+            </ul>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.4.5</span> ถ้า $n^2$ เป็นคู่ แล้ว $n$ เป็นคู่</div>
+          <p><strong>ทฤษฎีบท:</strong> $\forall n \in \mathbb{Z}$, ถ้า $n^2$ เป็นจำนวนคู่ แล้ว $n$ เป็นจำนวนคู่</p>
+          <div class="solution">
+            <p>พิสูจน์โดย Contrapositive (จะใช้วิธีนี้บ่อยใน Section 4.5):</p>
+            <p>Contrapositive: ถ้า $n$ เป็นจำนวนคี่ แล้ว $n^2$ เป็นจำนวนคี่</p>
+            <ul class="proof-steps">
+              <li>สมมติ $n$ เป็นจำนวนคี่: $n = 2k + 1$</li>
+              <li>$n^2 = (2k+1)^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1$</li>
+              <li>ดังนั้น $n^2$ เป็นจำนวนคี่ ✓</li>
+            </ul>
+            <p>Contrapositive เป็นจริง ดังนั้น Statement เดิมเป็นจริงด้วย</p>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4.5 -->
+    <section id="sec45" class="ch-section">
+      <div class="section-header" style="--ch-color:#dc2626">
+        <span class="sec-num">4.5</span>
+        <div>
+          <h2>Indirect Argument</h2>
+          <p>การพิสูจน์โดยขัดแย้ง และการพิสูจน์โดย Contrapositive</p>
+        </div>
+      </div>
+
+      <div id="contradiction" class="subsec">
+        <h3>Proof by Contradiction — การพิสูจน์โดยขัดแย้ง</h3>
+
+        <div class="def-box">
+          <strong class="def-title">วิธี Proof by Contradiction</strong>
+          <p>เพื่อพิสูจน์ว่า statement $P$ เป็นจริง:</p>
+          <ol style="padding-left:20px;line-height:2.2">
+            <li><strong>สมมติ</strong>ว่า $\sim P$ เป็นจริง (สมมติข้อสรุปเป็นเท็จ)</li>
+            <li><strong>ดำเนินการทางตรรกะ</strong>จากสมมตินั้นจนได้ข้อขัดแย้ง (contradiction) คือข้อความที่ทั้งจริงและเท็จพร้อมกัน หรือขัดแย้งกับข้อเท็จจริงที่รู้แล้ว</li>
+            <li><strong>สรุป</strong>ว่าการสมมติในข้อ 1 ผิด ดังนั้น $P$ เป็นจริง</li>
+          </ol>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.5.1</span> Proof by Contradiction — จำนวนเฉพาะที่ใหญ่ที่สุด</div>
+          <p><strong>ทฤษฎีบท:</strong> $\sqrt{3}$ เป็นจำนวนอตรรกยะ</p>
+          <div class="solution">
+            <ul class="proof-steps">
+              <li>สมมติ (เพื่อขัดแย้ง) ว่า $\sqrt{3}$ เป็นจำนวนตรรกยะ</li>
+              <li>โดยนิยาม: มีจำนวนเต็ม $p, q$ โดย $q \neq 0$ และ $\gcd(p, q) = 1$ (ย่อเศษส่วนให้อยู่ในรูปต่ำสุด) ที่ทำให้ $\sqrt{3} = p/q$</li>
+              <li>ยกกำลังสอง: $3 = p^2/q^2$ ดังนั้น $p^2 = 3q^2$</li>
+              <li>จาก $p^2 = 3q^2$ แสดงว่า $3 \mid p^2$ ดังนั้น $3 \mid p$ (เพราะ 3 เป็นจำนวนเฉพาะ)</li>
+              <li>ให้ $p = 3m$ แทนค่า: $(3m)^2 = 3q^2 \Rightarrow 9m^2 = 3q^2 \Rightarrow q^2 = 3m^2$</li>
+              <li>จาก $q^2 = 3m^2$ แสดงว่า $3 \mid q^2$ ดังนั้น $3 \mid q$</li>
+              <li>ขัดแย้ง! $3 \mid p$ และ $3 \mid q$ แต่เราสมมติว่า $\gcd(p,q) = 1$</li>
+            </ul>
+            <p>ดังนั้น $\sqrt{3}$ ไม่ใช่จำนวนตรรกยะ</p>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="contrapositive" class="subsec">
+        <h3>Proof by Contrapositive — การพิสูจน์โดย Contrapositive</h3>
+
+        <div class="def-box">
+          <strong class="def-title">วิธี Proof by Contrapositive</strong>
+          <p>เพื่อพิสูจน์ว่า "ถ้า $P$ แล้ว $Q$" (P → Q) ซึ่งเท่ากับพิสูจน์ว่า "ถ้า $\sim Q$ แล้ว $\sim P$" ($\sim Q \to \sim P$, contrapositive):</p>
+          <ol style="padding-left:20px;line-height:2.2">
+            <li><strong>สมมติ</strong>ว่า $\sim Q$ เป็นจริง (สมมติข้อสรุปเป็นเท็จ)</li>
+            <li><strong>แสดง</strong>ว่า $\sim P$ เป็นจริง (แสดงว่าสมมติฐานเป็นเท็จ)</li>
+            <li><strong>สรุป</strong>ว่า $P \to Q$ เป็นจริง (เพราะ contrapositive เป็นจริง)</li>
+          </ol>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.5.2</span> Proof by Contrapositive</div>
+          <p><strong>ทฤษฎีบท:</strong> $\forall n \in \mathbb{Z}$, ถ้า $n^2$ เป็นจำนวนคี่ แล้ว $n$ เป็นจำนวนคี่</p>
+          <div class="solution">
+            <p><strong>Contrapositive:</strong> ถ้า $n$ เป็นจำนวนคู่ แล้ว $n^2$ เป็นจำนวนคู่</p>
+            <ul class="proof-steps">
+              <li>สมมติว่า $n$ เป็นจำนวนคู่: มี $k \in \mathbb{Z}$ ที่ $n = 2k$</li>
+              <li>จึงได้: $n^2 = (2k)^2 = 4k^2 = 2(2k^2)$</li>
+              <li>เนื่องจาก $2k^2 \in \mathbb{Z}$ ดังนั้น $n^2$ เป็นจำนวนคู่ ✓</li>
+            </ul>
+            <p>Contrapositive เป็นจริง ดังนั้น Statement เดิมก็เป็นจริง</p>
+            <div class="proof-qed">□</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="method-compare" class="subsec">
+        <h3>Comparing Proof Methods</h3>
+
+        <div class="method-grid">
+          <div class="method-card direct">
+            <h4>Direct Proof</h4>
+            <p><strong>รูปแบบ:</strong> $P \to Q$ โดยเริ่มจาก $P$ แล้วแสดงว่า $Q$</p>
+            <p><strong>เหมาะสำหรับ:</strong> เมื่อสมมติฐาน $P$ มีรูปแบบชัดเจนที่นำมาทำงานได้ทันที</p>
+            <p><strong>ตัวอย่าง:</strong> พิสูจน์สมบัติของจำนวนคู่ จำนวนตรรกยะ</p>
+          </div>
+          <div class="method-card contrapos">
+            <h4>Proof by Contrapositive</h4>
+            <p><strong>รูปแบบ:</strong> $\sim Q \to \sim P$ แทน $P \to Q$</p>
+            <p><strong>เหมาะสำหรับ:</strong> เมื่อข้อสรุป $Q$ มีนิเสธที่ทำงานได้ง่ายกว่าสมมติฐาน $P$</p>
+            <p><strong>ตัวอย่าง:</strong> "ถ้า $n^2$ คี่ แล้ว $n$ คี่"</p>
+          </div>
+          <div class="method-card contradiction" style="grid-column: span 2">
+            <h4>Proof by Contradiction</h4>
+            <p><strong>รูปแบบ:</strong> สมมติ $\sim P$ แล้วหา contradiction</p>
+            <p><strong>เหมาะสำหรับ:</strong> เมื่อต้องการพิสูจน์ว่าบางสิ่งไม่มีอยู่ หรือข้อความที่มีรูปแบบอตรรกยะ</p>
+            <p><strong>ตัวอย่าง:</strong> พิสูจน์ความอตรรกยะ, พิสูจน์ว่ามีจำนวนเฉพาะอนันต์ตัว</p>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>ความสัมพันธ์ระหว่าง Contradiction กับ Contrapositive:</strong><br>
+          เมื่อพิสูจน์ $P \to Q$ โดย contradiction: สมมติ $P$ และ $\sim Q$ แล้วหา contradiction<br>
+          เมื่อพิสูจน์ $P \to Q$ โดย contrapositive: สมมติ $\sim Q$ แล้วแสดงว่า $\sim P$<br>
+          ทั้งสองวิธีมีความเชื่อมโยงกันอย่างใกล้ชิด
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4.6 -->
+    <section id="sec46" class="ch-section">
+      <div class="section-header" style="--ch-color:#dc2626">
+        <span class="sec-num">4.6</span>
+        <div>
+          <h2>Two Classical Theorems</h2>
+          <p>$\sqrt{2}$ เป็นอตรรกยะ และมีจำนวนเฉพาะอนันต์ตัว</p>
+        </div>
+      </div>
+
+      <div id="sqrt2" class="subsec">
+        <h3>Theorem: $\sqrt{2}$ is Irrational</h3>
+
+        <div class="thm-box">
+          <strong class="thm-title">ทฤษฎีบท 4.6.1 — $\sqrt{2}$ เป็นจำนวนอตรรกยะ</strong>
+          <p>จำนวน $\sqrt{2}$ ไม่ใช่จำนวนตรรกยะ กล่าวคือ ไม่มีจำนวนเต็ม $p$ และ $q$ (โดย $q \neq 0$) ที่ทำให้ $\sqrt{2} = p/q$</p>
+        </div>
+
+        <div class="classical-proof">
+          <h4>พิสูจน์: $\sqrt{2}$ เป็นจำนวนอตรรกยะ (โดย Contradiction)</h4>
+          <ol>
+            <li><strong>สมมติ (เพื่อขัดแย้ง)</strong> ว่า $\sqrt{2}$ เป็นจำนวนตรรกยะ</li>
+            <li>โดยนิยาม: เขียน $\sqrt{2} = \dfrac{p}{q}$ โดย $p, q \in \mathbb{Z}$, $q \neq 0$, และ $\gcd(p, q) = 1$ (เศษส่วนอยู่ในรูปที่ต่ำสุดแล้ว)</li>
+            <li>ยกกำลังสองทั้งสองข้าง: $2 = \dfrac{p^2}{q^2}$ ดังนั้น $p^2 = 2q^2$</li>
+            <li>จาก $p^2 = 2q^2$ แสดงว่า $2 \mid p^2$ เนื่องจาก 2 เป็นจำนวนเฉพาะ จึงได้ $2 \mid p$</li>
+            <li>ดังนั้น $p = 2m$ สำหรับจำนวนเต็มบางค่า $m$ แทนลงใน $p^2 = 2q^2$: $(2m)^2 = 2q^2 \Rightarrow 4m^2 = 2q^2 \Rightarrow q^2 = 2m^2$</li>
+            <li>จาก $q^2 = 2m^2$ แสดงว่า $2 \mid q^2$ ดังนั้น $2 \mid q$</li>
+            <li><strong>ขัดแย้ง!</strong> เราได้ $2 \mid p$ และ $2 \mid q$ แต่สมมติว่า $\gcd(p, q) = 1$ (ไม่มีตัวหารร่วมที่ $> 1$) — นี่คือความขัดแย้ง</li>
+            <li>ดังนั้น การสมมติในข้อ 1 ผิด และ $\sqrt{2}$ เป็นจำนวนอตรรกยะ</li>
+          </ol>
+          <div class="qed">□</div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>ประวัติ:</strong> การพิสูจน์นี้มาจากกรีกโบราณ ราว 400 ปีก่อนคริสตกาล เชื่อกันว่าค้นพบโดย Hippasus แห่ง Metapontum ซึ่งเป็นสาวกของ Pythagoras การค้นพบนี้สร้างความตื่นตะลึงในสมัยนั้นเพราะขัดกับความเชื่อที่ว่าจำนวนทุกจำนวนสามารถแสดงเป็นเศษส่วนได้
+        </div>
+
+        <div class="key-box">
+          <h4>Lemma สำคัญที่ใช้ในการพิสูจน์</h4>
+          <p><strong>Lemma:</strong> $\forall n \in \mathbb{Z}$, ถ้า $p$ เป็นจำนวนเฉพาะและ $p \mid n^2$ แล้ว $p \mid n$</p>
+          <p><strong>หลักฐาน:</strong> ถ้า $p \nmid n$ แล้ว $\gcd(p, n) = 1$ ดังนั้น $\gcd(p, n^2) = 1$ ขัดแย้งกับ $p \mid n^2$ ดังนั้น $p \mid n$</p>
+          <p style="margin-top:8px">Lemma นี้ <strong>ใช้ได้เฉพาะจำนวนเฉพาะ</strong> เท่านั้น — $4 \mid 36$ แต่ $4 \nmid 6$ แสดงว่าใช้กับจำนวนไม่เฉพาะไม่ได้</p>
+        </div>
+      </div>
+
+      <div id="inf-primes" class="subsec">
+        <h3>Euclid's Theorem: There Are Infinitely Many Primes</h3>
+
+        <div class="def-box">
+          <strong class="def-title">นิยาม 4.6.1 — จำนวนเฉพาะ</strong>
+          <p>จำนวนเต็ม $p > 1$ เรียกว่า <strong>จำนวนเฉพาะ (prime)</strong> ถ้าตัวหารบวกของ $p$ มีเพียง $1$ และ $p$ เท่านั้น</p>
+          <p>จำนวนเต็ม $n > 1$ ที่ไม่ใช่จำนวนเฉพาะ เรียกว่า <strong>จำนวนประกอบ (composite)</strong> นั่นคือ $n = ab$ สำหรับจำนวนเต็ม $a, b$ ที่ $1 < a < n$ และ $1 < b < n$</p>
+        </div>
+
+        <div class="thm-box">
+          <strong class="thm-title">ทฤษฎีบท 4.6.2 — มีจำนวนเฉพาะอนันต์ตัว (Euclid, ~300 BC)</strong>
+          <p>มีจำนวนเฉพาะอยู่อนันต์ตัว กล่าวคือ ไม่มีจำนวนเฉพาะที่ใหญ่ที่สุด</p>
+        </div>
+
+        <div class="classical-proof">
+          <h4>พิสูจน์: มีจำนวนเฉพาะอนันต์ตัว (ยูคลิด โดย Contradiction)</h4>
+          <ol>
+            <li><strong>สมมติ (เพื่อขัดแย้ง)</strong> ว่ามีจำนวนเฉพาะจำนวนจำกัด ได้แก่ $p_1, p_2, p_3, \ldots, p_n$ (นับได้ทุกตัว)</li>
+            <li>สร้างจำนวน $N = p_1 \cdot p_2 \cdot p_3 \cdots p_n + 1$ (ผลคูณของจำนวนเฉพาะทุกตัว บวก 1)</li>
+            <li>จำนวน $N > 1$ ดังนั้นจาก Fundamental Theorem of Arithmetic: $N$ มีตัวหารที่เป็นจำนวนเฉพาะอย่างน้อยหนึ่งตัว เรียกว่า $p$</li>
+            <li>$p$ ต้องเป็นหนึ่งใน $p_1, p_2, \ldots, p_n$ (เพราะเราสมมติว่านั่นคือจำนวนเฉพาะทั้งหมด)</li>
+            <li>ดังนั้น $p \mid N$ และ $p \mid p_1 p_2 \cdots p_n$ ดังนั้น $p \mid (N - p_1 p_2 \cdots p_n)$</li>
+            <li>แต่ $N - p_1 p_2 \cdots p_n = 1$ ดังนั้น $p \mid 1$ ซึ่งเป็นไปไม่ได้เพราะ $p \geq 2$!</li>
+            <li><strong>ขัดแย้ง!</strong> ดังนั้น การสมมติว่ามีจำนวนเฉพาะจำนวนจำกัดผิด</li>
+            <li>สรุป: มีจำนวนเฉพาะอนันต์ตัว</li>
+          </ol>
+          <div class="qed">□</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 4.6.1</span> การสร้างจำนวน $N$ ในพิสูจน์ยูคลิด</div>
+          <p>ลองสมมติว่ารู้จักจำนวนเฉพาะ 5 ตัวแรก: $2, 3, 5, 7, 11$</p>
+          <div class="solution">
+            <p>$N = 2 \cdot 3 \cdot 5 \cdot 7 \cdot 11 + 1 = 2310 + 1 = 2311$</p>
+            <p>ตรวจสอบ: $2311$ เป็นจำนวนเฉพาะหรือไม่?</p>
+            <p>$2311 \div 2 = 1155.5$ → $2 \nmid 2311$</p>
+            <p>$2311 \div 3$: ผลรวมหลัก $= 7$ → $3 \nmid 2311$</p>
+            <p>$2311 \div 7 = 330.14...$ → $7 \nmid 2311$</p>
+            <p>$2311 \div 11 = 210.09...$ → $11 \nmid 2311$</p>
+            <p>$2311 \div 13 = 177.77...$ → ตรวจต่อ... ปรากฏว่า $2311$ เป็นจำนวนเฉพาะ!</p>
+            <p style="margin-top:8px"><strong>หมายเหตุ:</strong> $N$ ไม่จำเป็นต้องเป็นจำนวนเฉพาะเสมอไป แต่ $N$ ต้องมีตัวหารเฉพาะที่ <em>ไม่ใช่</em> $p_1, \ldots, p_n$ ใด ๆ — ซึ่งเป็นสิ่งที่พิสูจน์บอก</p>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>ตัวอย่างที่ N ไม่เป็นจำนวนเฉพาะ:</strong><br>
+          ถ้าเริ่มจาก $\{2, 3, 5, 7, 11, 13\}$: $N = 30031 = 59 \times 509$<br>
+          $59$ และ $509$ เป็นจำนวนเฉพาะใหม่ (ไม่อยู่ใน list เดิม) — ยืนยันว่ามีจำนวนเฉพาะเพิ่มเสมอ
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY -->
+    <section id="summary" class="ch-section">
+      <div class="section-header" style="--ch-color:#dc2626">
+        <span class="sec-num">∑</span>
+        <div>
+          <h2>สรุปบทที่ 4</h2>
+          <p>Elementary Number Theory and Methods of Proof</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h4>4.1 Direct Proof I</h4>
+          <ul>
+            <li>$n$ เป็นคู่ $\iff n = 2k$ สำหรับ $k \in \mathbb{Z}$</li>
+            <li>$n$ เป็นคี่ $\iff n = 2k+1$ สำหรับ $k \in \mathbb{Z}$</li>
+            <li>$d \mid n \iff n = dk$ สำหรับ $k \in \mathbb{Z}$, $d \neq 0$</li>
+            <li>Direct Proof: สมมติ $P$ แล้วแสดงว่า $Q$</li>
+            <li>Counterexample: หา $x$ ที่ทำให้ $P(x)$ จริงแต่ $Q(x)$ เท็จ</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>4.2–4.3 Direct Proof II–III</h4>
+          <ul>
+            <li>$r \in \mathbb{Q} \iff r = p/q$, $p, q \in \mathbb{Z}$, $q \neq 0$</li>
+            <li>$\mathbb{Q}$ ปิดภายใต้ $+$, $-$, $\times$, $\div$ (ยกเว้นหารด้วย 0)</li>
+            <li>Transitivity: $a \mid b$ และ $b \mid c \Rightarrow a \mid c$</li>
+            <li>Sum: $a \mid b$ และ $a \mid c \Rightarrow a \mid (b+c)$</li>
+            <li>Linear Combination: $a \mid b$, $a \mid c \Rightarrow a \mid (mb+nc)$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>4.4 Quotient-Remainder</h4>
+          <ul>
+            <li>$n = dq + r$, $0 \leq r < d$ มีอยู่และเป็นเอกลักษณ์</li>
+            <li>$n \mod d = r$ (เศษที่ไม่ติดลบ)</li>
+            <li>$d \mid n \iff n \mod d = 0$</li>
+            <li>Proof by Cases: แยกตาม $n \mod d$</li>
+            <li>$n^2 + n = 2k$ เสมอ (พิสูจน์ทั้ง 2 กรณี)</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>4.5 Indirect Argument</h4>
+          <ul>
+            <li>Contradiction: สมมติ $\sim P$ → หา contradiction → $P$ จริง</li>
+            <li>Contrapositive: พิสูจน์ $\sim Q \to \sim P$ แทน $P \to Q$</li>
+            <li>ทั้งสองวิธีเป็นการพิสูจน์โดยอ้อม (indirect)</li>
+            <li>เลือกวิธีตามรูปแบบของ $P$ และ $Q$</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>4.6 Classical Theorems</h4>
+          <ul>
+            <li>$\sqrt{2}$ อตรรกยะ: สมมติ $\sqrt{2} = p/q$ (ต่ำสุด) → $2 \mid p$ และ $2 \mid q$ → ขัดแย้ง</li>
+            <li>จำนวนเฉพาะมีอนันต์ตัว: สมมติมีจำกัด → สร้าง $N = p_1 \cdots p_n + 1$ → ขัดแย้ง</li>
+            <li>ทั้งสองพิสูจน์โดย Contradiction</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h4>เปรียบเทียบวิธีพิสูจน์</h4>
+          <ul>
+            <li><strong>Direct:</strong> $P \to Q$ โดยตรง</li>
+            <li><strong>Contrapositive:</strong> $\sim Q \to \sim P$</li>
+            <li><strong>Contradiction:</strong> สมมติ $\sim(P \to Q)$ → ขัดแย้ง</li>
+            <li>ข้อความสากลเท็จ: หา counterexample หนึ่งตัวก็พอ</li>
+            <li>ข้อความอัตถิภาวนิยมจริง: แสดงตัวอย่างหนึ่งตัวก็พอ</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section id="exercises" class="ch-section">
+      <div class="section-header" style="--ch-color:#ea580c">
+        <span class="sec-num">✏️</span>
+        <div>
+          <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>จากหนังสือ Discrete Mathematics with Applications — Susanna S. Epp</p>
+        </div>
+      </div>
+
+      <div class="exercises-list">
+        <div class="exercise-item">
+          <span class="ex-num">4.1</span>
+          <div class="ex-content">
+            <strong>Exercise Set 4.1:</strong> ข้อ 1–10 (ตรวจสอบว่าจำนวนต่าง ๆ เป็นคู่หรือคี่ พร้อมแสดงเหตุผลด้วยนิยาม), ข้อ 11–18 (พิสูจน์หรือหา counterexample สำหรับข้อความเกี่ยวกับจำนวนคู่/คี่), ข้อ 19–26 (Direct Proof เกี่ยวกับ divisibility: $d \mid n$ implies $d \mid mn$), ข้อ 27–32 (หา counterexample สำหรับ divisibility statements)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">4.2</span>
+          <div class="ex-content">
+            <strong>Exercise Set 4.2:</strong> ข้อ 1–6 (ระบุว่าจำนวนต่อไปนี้เป็นตรรกยะหรืออตรรกยะ พร้อมเหตุผล), ข้อ 7–14 (พิสูจน์ว่าผลรวม ผลต่าง และผลคูณของจำนวนตรรกยะเป็นตรรกยะ), ข้อ 15–20 (พิสูจน์หรือหา counterexample: $r$ ตรรกยะและ $s$ ตรรกยะ $\Rightarrow$ $r/s$ ตรรกยะ?)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">4.3</span>
+          <div class="ex-content">
+            <strong>Exercise Set 4.3:</strong> ข้อ 1–8 (พิสูจน์สมบัติ transitivity, sum, product ของ divisibility), ข้อ 9–16 (หา counterexample สำหรับ divisibility ที่ไม่จริง), ข้อ 17–24 (พิสูจน์ linear combination: ถ้า $d \mid a$ และ $d \mid b$ แล้ว $d \mid (ma + nb)$)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">4.4</span>
+          <div class="ex-content">
+            <strong>Exercise Set 4.4:</strong> ข้อ 1–8 (หาค่า $q$ และ $r$ จาก Division Algorithm สำหรับ $n, d$ ต่าง ๆ รวมถึง $n$ ลบ), ข้อ 9–16 (คำนวณ $n \mod d$ สำหรับค่าต่าง ๆ), ข้อ 17–24 (พิสูจน์โดย Cases: เช่น $n^3 - n$ หารด้วย 3 ลงตัวเสมอ, กำลังสองของจำนวนเต็มเมื่อหารด้วย 4 เหลือเศษ 0 หรือ 1 เท่านั้น)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">4.5</span>
+          <div class="ex-content">
+            <strong>Exercise Set 4.5:</strong> ข้อ 1–8 (พิสูจน์โดย Contrapositive: เช่น ถ้า $ab$ คี่ แล้ว $a$ คี่และ $b$ คี่), ข้อ 9–16 (พิสูจน์โดย Contradiction: เช่น ไม่มีจำนวนตรรกยะที่กำลังสองเท่ากับ 6), ข้อ 17–22 (เปรียบเทียบวิธีพิสูจน์: ให้พิสูจน์ด้วยทั้ง Direct Proof, Contrapositive, และ Contradiction แล้วเปรียบเทียบ)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">4.6</span>
+          <div class="ex-content">
+            <strong>Exercise Set 4.6:</strong> ข้อ 1–4 (พิสูจน์ว่า $\sqrt{3}$, $\sqrt{5}$, $\sqrt{6}$ เป็นจำนวนอตรรกยะโดยใช้วิธีเดียวกับ $\sqrt{2}$), ข้อ 5–8 (พิสูจน์ว่า $\log_2 3$ เป็นอตรรกยะ), ข้อ 9–12 (แปรผลจากการพิสูจน์ยูคลิด: สร้างจำนวน $N$ จากชุดจำนวนเฉพาะต่าง ๆ แล้วหาตัวหารเฉพาะของ $N$)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">★</span>
+          <div class="ex-content">
+            <strong>โจทย์ท้าทาย:</strong> (1) พิสูจน์ว่า $\sqrt[3]{2}$ เป็นจำนวนอตรรกยะ (2) พิสูจน์ว่าถ้า $p$ เป็นจำนวนเฉพาะ แล้ว $\sqrt{p}$ เป็นจำนวนอตรรกยะ (3) แสดงว่ามีจำนวนอตรรกยะสองตัว $a, b$ ที่ทำให้ $a^b$ เป็นจำนวนตรรกยะ (Hint: ลอง $a = b = \sqrt{2}$ และพิจารณาสองกรณี)
+          </div>
+        </div>
+        <div class="exercise-item">
+          <span class="ex-num">✍️</span>
+          <div class="ex-content">
+            <strong>แบบฝึกหัดพิสูจน์แบบเต็ม:</strong> จงพิสูจน์อย่างสมบูรณ์: "สำหรับจำนวนเต็ม $n$ ใด ๆ, $n(n+1)(n+2)$ หารด้วย 6 ลงตัว" (Hint: แยกกรณีตาม $n \mod 3$ ร่วมกับสมบัติจำนวนคู่-คี่)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER NAV -->
+    <div class="chapter-nav">
+      <a href="chapter3.html" class="nav-btn prev-btn">← บทที่ 3 — The Logic of Quantified Statements</a>
+      <a href="chapter5.html" class="nav-btn next-btn">บทที่ 5 → Sequences, Mathematical Induction</a>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง — บทที่ 4: Elementary Number Theory and Methods of Proof</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล · ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ · มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 · เนื้อหาจาก <em>Discrete Mathematics with Applications</em> — Susanna S. Epp</p>
+</footer>
+
+<script>
+  // Scroll to top for all TOC links
+  const SCROLL_OFFSET = 80;
+  document.querySelectorAll('.ch-toc a[href^="#"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target) return;
+      const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      window.scrollTo({ top, behavior: 'instant' });
+      history.replaceState(null, '', '#' + id);
+    });
+  });
+
+  // Sticky sidebar highlight
+  const sections = document.querySelectorAll('.ch-section, .subsec');
+  const tocLinks = document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (s.id && window.scrollY >= s.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET - 10) current = s.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('ch-sidebar').classList.toggle('open');
+  });
+</script>
+</body>
+</html>

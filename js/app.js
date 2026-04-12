@@ -61,6 +61,7 @@ const courseData = {
         { num: "4.7", title: "Indirect Argument: Two Classical Theorems", desc: "ทฤษฎีบทคลาสสิกสองข้อ" },
         { num: "4.8", title: "Application: Algorithms", desc: "การประยุกต์ใช้กับอัลกอริทึม" }
       ],
+      contentPage: "chapters/chapter4.html",
       summary: "เรียนรู้วิธีการพิสูจน์ต่างๆ ได้แก่ การพิสูจน์ตรง การพิสูจน์โดยขัดแย้ง และการพิสูจน์โดยบทกลับ พร้อมทฤษฎีจำนวนพื้นฐาน"
     },
     {
@@ -80,6 +81,7 @@ const courseData = {
         { num: "5.8", title: "Second-Order Linear Homogeneous Recurrence Relations", desc: "สมการเวียนเกิดเชิงเส้นอันดับสองเอกพันธุ์" },
         { num: "5.9", title: "General Recursive Definitions and Structural Induction", desc: "นิยามแบบเรียกซ้ำทั่วไปและอุปนัยเชิงโครงสร้าง" }
       ],
+      contentPage: "chapters/chapter5.html",
       summary: "ครอบคลุมลำดับ อุปนัยเชิงคณิตศาสตร์ทั้งแบบปกติและแบบเข้ม สมการเวียนเกิด และการนิยามแบบเรียกซ้ำ"
     },
     {
