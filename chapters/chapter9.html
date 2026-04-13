@@ -1129,46 +1129,187 @@
         </div>
       </div>
 
-      <div class="overview-card">
-        <h3>สรุปสูตรและหลักการสำคัญ</h3>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; margin:16px 0;">
-          <div class="count-card">
-            <h5>Multiplication &amp; Addition</h5>
-            <ul style="font-size:14px;line-height:1.9;">
-              <li>Multiplication Rule: $n_1 \times \cdots \times n_k$</li>
-              <li>Addition (disjoint): $|A|+|B|$</li>
-              <li>Inclusion-Exclusion: $|A|+|B|-|A\cap B|$</li>
-            </ul>
-          </div>
-          <div class="count-card">
-            <h5>Permutations &amp; Combinations</h5>
-            <ul style="font-size:14px;line-height:1.9;">
-              <li>$P(n,r) = n!/(n-r)!$ (ลำดับสำคัญ)</li>
-              <li>$C(n,r) = n!/[r!(n-r)!]$ (ลำดับไม่สำคัญ)</li>
-              <li>Multiset: $C(n+r-1,r)$ (ซ้ำได้)</li>
-            </ul>
-          </div>
-          <div class="count-card">
-            <h5>Pascal &amp; Binomial</h5>
-            <ul style="font-size:14px;line-height:1.9;">
-              <li>$C(n+1,r)=C(n,r-1)+C(n,r)$</li>
-              <li>$(x+y)^n = \sum_{k=0}^{n}\binom{n}{k}x^k y^{n-k}$</li>
-              <li>$\sum_{k=0}^{n}\binom{n}{k} = 2^n$</li>
-            </ul>
-          </div>
-          <div class="count-card">
-            <h5>Probability &amp; Bayes</h5>
-            <ul style="font-size:14px;line-height:1.9;">
-              <li>$P \ge 0$, $P(\Omega)=1$, Additivity</li>
-              <li>$E[X] = \sum x_i P(X=x_i)$</li>
-              <li>$P(A|B) = P(A\cap B)/P(B)$</li>
-              <li>Bayes: $P(A|B) = P(B|A)P(A)/P(B)$</li>
-            </ul>
+      <!-- ── สูตรสรุปแยกตามหัวข้อ ── -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; margin-bottom:24px;">
+
+        <!-- 9.1–9.2 Counting Rules -->
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.08);border-top:3px solid #ea580c;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#ea580c;margin-bottom:10px;">9.1–9.2 · กฎการนับ</div>
+          <table style="width:100%;font-size:14px;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;width:55%">Multiplication Rule</td>
+              <td style="padding:6px 4px;">$n_1 \times n_2 \times \cdots \times n_k$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Addition Rule (disjoint)</td>
+              <td style="padding:6px 4px;">$|A_1| + |A_2| + \cdots + |A_k|$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Inclusion-Exclusion (2 เซต)</td>
+              <td style="padding:6px 4px;">$|A \cup B| = |A|+|B|-|A\cap B|$</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Inclusion-Exclusion (3 เซต)</td>
+              <td style="padding:6px 4px;font-size:13px;">$|A \cup B \cup C| = |A|+|B|+|C|$ $-|A\cap B|-|A\cap C|-|B\cap C|$ $+|A\cap B\cap C|$</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 9.4 Pigeonhole -->
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.08);border-top:3px solid #dc2626;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#dc2626;margin-bottom:10px;">9.4 · Pigeonhole Principle</div>
+          <table style="width:100%;font-size:14px;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;width:45%">ทั่วไป</td>
+              <td style="padding:6px 4px;">$n+1$ วัตถุ, $n$ กล่อง $\Rightarrow$ มีกล่องที่มี $\ge 2$ วัตถุ</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Generalized</td>
+              <td style="padding:6px 4px;">$N$ วัตถุ, $k$ กล่อง $\Rightarrow$ มีกล่องที่มี $\ge \lceil N/k \rceil$ วัตถุ</td>
+            </tr>
+          </table>
+          <div style="margin-top:12px;padding:10px;background:#fff7ed;border-radius:8px;font-size:13px;color:#9a3412;">
+            <strong>วิธีใช้:</strong> ระบุ "วัตถุ" และ "กล่อง" ให้ชัดเจน แล้วคำนวณ $\lceil N/k \rceil$
           </div>
         </div>
-        <div class="prob-formula">
-          <strong>Pigeonhole:</strong> &nbsp; $n+1$ วัตถุใน $n$ กล่อง &nbsp;$\Rightarrow$&nbsp; มีกล่องที่มีวัตถุ $\ge 2$ ชิ้น &nbsp;|&nbsp; <strong>Generalized:</strong> &nbsp; $N$ วัตถุใน $k$ กล่อง &nbsp;$\Rightarrow$&nbsp; มีกล่องที่มีวัตถุ $\ge \lceil N/k \rceil$ ชิ้น
+
+        <!-- 9.5–9.6 Permutations & Combinations -->
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.08);border-top:3px solid #0369a1;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0369a1;margin-bottom:10px;">9.5–9.6 · Permutations &amp; Combinations</div>
+          <table style="width:100%;font-size:14px;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;width:50%">$r$-Permutation (ลำดับสำคัญ, ไม่ซ้ำ)</td>
+              <td style="padding:6px 4px;">$P(n,r) = \dfrac{n!}{(n-r)!}$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">$r$-Combination (ลำดับไม่สำคัญ, ไม่ซ้ำ)</td>
+              <td style="padding:6px 4px;">$C(n,r) = \dfrac{n!}{r!\,(n-r)!}$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Multiset / ซ้ำได้ (ลำดับไม่สำคัญ)</td>
+              <td style="padding:6px 4px;">$C(n+r-1,\,r)$</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Symmetry</td>
+              <td style="padding:6px 4px;">$C(n,r) = C(n,\,n-r)$</td>
+            </tr>
+          </table>
         </div>
+
+        <!-- 9.7 Pascal & Binomial -->
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.08);border-top:3px solid #7c3aed;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#7c3aed;margin-bottom:10px;">9.7 · Pascal's Formula &amp; Binomial Theorem</div>
+          <table style="width:100%;font-size:14px;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;width:45%">Pascal's Identity</td>
+              <td style="padding:6px 4px;">$\dbinom{n+1}{r} = \dbinom{n}{r-1} + \dbinom{n}{r}$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Binomial Theorem</td>
+              <td style="padding:6px 4px;">$(x+y)^n = \displaystyle\sum_{k=0}^{n}\binom{n}{k}x^k y^{n-k}$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">$\sum$ ทุก subset</td>
+              <td style="padding:6px 4px;">$\displaystyle\sum_{k=0}^{n}\binom{n}{k} = 2^n$</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Alternating sum</td>
+              <td style="padding:6px 4px;">$\displaystyle\sum_{k=0}^{n}(-1)^k\binom{n}{k} = 0$</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 9.8 Probability -->
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.08);border-top:3px solid #059669;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#059669;margin-bottom:10px;">9.8 · Probability &amp; Expected Value</div>
+          <table style="width:100%;font-size:14px;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;width:50%">Equally likely outcomes</td>
+              <td style="padding:6px 4px;">$P(E) = \dfrac{|E|}{|S|}$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Complement</td>
+              <td style="padding:6px 4px;">$P(E^c) = 1 - P(E)$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Union (ทั่วไป)</td>
+              <td style="padding:6px 4px;">$P(A\cup B) = P(A)+P(B)-P(A\cap B)$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Independent events</td>
+              <td style="padding:6px 4px;">$P(A\cap B) = P(A)\cdot P(B)$</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Expected value $E[X]$</td>
+              <td style="padding:6px 4px;">$\displaystyle\sum_{i} x_i \cdot P(X = x_i)$</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 9.9 Conditional & Bayes -->
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.08);border-top:3px solid #b45309;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#b45309;margin-bottom:10px;">9.9 · Conditional Probability &amp; Bayes</div>
+          <table style="width:100%;font-size:14px;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;width:50%">Conditional probability</td>
+              <td style="padding:6px 4px;">$P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Multiplication rule</td>
+              <td style="padding:6px 4px;">$P(A \cap B) = P(A\mid B)\cdot P(B)$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Law of Total Probability</td>
+              <td style="padding:6px 4px;font-size:13px;">$P(B) = \displaystyle\sum_{i} P(B \mid A_i)\,P(A_i)$</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 4px;font-weight:600;color:#334155;">Bayes' Theorem</td>
+              <td style="padding:6px 4px;font-size:13px;">$P(A_j \mid B) = \dfrac{P(B \mid A_j)\,P(A_j)}{\displaystyle\sum_i P(B \mid A_i)\,P(A_i)}$</td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- ── ตารางเปรียบเทียบวิธีนับ ── -->
+      <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.08);margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f1f5f9;">ตารางเปรียบเทียบ: เลือกใช้สูตรใด?</div>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead>
+            <tr style="background:#1e3a5f;color:white;">
+              <th style="padding:10px 12px;text-align:left;border-radius:0;">สถานการณ์</th>
+              <th style="padding:10px 12px;text-align:center;">ลำดับสำคัญ?</th>
+              <th style="padding:10px 12px;text-align:center;">ซ้ำได้?</th>
+              <th style="padding:10px 12px;text-align:left;">สูตร</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+              <td style="padding:9px 12px;">จัดลำดับ $r$ จาก $n$ (ไม่ซ้ำ)</td>
+              <td style="padding:9px 12px;text-align:center;color:#16a34a;">✓</td>
+              <td style="padding:9px 12px;text-align:center;color:#dc2626;">✗</td>
+              <td style="padding:9px 12px;">$P(n,r) = \dfrac{n!}{(n-r)!}$</td>
+            </tr>
+            <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0;">
+              <td style="padding:9px 12px;">จัดลำดับ $r$ จาก $n$ (ซ้ำได้)</td>
+              <td style="padding:9px 12px;text-align:center;color:#16a34a;">✓</td>
+              <td style="padding:9px 12px;text-align:center;color:#16a34a;">✓</td>
+              <td style="padding:9px 12px;">$n^r$</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+              <td style="padding:9px 12px;">เลือก $r$ จาก $n$ (ไม่ซ้ำ)</td>
+              <td style="padding:9px 12px;text-align:center;color:#dc2626;">✗</td>
+              <td style="padding:9px 12px;text-align:center;color:#dc2626;">✗</td>
+              <td style="padding:9px 12px;">$C(n,r) = \dbinom{n}{r}$</td>
+            </tr>
+            <tr style="background:#f8fafc;">
+              <td style="padding:9px 12px;">เลือก $r$ จาก $n$ (ซ้ำได้, Multiset)</td>
+              <td style="padding:9px 12px;text-align:center;color:#dc2626;">✗</td>
+              <td style="padding:9px 12px;text-align:center;color:#16a34a;">✓</td>
+              <td style="padding:9px 12px;">$C(n+r-1,\,r)$</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
