@@ -6,7 +6,6 @@
   <title>บทที่ 10 – Graphs and Trees | Discrete Mathematics</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/chapter.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌳</text></svg>">
   <script>
     MathJax = {
       tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
@@ -15,54 +14,68 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
   <style>
-    .graph-svg { width:100%; max-width:400px; margin:16px auto; display:block; }
-    .matrix-table { border-collapse:collapse; font-family:monospace; font-size:14px; margin:12px 0; }
-    .matrix-table td, .matrix-table th { padding:8px 12px; border:1px solid #e2e8f0; text-align:center; }
-    .matrix-table th { background:#16a34a; color:white; }
-    .algo-steps { counter-reset:step; list-style:none; padding:0; }
-    .algo-steps li { counter-increment:step; padding:8px 12px 8px 48px; position:relative; margin:6px 0; background:#f0fdf4; border-radius:8px; font-size:14px; }
-    .algo-steps li::before { content:counter(step); position:absolute; left:14px; background:#16a34a; color:white; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
-
-    .tree-ul { list-style:none; padding:0; margin:0; }
-    .tree-ul li { padding:4px 0 4px 24px; position:relative; font-size:14px; }
-    .tree-ul li::before { content:"├─"; position:absolute; left:0; color:#16a34a; font-family:monospace; }
-    .tree-ul li:last-child::before { content:"└─"; }
-    .tree-ul ul { margin-left:8px; }
-
-    .graph-container { display:flex; gap:24px; flex-wrap:wrap; justify-content:center; align-items:center; margin:16px 0; }
-
-    .step-table { width:100%; border-collapse:collapse; font-size:13px; margin:12px 0; }
-    .step-table th { background:#16a34a; color:white; padding:8px 10px; text-align:center; }
-    .step-table td { padding:7px 10px; border:1px solid #e2e8f0; text-align:center; vertical-align:middle; }
-    .step-table tr:nth-child(even) td { background:#f0fdf4; }
-    .step-table .highlight td { background:#dcfce7; font-weight:700; }
+    .def-box{background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid #16a34a;border-radius:10px;padding:16px 20px;margin:16px 0;font-size:15px;line-height:1.8}
+    .def-box h4{font-size:14px;font-weight:700;color:#15803d;margin-bottom:10px}
+    .thm-box{background:#f0fdf4;border:2px solid #16a34a;border-radius:10px;padding:16px 20px;margin:16px 0}
+    .thm-box h4{font-size:14px;font-weight:700;color:#15803d;margin-bottom:10px}
+    .matrix-table{border-collapse:collapse;font-family:monospace;font-size:14px;margin:14px 0}
+    .matrix-table td,.matrix-table th{padding:8px 14px;border:1px solid #e2e8f0;text-align:center}
+    .matrix-table th{background:#16a34a;color:white}
+    .matrix-table td.one{background:#dcfce7;font-weight:700;color:#15803d}
+    .algo-table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0}
+    .algo-table th{background:#16a34a;color:white;padding:9px 12px;text-align:left}
+    .algo-table td{padding:8px 12px;border-bottom:1px solid #e2e8f0;vertical-align:top}
+    .algo-table tr:nth-child(even) td{background:#f0fdf4}
+    .algo-table td.accepted{color:#15803d;font-weight:700}
+    .algo-table td.rejected{color:#dc2626}
+    .graph-container{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin:16px 0;text-align:center}
+    .proof-box{background:#fafef5;border:2px solid #16a34a;border-radius:10px;padding:18px 22px;margin:16px 0}
+    .proof-box .proof-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#15803d;margin-bottom:12px}
+    .proof-step{margin:8px 0;padding:10px 14px;border-radius:8px}
+    .proof-step.assume{background:#f0fdf4;border-left:4px solid #16a34a}
+    .proof-step.derive{background:#eff6ff;border-left:4px solid #2563eb}
+    .proof-step.conclude{background:#fdf4ff;border-left:4px solid #9333ea}
+    .proof-step h5{font-size:13px;font-weight:700;margin-bottom:5px}
+    .proof-step.assume h5{color:#15803d}
+    .proof-step.derive h5{color:#1d4ed8}
+    .proof-step.conclude h5{color:#7e22ce}
+    .proof-step p{font-size:14px;line-height:1.7;margin:3px 0}
+    .qed{text-align:right;font-style:italic;color:#15803d;font-weight:600;margin-top:8px}
+    .tree-ul{list-style:none;padding-left:20px;font-size:14px;line-height:2}
+    .tree-ul li::before{content:"├─ ";color:#16a34a;font-family:monospace}
+    .tree-ul li:last-child::before{content:"└─ ";color:#16a34a;font-family:monospace}
+    .step-table{width:100%;border-collapse:collapse;font-size:13px;margin:14px 0}
+    .step-table th{background:#15803d;color:white;padding:8px 12px;text-align:left}
+    .step-table td{padding:7px 12px;border-bottom:1px solid #e2e8f0}
+    .step-table tr:nth-child(even) td{background:#f0fdf4}
+    .step-table td.current{font-weight:700;color:#15803d}
+    .inv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+    .inv-card{border:1.5px solid #bbf7d0;border-radius:9px;padding:14px;background:white}
+    .inv-card h5{font-size:13px;font-weight:700;color:#15803d;margin-bottom:6px}
+    .inv-card p{font-size:13px;line-height:1.6}
   </style>
 </head>
 <body>
-
 <header>
   <div class="header-inner">
-    <a class="header-logo" href="../index.html">
-      <div class="logo-icon">∑</div>
-      <div class="logo-text">Discrete Math <small>KMUTNB · 1/2569</small></div>
-    </a>
+    <a class="header-logo" href="../index.html"><div class="logo-icon">&#x2211;</div><div class="logo-text">Discrete Math <small>KMUTNB &middot; 1/2569</small></div></a>
     <nav class="ch-header-nav">
-      <a href="chapter9.html" class="ch-nav-link">← บทที่ 9</a>
+      <a href="chapter9.html" class="ch-nav-link">&larr; บทที่ 9</a>
       <span class="ch-nav-divider">|</span>
       <span class="ch-nav-current">บทที่ 10</span>
       <span class="ch-nav-divider">|</span>
-      <a href="chapter11.html" class="ch-nav-link">บทที่ 11 →</a>
+      <a href="chapter11.html" class="ch-nav-link">บทที่ 11 &rarr;</a>
     </nav>
-    <button class="menu-toggle" id="menu-toggle">☰</button>
+    <button class="menu-toggle" id="menu-toggle">&#9776;</button>
   </div>
 </header>
 
 <section class="chapter-hero" style="--ch-color:#16a34a">
   <div class="container">
-    <a href="../index.html" class="back-btn">← กลับหน้าหลัก</a>
+    <a href="../index.html" class="back-btn">&larr; กลับหน้าหลัก</a>
     <div class="chapter-hero-content">
       <div class="chapter-hero-num">บทที่ 10</div>
-      <div class="chapter-hero-icon">🌳</div>
+      <div class="chapter-hero-icon">&#127795;</div>
       <h1 class="chapter-hero-title">Graphs and Trees</h1>
       <p class="chapter-hero-subtitle">กราฟและต้นไม้</p>
     </div>
@@ -70,487 +83,607 @@
 </section>
 
 <div class="ch-layout">
-
   <aside class="ch-sidebar" id="ch-sidebar">
     <div class="ch-sidebar-inner">
       <h4>เนื้อหาบทนี้</h4>
       <ul class="ch-toc">
         <li><a href="#overview">ภาพรวม</a></li>
-        <li><a href="#sec101">10.1 นิยามกราฟ</a></li>
-        <li><a href="#sec102">10.2 เส้นทางและวงจร</a></li>
-        <li><a href="#sec103">10.3 เมทริกซ์แทนกราฟ</a></li>
-        <li><a href="#sec104">10.4 ไอโซมอร์ฟิซึม</a></li>
-        <li><a href="#sec105">10.5 ต้นไม้ (Trees)</a></li>
-        <li><a href="#sec106">10.6 Rooted Trees</a></li>
-        <li><a href="#sec107">10.7 Spanning Trees &amp; Shortest Paths</a></li>
-        <li><a href="#summary">สรุป</a></li>
+        <li><a href="#sec101">10.1 Graphs: Definitions</a>
+          <ul>
+            <li><a href="#graph-def">นิยามกราฟ</a></li>
+            <li><a href="#degree">Degree &amp; Handshaking</a></li>
+            <li><a href="#special-graphs">กราฟพิเศษ</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec102">10.2 Trails, Paths, Circuits</a>
+          <ul>
+            <li><a href="#walk-trail">Walk, Trail, Path</a></li>
+            <li><a href="#euler">Euler Circuit/Path</a></li>
+            <li><a href="#hamiltonian">Hamiltonian Circuit</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec103">10.3 Matrix Representations</a>
+          <ul>
+            <li><a href="#adj-matrix">Adjacency Matrix</a></li>
+            <li><a href="#matrix-power">Matrix Powers</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec104">10.4 Isomorphisms</a>
+          <ul>
+            <li><a href="#iso-def">นิยาม Isomorphism</a></li>
+            <li><a href="#invariants">Graph Invariants</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec105">10.5 Trees</a>
+          <ul>
+            <li><a href="#tree-def">นิยามต้นไม้</a></li>
+            <li><a href="#tree-thm">ทฤษฎีบทต้นไม้</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec106">10.6 Rooted Trees</a>
+          <ul>
+            <li><a href="#rooted-def">ต้นไม้มีราก</a></li>
+            <li><a href="#binary-tree">Binary Tree</a></li>
+            <li><a href="#traversal">Tree Traversal</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec107">10.7 Spanning Trees &amp; Shortest Paths</a>
+          <ul>
+            <li><a href="#spanning">Spanning Tree</a></li>
+            <li><a href="#kruskal">Kruskal's Algorithm</a></li>
+            <li><a href="#dijkstra">Dijkstra's Algorithm</a></li>
+          </ul>
+        </li>
+        <li><a href="#summary">สรุปบทที่ 10</a></li>
         <li><a href="#exercises">แบบฝึกหัด</a></li>
       </ul>
     </div>
   </aside>
 
   <main class="ch-content">
-
-    <!-- OVERVIEW -->
     <section id="overview" class="ch-section">
       <div class="overview-card">
         <h2>ภาพรวมบทที่ 10</h2>
-        <p>บทนี้ศึกษา <strong>กราฟ (Graph)</strong> และ <strong>ต้นไม้ (Tree)</strong> ซึ่งเป็นโครงสร้างข้อมูลพื้นฐานในวิทยาการคอมพิวเตอร์ ตั้งแต่นิยามเชิงคณิตศาสตร์ การแทนด้วยเมทริกซ์ การหาเส้นทาง Euler/Hamiltonian จนถึงอัลกอริทึมหา Spanning Tree และ Shortest Path</p>
-        <div class="overview-grid" style="grid-template-columns:repeat(4,1fr)">
-          <div class="overview-item">
-            <span class="ov-icon">🔵</span>
-            <strong>10.1–10.2 กราฟ</strong>
-            <p>$G=(V,E)$, degree, handshaking lemma, Euler/Hamiltonian</p>
-          </div>
-          <div class="overview-item">
-            <span class="ov-icon">📊</span>
-            <strong>10.3–10.4 เมทริกซ์</strong>
-            <p>Adjacency matrix, isomorphism, degree sequence</p>
-          </div>
-          <div class="overview-item">
-            <span class="ov-icon">🌲</span>
-            <strong>10.5–10.6 ต้นไม้</strong>
-            <p>Tree, $n-1$ edges, rooted tree, binary tree, expression tree</p>
-          </div>
-          <div class="overview-item">
-            <span class="ov-icon">⚡</span>
-            <strong>10.7 อัลกอริทึม</strong>
-            <p>Spanning tree, Kruskal, Dijkstra</p>
-          </div>
+        <p>บทนี้ศึกษา <strong>ทฤษฎีกราฟ (Graph Theory)</strong> และ <strong>ต้นไม้ (Trees)</strong> ซึ่งเป็นโครงสร้างพื้นฐานที่สำคัญในวิทยาการคอมพิวเตอร์ ครอบคลุมตั้งแต่นิยามกราฟ สมบัติ Euler/Hamiltonian การแทนด้วยเมทริกซ์ Isomorphism ต้นไม้มีราก Binary Tree และอัลกอริทึม Kruskal, Dijkstra</p>
+        <div class="overview-grid">
+          <div class="overview-item"><span class="ov-icon">&#x2B21;</span><strong>10.1&ndash;10.2 Graphs</strong><p>$G=(V,E)$, degree, handshaking lemma, Euler/Hamiltonian circuits</p></div>
+          <div class="overview-item"><span class="ov-icon">&#x25A6;</span><strong>10.3&ndash;10.4 Matrix &amp; Iso</strong><p>Adjacency matrix, $A^k$, isomorphism, invariants</p></div>
+          <div class="overview-item"><span class="ov-icon">&#127795;</span><strong>10.5&ndash;10.6 Trees</strong><p>Tree = connected + acyclic, $n-1$ edges, rooted tree, traversal</p></div>
+          <div class="overview-item"><span class="ov-icon">&#128506;</span><strong>10.7 Algorithms</strong><p>MST: Kruskal $O(E\log E)$, Shortest path: Dijkstra $O((V+E)\log V)$</p></div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 10.1 -->
     <section id="sec101" class="ch-section">
       <div class="section-header" style="--ch-color:#16a34a">
         <span class="sec-num">10.1</span>
-        <div>
-          <h2>Graphs: Definitions</h2>
-          <p>นิยามกราฟ, ดีกรี, Handshaking Lemma, กราฟพิเศษ</p>
+        <div><h2>Graphs: Definitions and Basic Properties</h2><p>นิยามกราฟ, degree, handshaking lemma, กราฟพิเศษ</p></div>
+      </div>
+      <div id="graph-def" class="subsec">
+        <h3>นิยามกราฟ</h3>
+        <div class="def-box">
+          <h4>นิยาม: Graph (กราฟ)</h4>
+          <p>กราฟ $G = (V, E)$ ประกอบด้วย $V$ = เซต <strong>จุดยอด (vertices)</strong> ที่ไม่ว่าง และ $E$ = เซต <strong>เส้นเชื่อม (edges)</strong></p>
+          <ul>
+            <li><strong>Simple graph:</strong> ไม่มี self-loop และไม่มี parallel edges</li>
+            <li><strong>Multigraph:</strong> อนุญาต parallel edges ระหว่างคู่จุดยอดเดียวกัน</li>
+            <li><strong>Pseudograph:</strong> อนุญาตทั้ง self-loop และ parallel edges</li>
+            <li><strong>Digraph:</strong> เส้นเชื่อมมีทิศทาง $(u \to v)$</li>
+          </ul>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.1.1</span> Simple Graph</div>
+          <p>$V = \{1,2,3,4\}$, $E = \{(1,2),(1,3),(2,3),(2,4),(3,4)\}$, $|V|=4$, $|E|=5$</p>
+          <div class="graph-container">
+            <svg width="200" height="180" viewBox="0 0 200 180">
+              <line x1="50" y1="50" x2="150" y2="50" stroke="#16a34a" stroke-width="2"/>
+              <line x1="50" y1="50" x2="50" y2="140" stroke="#16a34a" stroke-width="2"/>
+              <line x1="150" y1="50" x2="50" y2="140" stroke="#16a34a" stroke-width="2"/>
+              <line x1="150" y1="50" x2="150" y2="140" stroke="#16a34a" stroke-width="2"/>
+              <line x1="50" y1="140" x2="150" y2="140" stroke="#16a34a" stroke-width="2"/>
+              <circle cx="50" cy="50" r="16" fill="#16a34a"/><text x="50" y="55" text-anchor="middle" fill="white" font-weight="bold" font-size="13">1</text>
+              <circle cx="150" cy="50" r="16" fill="#16a34a"/><text x="150" y="55" text-anchor="middle" fill="white" font-weight="bold" font-size="13">2</text>
+              <circle cx="50" cy="140" r="16" fill="#16a34a"/><text x="50" y="145" text-anchor="middle" fill="white" font-weight="bold" font-size="13">3</text>
+              <circle cx="150" cy="140" r="16" fill="#16a34a"/><text x="150" y="145" text-anchor="middle" fill="white" font-weight="bold" font-size="13">4</text>
+            </svg>
+          </div>
+          <p>$\deg(1)=2,\ \deg(2)=3,\ \deg(3)=3,\ \deg(4)=2$</p>
         </div>
       </div>
-
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>กราฟ (Graph)</strong> $G = (V, E)$ ประกอบด้วยเซตของ <strong>จุดยอด (vertices)</strong> $V$ และเซตของ <strong>ขอบ (edges)</strong> $E \subseteq \{\{u,v\} \mid u,v \in V,\, u \neq v\}$</p>
-        <ul>
-          <li><strong>ดีกรี $\deg(v)$:</strong> จำนวนขอบที่เชื่อมกับจุดยอด $v$</li>
-          <li><strong>Handshaking Lemma:</strong> $\displaystyle\sum_{v \in V} \deg(v) = 2|E|$ (ผลรวมดีกรีทุกจุดเท่ากับสองเท่าของจำนวนขอบ)</li>
-          <li><strong>ผลสืบเนื่อง:</strong> จำนวนจุดยอดที่มีดีกรีคี่ต้องเป็นเลขคู่เสมอ</li>
-        </ul>
+      <div id="degree" class="subsec">
+        <h3>Degree และ Handshaking Lemma</h3>
+        <div class="def-box">
+          <h4>นิยาม: Degree ของจุดยอด</h4>
+          <p>$\deg(v)$ = จำนวนเส้นเชื่อมที่ต่อกับ $v$ (self-loop นับ 2)</p>
+          <p>Digraph: <strong>in-degree</strong> $\deg^-(v)$ = เส้นเข้า, <strong>out-degree</strong> $\deg^+(v)$ = เส้นออก</p>
+        </div>
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Handshaking Lemma</h4>
+          $$\sum_{v \in V} \deg(v) = 2|E|$$
+          <p><strong>บทแทรก:</strong> จำนวนจุดยอดที่มี degree คี่ต้องเป็นเลขคู่เสมอ</p>
+        </div>
+        <div class="proof-box">
+          <div class="proof-title">&#128269; พิสูจน์ Handshaking Lemma</div>
+          <div class="proof-step assume"><h5>สังเกต</h5><p>แต่ละเส้นเชื่อม $(u,v)$ นับเพิ่ม $\deg(u)$ หนึ่ง และ $\deg(v)$ หนึ่ง &rarr; 2 ต่อ 1 เส้น</p></div>
+          <div class="proof-step derive"><h5>รวม</h5><p>$\sum_{v \in V} \deg(v) = \sum_{e \in E} 2 = 2|E|$</p></div>
+          <div class="proof-step conclude"><h5>บทแทรก</h5><p>ถ้ามีจุดยอด degree คี่ $k$ ตัว ผลรวม $= 2|E|$ (คู่) ดังนั้น $k$ ต้องคู่</p></div>
+          <div class="qed">&#8718;</div>
+        </div>
       </div>
-
-      <div class="key-box">
-        <h4>กราฟพิเศษที่ควรรู้</h4>
-        <ul>
-          <li>$K_n$ — <strong>Complete graph:</strong> ทุกคู่จุดยอดเชื่อมกัน, $|E| = \binom{n}{2}$</li>
-          <li>$K_{m,n}$ — <strong>Complete bipartite graph:</strong> สองกลุ่ม $m$ และ $n$ จุด, $|E|=mn$</li>
-          <li>$C_n$ — <strong>Cycle graph:</strong> วงจรที่มี $n$ จุดยอด, ทุกจุดมี $\deg = 2$</li>
-        </ul>
-      </div>
-
-      <div class="example-box">
-        <div class="example-header"><span>ตัวอย่าง 10.1</span> กราฟ 4 จุดยอด</div>
-        <p>กราฟ $G$ มีจุดยอด $\{1,2,3,4\}$ และขอบ $\{1\text{-}2,\,1\text{-}3,\,2\text{-}3,\,3\text{-}4\}$</p>
-        <svg class="graph-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-          <line x1="80" y1="60" x2="220" y2="60" stroke="#64748b" stroke-width="2"/>
-          <line x1="80" y1="60" x2="150" y2="160" stroke="#64748b" stroke-width="2"/>
-          <line x1="220" y1="60" x2="150" y2="160" stroke="#64748b" stroke-width="2"/>
-          <line x1="150" y1="160" x2="270" y2="160" stroke="#64748b" stroke-width="2"/>
-          <circle cx="80" cy="60" r="18" fill="#16a34a"/>
-          <circle cx="220" cy="60" r="18" fill="#16a34a"/>
-          <circle cx="150" cy="160" r="18" fill="#16a34a"/>
-          <circle cx="270" cy="160" r="18" fill="#16a34a"/>
-          <text x="80" y="65" text-anchor="middle" fill="white" font-size="14" font-weight="bold">1</text>
-          <text x="220" y="65" text-anchor="middle" fill="white" font-size="14" font-weight="bold">2</text>
-          <text x="150" y="165" text-anchor="middle" fill="white" font-size="14" font-weight="bold">3</text>
-          <text x="270" y="165" text-anchor="middle" fill="white" font-size="14" font-weight="bold">4</text>
-        </svg>
-        <div class="solution">
-          $\deg(1)=2,\;\deg(2)=2,\;\deg(3)=3,\;\deg(4)=1$<br>
-          ผลรวม $= 2+2+3+1 = 8 = 2 \times 4 = 2|E|$ ✓
+      <div id="special-graphs" class="subsec">
+        <h3>กราฟพิเศษ</h3>
+        <div class="def-box">
+          <h4>ประเภทกราฟพิเศษสำคัญ</h4>
+          <ul>
+            <li><strong>$K_n$ (Complete graph):</strong> ทุกคู่จุดยอดมีเส้นเชื่อม &mdash; $|E|=\binom{n}{2}$, ทุก $\deg=n-1$</li>
+            <li><strong>$K_{m,n}$ (Complete bipartite):</strong> $V=A\cup B$, $|A|=m$, $|B|=n$, เชื่อมทุกคู่ $(a,b)$ &mdash; $|E|=mn$</li>
+            <li><strong>$C_n$ (Cycle):</strong> $n$ จุดเรียงวงกลม, $|E|=n$, ทุก $\deg=2$</li>
+            <li><strong>$P_n$ (Path):</strong> $n$ จุดเรียงเส้นตรง, $|E|=n-1$</li>
+            <li><strong>$W_n$ (Wheel):</strong> $C_{n-1}$ + hub ตรงกลาง, $|E|=2(n-1)$</li>
+          </ul>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.1.2</span> $K_4$</div>
+          <p>$K_4$: 4 จุดยอด, $|E|=\binom{4}{2}=6$ เส้น, ทุก $\deg=3$</p>
+          <div class="graph-container">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <line x1="80" y1="15" x2="145" y2="95" stroke="#16a34a" stroke-width="2"/>
+              <line x1="80" y1="15" x2="15" y2="95" stroke="#16a34a" stroke-width="2"/>
+              <line x1="80" y1="15" x2="80" y2="145" stroke="#16a34a" stroke-width="2"/>
+              <line x1="145" y1="95" x2="15" y2="95" stroke="#16a34a" stroke-width="2"/>
+              <line x1="145" y1="95" x2="80" y2="145" stroke="#16a34a" stroke-width="2"/>
+              <line x1="15" y1="95" x2="80" y2="145" stroke="#16a34a" stroke-width="2"/>
+              <circle cx="80" cy="15" r="13" fill="#16a34a"/><text x="80" y="20" text-anchor="middle" fill="white" font-size="11" font-weight="bold">1</text>
+              <circle cx="145" cy="95" r="13" fill="#16a34a"/><text x="145" y="100" text-anchor="middle" fill="white" font-size="11" font-weight="bold">2</text>
+              <circle cx="15" cy="95" r="13" fill="#16a34a"/><text x="15" y="100" text-anchor="middle" fill="white" font-size="11" font-weight="bold">3</text>
+              <circle cx="80" cy="145" r="13" fill="#16a34a"/><text x="80" y="150" text-anchor="middle" fill="white" font-size="11" font-weight="bold">4</text>
+            </svg>
+          </div>
+          <p>ตรวจสอบ Handshaking: $\sum\deg = 3+3+3+3 = 12 = 2\times6 = 2|E|$ &#10003;</p>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 10.2 -->
     <section id="sec102" class="ch-section">
       <div class="section-header" style="--ch-color:#16a34a">
         <span class="sec-num">10.2</span>
-        <div>
-          <h2>Trails, Paths, and Circuits</h2>
-          <p>Walk, Trail, Path, Euler, Hamiltonian</p>
+        <div><h2>Trails, Paths, and Circuits</h2><p>เส้นทาง วิถี วงจร และทฤษฎีบทออยเลอร์</p></div>
+      </div>
+      <div id="walk-trail" class="subsec">
+        <h3>Walk, Trail, Path, Circuit</h3>
+        <div class="def-box">
+          <h4>นิยาม: ประเภทเส้นทาง</h4>
+          <ul>
+            <li><strong>Walk:</strong> ลำดับ $v_0,e_1,v_1,\ldots,e_k,v_k$ &mdash; ซ้ำได้ทั้ง vertices และ edges</li>
+            <li><strong>Trail:</strong> Walk ที่ไม่ซ้ำ <em>edges</em></li>
+            <li><strong>Path:</strong> Walk ที่ไม่ซ้ำ <em>vertices</em></li>
+            <li><strong>Circuit:</strong> Trail ปิด ($v_0=v_k$)</li>
+            <li><strong>Cycle:</strong> Path ปิด ($v_0=v_k$, ไม่ซ้ำ vertex กลาง)</li>
+          </ul>
+          <p><strong>ลำดับ:</strong> Path $\subset$ Trail $\subset$ Walk</p>
+        </div>
+        <div class="def-box">
+          <h4>นิยาม: Connected Graph</h4>
+          <p>กราฟ $G$ เป็น <strong>connected</strong> ถ้าทุกคู่จุดยอด $u,v$ มี path เชื่อมกัน</p>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.2.1</span> แยกประเภทเส้นทาง</div>
+          <p>บนกราฟ $V=\{1,2,3,4\}$, $E=\{(1,2),(1,3),(2,3),(2,4),(3,4)\}$:</p>
+          <ul>
+            <li>$1\to2\to3\to1\to2$ &mdash; Walk (ซ้ำ vertex 1,2 และ edge $(1,2)$)</li>
+            <li>$1\to2\to4\to3\to1$ &mdash; Circuit (trail ปิด, ไม่ซ้ำ edge)</li>
+            <li>$1\to2\to4$ &mdash; Path (ไม่ซ้ำ vertex หรือ edge)</li>
+          </ul>
         </div>
       </div>
-
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <ul>
-          <li><strong>Walk:</strong> ลำดับจุดยอดและขอบ $v_0,e_1,v_1,\ldots,v_k$ (ซ้ำได้)</li>
-          <li><strong>Trail:</strong> Walk ที่ไม่ซ้ำขอบ</li>
-          <li><strong>Path:</strong> Walk ที่ไม่ซ้ำจุดยอด (และขอบ)</li>
-          <li><strong>Circuit:</strong> Trail ที่ปิด ($v_0 = v_k$) | <strong>Cycle:</strong> Path ที่ปิด</li>
-        </ul>
+      <div id="euler" class="subsec">
+        <h3>Euler Circuit และ Euler Path</h3>
+        <div class="def-box">
+          <h4>นิยาม: Euler Circuit / Path</h4>
+          <ul>
+            <li><strong>Euler circuit:</strong> Circuit ที่ผ่านทุก edge <em>ตรงหนึ่งครั้ง</em></li>
+            <li><strong>Euler path:</strong> Trail ที่ผ่านทุก edge <em>ตรงหนึ่งครั้ง</em> (ไม่ต้องปิด)</li>
+          </ul>
+        </div>
+        <div class="thm-box">
+          <h4>ทฤษฎีบทออยเลอร์ (1736)</h4>
+          <p>กราฟ $G$ connected มี <strong>Euler circuit</strong> &hArr; จุดยอด<em>ทุกตัว</em>มี degree <strong>คู่</strong></p>
+          <p>กราฟ $G$ connected มี <strong>Euler path</strong> (ไม่ใช่ circuit) &hArr; มีจุดยอด degree <strong>คี่ตรง 2 ตัว</strong></p>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.2.2</span> สะพาน Königsberg (1736)</div>
+          <p>4 ส่วนของเมือง เชื่อมด้วย 7 สะพาน: $\deg(A)=3,\ \deg(B)=3,\ \deg(C)=5,\ \deg(D)=3$ (คี่ทั้ง 4)</p>
+          <div class="info-box">มีจุดยอด degree คี่ถึง 4 ตัว &rarr; <strong>ไม่มีทั้ง Euler circuit และ Euler path!</strong> &mdash; นี่คือจุดกำเนิดทฤษฎีกราฟ</div>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.2.3</span> ตรวจสอบ Euler Circuit</div>
+          <p>กราฟ $G$: degree sequence $= (2,4,4,2,4)$ ทุกตัวเป็น<em>เลขคู่</em>, connected &rarr; มี Euler circuit &#10003;</p>
+          <div class="highlight-box"><strong>Hierholzer's algorithm:</strong> หา Euler circuit ใน $O(E)$ &mdash; เริ่มจาก vertex ใดๆ เดิน trail จนกลับมา แล้วต่อ sub-circuit ที่ยังเหลือ</div>
+        </div>
       </div>
-
-      <div class="key-box">
-        <h4>ทฤษฎีบท Euler</h4>
-        <ul>
-          <li><strong>Euler Circuit</strong> มีอยู่ก็ต่อเมื่อ กราฟเชื่อมโยง (connected) และ <em>ทุกจุดยอดมีดีกรีคู่</em></li>
-          <li><strong>Euler Path</strong> (ไม่ปิด) มีอยู่ก็ต่อเมื่อ กราฟเชื่อมโยงและมี <em>จุดยอดดีกรีคี่ exactly 2 จุด</em></li>
-          <li><strong>Hamiltonian Circuit:</strong> วงจรที่ผ่านทุกจุดยอดครบถ้วนพอดี (ไม่มีเงื่อนไขง่าย — NP-complete)</li>
-        </ul>
-      </div>
-
-      <div class="example-box">
-        <div class="example-header"><span>ตัวอย่าง 10.2</span> สะพาน Königsberg</div>
-        <p>เมือง Königsberg มีเกาะ 4 ส่วน (A,B,C,D) เชื่อมด้วยสะพาน 7 แห่ง ดีกรีของแต่ละโหนด: $\deg(A)=3,\,\deg(B)=3,\,\deg(C)=5,\,\deg(D)=3$</p>
-        <div class="solution">
-          มีจุดยอดดีกรีคี่ถึง <strong>4 จุด</strong> (A, B, C, D ล้วนคี่) → <strong>ไม่มี Euler Path หรือ Euler Circuit</strong><br>
-          Euler พิสูจน์ว่าเป็นไปไม่ได้ที่จะเดินข้ามสะพานทุกแห่งครบโดยไม่ซ้ำ
+      <div id="hamiltonian" class="subsec">
+        <h3>Hamiltonian Circuit</h3>
+        <div class="def-box">
+          <h4>นิยาม: Hamiltonian Circuit / Path</h4>
+          <ul>
+            <li><strong>Hamiltonian circuit:</strong> Cycle ที่ผ่านทุก <em>vertex</em> ตรงหนึ่งครั้ง</li>
+            <li><strong>Hamiltonian path:</strong> Path ที่ผ่านทุก vertex ตรงหนึ่งครั้ง</li>
+          </ul>
+        </div>
+        <div class="warning-box">
+          <strong>Hamiltonian vs Euler:</strong>
+          <ul>
+            <li>Euler = ทุก <em>edge</em> &rarr; ตรวจ $O(V+E)$ ด้วย degree condition</li>
+            <li>Hamiltonian = ทุก <em>vertex</em> &rarr; ปัญหา <strong>NP-complete</strong>, ไม่มีทฤษฎีบทง่ายๆ</li>
+            <li>Traveling Salesman Problem (TSP) = หา minimum Hamiltonian circuit ใน weighted graph</li>
+          </ul>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 10.3 -->
     <section id="sec103" class="ch-section">
       <div class="section-header" style="--ch-color:#16a34a">
         <span class="sec-num">10.3</span>
-        <div>
-          <h2>Matrix Representations</h2>
-          <p>Adjacency Matrix การแทนกราฟด้วยเมทริกซ์</p>
+        <div><h2>Matrix Representations of Graphs</h2><p>การแทนกราฟด้วย Adjacency Matrix</p></div>
+      </div>
+      <div id="adj-matrix" class="subsec">
+        <h3>Adjacency Matrix</h3>
+        <div class="def-box">
+          <h4>นิยาม: Adjacency Matrix $A$</h4>
+          <p>Matrix ขนาด $n\times n$ โดย $A[i][j]=1$ ถ้า $(v_i,v_j)\in E$ และ $0$ อื่นๆ</p>
+          <p>กราฟไม่มีทิศทาง: $A$ เป็น <strong>symmetric</strong> ($A=A^T$), ผลรวมแถว $i$ $= \deg(v_i)$</p>
         </div>
-      </div>
-
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>Adjacency Matrix</strong> ของกราฟ $G$ ที่มีจุดยอด $v_1,\ldots,v_n$ คือเมทริกซ์ $A$ ขนาด $n \times n$ โดย</p>
-        $$A_{ij} = \begin{cases} 1 & \text{ถ้า } \{v_i, v_j\} \in E \\ 0 & \text{อื่น ๆ} \end{cases}$$
-        <p>กราฟไม่มีทิศทาง: $A$ เป็น <em>symmetric matrix</em> ($A = A^T$)</p>
-      </div>
-
-      <div class="example-box">
-        <div class="example-header"><span>ตัวอย่าง 10.3</span> กราฟ 4 จุดยอด → Adjacency Matrix</div>
-        <p>กราฟจากตัวอย่าง 10.1: ขอบ $\{1\text{-}2, 1\text{-}3, 2\text{-}3, 3\text{-}4\}$</p>
-        <div style="overflow-x:auto">
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.3.1</span> Adjacency Matrix</div>
+          <p>$G$: $V=\{1,2,3,4\}$, $E=\{(1,2),(1,3),(2,3),(2,4),(3,4)\}$</p>
           <table class="matrix-table">
-            <tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
-            <tr><th>1</th><td>0</td><td>1</td><td>1</td><td>0</td></tr>
-            <tr><th>2</th><td>1</td><td>0</td><td>1</td><td>0</td></tr>
-            <tr><th>3</th><td>1</td><td>1</td><td>0</td><td>1</td></tr>
-            <tr><th>4</th><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+            <thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th></tr></thead>
+            <tbody>
+              <tr><th>1</th><td>0</td><td class="one">1</td><td class="one">1</td><td>0</td></tr>
+              <tr><th>2</th><td class="one">1</td><td>0</td><td class="one">1</td><td class="one">1</td></tr>
+              <tr><th>3</th><td class="one">1</td><td class="one">1</td><td>0</td><td class="one">1</td></tr>
+              <tr><th>4</th><td>0</td><td class="one">1</td><td class="one">1</td><td>0</td></tr>
+            </tbody>
           </table>
+          <p>ผลรวมแถว: $2,3,3,2$ = degree sequence &#10003;</p>
         </div>
-        <div class="solution">ผลรวมแต่ละแถว = ดีกรีของจุดนั้น: แถว 1→2, แถว 2→2, แถว 3→3, แถว 4→1</div>
+      </div>
+      <div id="matrix-power" class="subsec">
+        <h3>กำลังของ Adjacency Matrix</h3>
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: $(A^k)[i][j]$ = จำนวน Walk ยาว $k$</h4>
+          <p>$(A^k)[i][j]$ = จำนวน walk ความยาว $k$ จาก $v_i$ ถึง $v_j$</p>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.3.2</span> นับ Walk ยาว 2</div>
+          <p>$(A^2)[1][4]$ = จำนวน walk ยาว 2 จาก 1 ถึง 4 = walks $1\to2\to4$ และ $1\to3\to4$ = <strong>2</strong></p>
+          <p>คำนวณ: $(A^2)[1][4] = A[1][2]\cdot A[2][4] + A[1][3]\cdot A[3][4] = 1\cdot1 + 1\cdot1 = 2$ &#10003;</p>
+        </div>
+        <div class="key-box">
+          <h4>การประยุกต์ใช้ Adjacency Matrix</h4>
+          <ul>
+            <li>ตรวจ connectivity ด้วย BFS/DFS ผ่าน $A$</li>
+            <li>นับ walks ด้วย matrix multiplication</li>
+            <li>PageRank ของ Google ใช้ adjacency matrix ของ web graph</li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <!-- SECTION 10.4 -->
     <section id="sec104" class="ch-section">
       <div class="section-header" style="--ch-color:#16a34a">
         <span class="sec-num">10.4</span>
-        <div>
-          <h2>Graph Isomorphisms</h2>
-          <p>ไอโซมอร์ฟิซึม — กราฟ "เหมือนกัน" ในเชิงโครงสร้าง</p>
+        <div><h2>Isomorphisms of Graphs</h2><p>กราฟที่มีโครงสร้างเหมือนกัน</p></div>
+      </div>
+      <div id="iso-def" class="subsec">
+        <h3>นิยาม Graph Isomorphism</h3>
+        <div class="def-box">
+          <h4>นิยาม: Graph Isomorphism</h4>
+          <p>$G=(V,E)$ และ $H=(W,F)$ เป็น <strong>isomorphic</strong> ($G\cong H$) ถ้ามี bijection $f:V\to W$ ที่</p>
+          $$(u,v)\in E \iff (f(u),f(v))\in F$$
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.4.1</span> สร้าง Isomorphism</div>
+          <p>$G_1$: $C_4 = \{1,2,3,4\}$, $E_1=\{(1,2),(2,3),(3,4),(4,1)\}$</p>
+          <p>$G_2$: $\{a,b,c,d\}$, $E_2=\{(a,c),(c,b),(b,d),(d,a)\}$</p>
+          <p>$f: 1\mapsto a, 2\mapsto c, 3\mapsto b, 4\mapsto d$ ตรวจ: $(1,2)\Rightarrow(a,c)$ &#10003; ทุก edge &#10003; &rarr; $G_1\cong G_2$</p>
         </div>
       </div>
-
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p>กราฟ $G_1=(V_1,E_1)$ และ $G_2=(V_2,E_2)$ <strong>ไอโซมอร์ฟิค</strong> กัน ($G_1 \cong G_2$) หากมี bijection $f: V_1 \to V_2$ ซึ่ง $\{u,v\} \in E_1 \iff \{f(u),f(v)\} \in E_2$</p>
-        <p><strong>Invariants</strong> (ต้องเท่ากันทั้งคู่): $|V|$, $|E|$, degree sequence (เรียงจากน้อยไปมาก)</p>
-      </div>
-
-      <div class="example-box">
-        <div class="example-header"><span>ตัวอย่าง 10.4</span> ตรวจสอบ Isomorphism</div>
-        <div class="graph-container">
-          <div>
-            <p style="text-align:center;font-size:13px;font-weight:700;color:#16a34a">กราฟ $G_1$</p>
-            <svg viewBox="0 0 160 140" width="160" xmlns="http://www.w3.org/2000/svg">
-              <line x1="80" y1="20" x2="30" y2="110" stroke="#64748b" stroke-width="2"/>
-              <line x1="80" y1="20" x2="130" y2="110" stroke="#64748b" stroke-width="2"/>
-              <line x1="30" y1="110" x2="130" y2="110" stroke="#64748b" stroke-width="2"/>
-              <circle cx="80" cy="20" r="14" fill="#16a34a"/>
-              <circle cx="30" cy="110" r="14" fill="#16a34a"/>
-              <circle cx="130" cy="110" r="14" fill="#16a34a"/>
-              <text x="80" y="25" text-anchor="middle" fill="white" font-size="12" font-weight="bold">a</text>
-              <text x="30" y="115" text-anchor="middle" fill="white" font-size="12" font-weight="bold">b</text>
-              <text x="130" y="115" text-anchor="middle" fill="white" font-size="12" font-weight="bold">c</text>
-            </svg>
-          </div>
-          <div style="font-size:28px;color:#16a34a">≅?</div>
-          <div>
-            <p style="text-align:center;font-size:13px;font-weight:700;color:#16a34a">กราฟ $G_2$</p>
-            <svg viewBox="0 0 160 140" width="160" xmlns="http://www.w3.org/2000/svg">
-              <line x1="40" y1="70" x2="120" y2="30" stroke="#64748b" stroke-width="2"/>
-              <line x1="40" y1="70" x2="120" y2="110" stroke="#64748b" stroke-width="2"/>
-              <line x1="120" y1="30" x2="120" y2="110" stroke="#64748b" stroke-width="2"/>
-              <circle cx="40" cy="70" r="14" fill="#0284c7"/>
-              <circle cx="120" cy="30" r="14" fill="#0284c7"/>
-              <circle cx="120" cy="110" r="14" fill="#0284c7"/>
-              <text x="40" y="75" text-anchor="middle" fill="white" font-size="12" font-weight="bold">x</text>
-              <text x="120" y="35" text-anchor="middle" fill="white" font-size="12" font-weight="bold">y</text>
-              <text x="120" y="115" text-anchor="middle" fill="white" font-size="12" font-weight="bold">z</text>
-            </svg>
-          </div>
+      <div id="invariants" class="subsec">
+        <h3>Graph Invariants</h3>
+        <div class="inv-grid">
+          <div class="inv-card"><h5>$|V|$ และ $|E|$</h5><p>จำนวน vertices และ edges ต้องเท่ากัน</p></div>
+          <div class="inv-card"><h5>Degree Sequence</h5><p>ลำดับ degree เรียงน้อย&rarr;มากต้องเหมือนกัน</p></div>
+          <div class="inv-card"><h5>Connectedness</h5><p>จำนวน connected components ต้องเท่ากัน</p></div>
+          <div class="inv-card"><h5>Girth</h5><p>ความยาว cycle สั้นสุดต้องเท่ากัน</p></div>
+          <div class="inv-card"><h5>จำนวน Cycles</h5><p>ต้องเท่ากันสำหรับทุกความยาว $k$</p></div>
+          <div class="inv-card"><h5>Bipartiteness</h5><p>bipartite/non-bipartite ต้องตรงกัน</p></div>
         </div>
-        <div class="solution">
-          ทั้งสอง: $|V|=3,\;|E|=3$, degree sequence $=(2,2,2)$ → <strong>ไอโซมอร์ฟิค</strong> ผ่าน $f(a)=x,\,f(b)=y,\,f(c)=z$
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.4.2</span> พิสูจน์ว่าไม่ Isomorphic</div>
+          <p>$G_1$: degree sequence $(1,1,3,3)$; $G_2$: degree sequence $(2,2,2,2)$</p>
+          <div class="info-box">Degree sequence ต่างกัน &rarr; $G_1\not\cong G_2$ &#8718;</div>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.4.3</span> Invariant เหมือนแต่ยังต้องตรวจต่อ</div>
+          <p>$G_1=C_6$ (วงกลม 6 จุด), $G_2=C_3\cup C_3$ (สองสามเหลี่ยม)</p>
+          <p>ทั้งคู่: $|V|=6$, $|E|=6$, degree sequence $(2,2,2,2,2,2)$ &mdash; เหมือนกันทุกอย่าง</p>
+          <p>แต่: $G_1$ <em>connected</em>, $G_2$ <em>ไม่ connected</em> &rarr; $G_1\not\cong G_2$ &#8718;</p>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 10.5 -->
     <section id="sec105" class="ch-section">
       <div class="section-header" style="--ch-color:#16a34a">
         <span class="sec-num">10.5</span>
-        <div>
-          <h2>Trees</h2>
-          <p>ต้นไม้ — กราฟเชื่อมโยงที่ไม่มีวงจร</p>
+        <div><h2>Trees</h2><p>ต้นไม้ &mdash; connected acyclic graph</p></div>
+      </div>
+      <div id="tree-def" class="subsec">
+        <h3>นิยามต้นไม้</h3>
+        <div class="def-box">
+          <h4>นิยาม: Tree และ Forest</h4>
+          <ul>
+            <li><strong>Tree:</strong> กราฟที่ <strong>connected</strong> และ <strong>acyclic</strong></li>
+            <li><strong>Forest:</strong> กราฟ acyclic (อาจไม่ connected)</li>
+            <li><strong>Leaf:</strong> vertex ที่ $\deg=1$</li>
+          </ul>
         </div>
       </div>
-
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>ต้นไม้ (Tree)</strong> คือกราฟที่ <em>เชื่อมโยง (connected)</em> และ <em>ไม่มี cycle</em></p>
-        <p><strong>ทฤษฎีบท:</strong> ต้นไม้ที่มี $n$ จุดยอดมีขอบพอดี $n-1$ ขอบ</p>
-        <p><strong>Leaf:</strong> จุดยอดที่มี $\deg = 1$ ต้นไม้ที่มี $n \geq 2$ จุดต้องมี leaf อย่างน้อย 2 จุด</p>
-      </div>
-
-      <div class="example-box">
-        <div class="example-header"><span>ตัวอย่าง 10.5</span> โครงสร้าง File System เป็น Tree</div>
-        <ul class="tree-ul">
-          <li>📁 /home
-            <ul class="tree-ul">
-              <li>📁 documents
-                <ul class="tree-ul">
-                  <li>📄 report.pdf</li>
-                  <li>📄 notes.txt</li>
-                </ul>
-              </li>
-              <li>📁 pictures
-                <ul class="tree-ul">
-                  <li>📄 photo.jpg</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
-        <div class="solution">จุดยอด $n=6$ ขอบ $= 5 = n-1$ ✓ ไม่มี cycle ✓ เชื่อมโยง ✓ → เป็น Tree</div>
+      <div id="tree-thm" class="subsec">
+        <h3>ทฤษฎีบทสำคัญของ Tree</h3>
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: สมบัติสมมูลของ Tree</h4>
+          <p>สำหรับ graph $G$ ที่มี $n$ vertices สิ่งต่อไปนี้สมมูลกัน:</p>
+          <ol>
+            <li>$G$ เป็น tree (connected + acyclic)</li>
+            <li>$G$ connected และมี $n-1$ edges</li>
+            <li>$G$ acyclic และมี $n-1$ edges</li>
+            <li>ทุกคู่ vertices มี <strong>unique path</strong> เชื่อมกัน</li>
+          </ol>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.5.1</span> ตรวจสอบว่าเป็น Tree</div>
+          <p>$G$: $V=\{1,2,3,4,5\}$, $E=\{(1,2),(1,3),(3,4),(3,5)\}$</p>
+          <p>$|V|=5$, $|E|=4=n-1$ &#10003;, Connected &#10003; &rarr; <strong>เป็น Tree</strong></p>
+          <div class="graph-container">
+            <svg width="240" height="150" viewBox="0 0 240 150">
+              <line x1="120" y1="25" x2="60" y2="85" stroke="#16a34a" stroke-width="2"/>
+              <line x1="120" y1="25" x2="180" y2="85" stroke="#16a34a" stroke-width="2"/>
+              <line x1="180" y1="85" x2="120" y2="135" stroke="#16a34a" stroke-width="2"/>
+              <line x1="180" y1="85" x2="210" y2="135" stroke="#16a34a" stroke-width="2"/>
+              <circle cx="120" cy="25" r="14" fill="#16a34a"/><text x="120" y="30" text-anchor="middle" fill="white" font-size="12" font-weight="bold">1</text>
+              <circle cx="60" cy="85" r="14" fill="#16a34a"/><text x="60" y="90" text-anchor="middle" fill="white" font-size="12" font-weight="bold">2</text>
+              <circle cx="180" cy="85" r="14" fill="#16a34a"/><text x="180" y="90" text-anchor="middle" fill="white" font-size="12" font-weight="bold">3</text>
+              <circle cx="120" cy="135" r="14" fill="#16a34a"/><text x="120" y="140" text-anchor="middle" fill="white" font-size="12" font-weight="bold">4</text>
+              <circle cx="210" cy="135" r="14" fill="#16a34a"/><text x="210" y="140" text-anchor="middle" fill="white" font-size="12" font-weight="bold">5</text>
+            </svg>
+          </div>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.5.2</span> File System</div>
+          <ul class="tree-ul" style="font-family:monospace">
+            <li>/ (root)
+              <ul class="tree-ul">
+                <li>home/<ul class="tree-ul"><li>user/<ul class="tree-ul"><li>documents/</li><li>downloads/</li></ul></li></ul></li>
+                <li>usr/</li>
+                <li>etc/</li>
+              </ul>
+            </li>
+          </ul>
+          <p>$n=7$ nodes, $|E|=6=n-1$ &#10003;</p>
+        </div>
       </div>
     </section>
 
-    <!-- SECTION 10.6 -->
     <section id="sec106" class="ch-section">
       <div class="section-header" style="--ch-color:#16a34a">
         <span class="sec-num">10.6</span>
-        <div>
-          <h2>Rooted Trees</h2>
-          <p>ต้นไม้มีราก, Binary Tree, Expression Tree</p>
+        <div><h2>Rooted Trees</h2><p>ต้นไม้มีราก, Binary Tree, Traversal</p></div>
+      </div>
+      <div id="rooted-def" class="subsec">
+        <h3>ต้นไม้มีราก</h3>
+        <div class="def-box">
+          <h4>นิยาม: Rooted Tree</h4>
+          <p>Tree ที่กำหนดจุดยอดพิเศษหนึ่งเป็น <strong>root</strong></p>
+          <ul>
+            <li><strong>Parent/Child:</strong> vertex ที่อยู่เหนือ/ใต้โดยตรงบน path จาก root</li>
+            <li><strong>Leaf:</strong> vertex ไม่มี child &nbsp;|&nbsp; <strong>Internal node:</strong> มี child &ge;1 ตัว</li>
+            <li><strong>Level(v):</strong> ความยาว path จาก root ถึง $v$</li>
+            <li><strong>Height:</strong> level สูงสุดของ tree</li>
+          </ul>
         </div>
       </div>
-
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>Rooted Tree:</strong> ต้นไม้ที่กำหนดจุดยอดหนึ่งเป็น <strong>ราก (root)</strong></p>
-        <ul>
-          <li><strong>Parent:</strong> จุดยอดที่อยู่บน | <strong>Child:</strong> จุดยอดที่อยู่ล่างทันที</li>
-          <li><strong>Leaf:</strong> จุดยอดที่ไม่มี child | <strong>Height:</strong> ความยาวเส้นทางยาวที่สุดจาก root ถึง leaf</li>
-          <li><strong>Binary Tree:</strong> Rooted Tree ที่แต่ละจุดมี child ได้ไม่เกิน 2 จุด (left/right)</li>
-        </ul>
+      <div id="binary-tree" class="subsec">
+        <h3>Binary Tree</h3>
+        <div class="def-box">
+          <h4>นิยาม: Binary Tree</h4>
+          <ul>
+            <li><strong>Binary tree:</strong> แต่ละ node มี child &le;2 (left, right)</li>
+            <li><strong>Full binary tree:</strong> ทุก internal node มี child ตรง <em>2</em> ตัว</li>
+            <li><strong>Complete binary tree:</strong> ทุก level เต็ม ยกเว้น level สุดท้ายที่เรียงชิดซ้าย</li>
+          </ul>
+        </div>
+        <div class="thm-box">
+          <h4>ทฤษฎีบท: Full Binary Tree</h4>
+          <p>Full binary tree ที่มี $i$ internal nodes มี $i+1$ leaves และ $2i+1$ nodes รวม</p>
+          <p>Binary tree สูง $h$: leaves $\le 2^h$, nodes $\le 2^{h+1}-1$</p>
+        </div>
       </div>
-
-      <div class="example-box">
-        <div class="example-header"><span>ตัวอย่าง 10.6</span> Expression Tree สำหรับ $(a+b) \cdot c$</div>
-        <svg class="graph-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-          <!-- Root: × -->
-          <line x1="150" y1="40" x2="90" y2="110" stroke="#64748b" stroke-width="2"/>
-          <line x1="150" y1="40" x2="230" y2="110" stroke="#64748b" stroke-width="2"/>
-          <!-- Left child: + -->
-          <line x1="90" y1="110" x2="50" y2="170" stroke="#64748b" stroke-width="2"/>
-          <line x1="90" y1="110" x2="130" y2="170" stroke="#64748b" stroke-width="2"/>
-          <!-- Nodes -->
-          <circle cx="150" cy="40" r="20" fill="#16a34a"/>
-          <circle cx="90" cy="110" r="20" fill="#059669"/>
-          <circle cx="230" cy="110" r="20" fill="#16a34a"/>
-          <circle cx="50" cy="170" r="20" fill="#6b7280"/>
-          <circle cx="130" cy="170" r="20" fill="#6b7280"/>
-          <text x="150" y="46" text-anchor="middle" fill="white" font-size="16" font-weight="bold">×</text>
-          <text x="90" y="116" text-anchor="middle" fill="white" font-size="16" font-weight="bold">+</text>
-          <text x="230" y="116" text-anchor="middle" fill="white" font-size="16" font-weight="bold">c</text>
-          <text x="50" y="176" text-anchor="middle" fill="white" font-size="14" font-weight="bold">a</text>
-          <text x="130" y="176" text-anchor="middle" fill="white" font-size="14" font-weight="bold">b</text>
-        </svg>
-        <div class="solution">
-          Root = ×, height = 2, leaves = {a, b, c}<br>
-          การคำนวณ Postorder: $a,\,b,\,+,\,c,\,\times$ (Reverse Polish Notation)
+      <div id="traversal" class="subsec">
+        <h3>Tree Traversal</h3>
+        <div class="def-box">
+          <h4>นิยาม: Traversal 3 แบบ</h4>
+          <ul>
+            <li><strong>Preorder:</strong> Root &rarr; Left &rarr; Right</li>
+            <li><strong>Inorder:</strong> Left &rarr; Root &rarr; Right (ได้ sorted order สำหรับ BST)</li>
+            <li><strong>Postorder:</strong> Left &rarr; Right &rarr; Root</li>
+          </ul>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.6.1</span> Expression Tree สำหรับ $(a+b)\times(c-d)$</div>
+          <div class="graph-container">
+            <svg width="280" height="190" viewBox="0 0 280 190">
+              <line x1="140" y1="28" x2="75" y2="88" stroke="#16a34a" stroke-width="2"/>
+              <line x1="140" y1="28" x2="205" y2="88" stroke="#16a34a" stroke-width="2"/>
+              <line x1="75" y1="88" x2="40" y2="148" stroke="#16a34a" stroke-width="2"/>
+              <line x1="75" y1="88" x2="110" y2="148" stroke="#16a34a" stroke-width="2"/>
+              <line x1="205" y1="88" x2="170" y2="148" stroke="#16a34a" stroke-width="2"/>
+              <line x1="205" y1="88" x2="240" y2="148" stroke="#16a34a" stroke-width="2"/>
+              <circle cx="140" cy="28" r="17" fill="#15803d"/><text x="140" y="34" text-anchor="middle" fill="white" font-size="15" font-weight="bold">&#x00D7;</text>
+              <circle cx="75" cy="88" r="17" fill="#15803d"/><text x="75" y="94" text-anchor="middle" fill="white" font-size="15" font-weight="bold">+</text>
+              <circle cx="205" cy="88" r="17" fill="#15803d"/><text x="205" y="94" text-anchor="middle" fill="white" font-size="15" font-weight="bold">&#x2212;</text>
+              <circle cx="40" cy="148" r="14" fill="#16a34a"/><text x="40" y="153" text-anchor="middle" fill="white" font-size="12" font-weight="bold">a</text>
+              <circle cx="110" cy="148" r="14" fill="#16a34a"/><text x="110" y="153" text-anchor="middle" fill="white" font-size="12" font-weight="bold">b</text>
+              <circle cx="170" cy="148" r="14" fill="#16a34a"/><text x="170" y="153" text-anchor="middle" fill="white" font-size="12" font-weight="bold">c</text>
+              <circle cx="240" cy="148" r="14" fill="#16a34a"/><text x="240" y="153" text-anchor="middle" fill="white" font-size="12" font-weight="bold">d</text>
+            </svg>
+          </div>
+          <ul>
+            <li><strong>Preorder (prefix):</strong> $\times\ +\ a\ b\ -\ c\ d$</li>
+            <li><strong>Inorder (infix):</strong> $a+b\times c-d$</li>
+            <li><strong>Postorder (RPN):</strong> $a\ b+\ c\ d-\ \times$</li>
+          </ul>
+        </div>
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 10.6.2</span> Binary Search Tree (BST)</div>
+          <p>BST: ทุก node ใน left subtree $&lt;$ root $&lt;$ ทุก node ใน right subtree</p>
+          <p>ใส่ $\{5,3,7,1,4,6,8\}$: Inorder traversal ได้ $1,3,4,5,6,7,8$ (sorted) &#10003;</p>
+          <p>Search/Insert/Delete ใน balanced BST: $O(\log n)$</p>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 10.7 -->
     <section id="sec107" class="ch-section">
       <div class="section-header" style="--ch-color:#16a34a">
         <span class="sec-num">10.7</span>
-        <div>
-          <h2>Spanning Trees &amp; Shortest Paths</h2>
-          <p>Kruskal's Algorithm, Dijkstra's Algorithm</p>
+        <div><h2>Spanning Trees and Shortest Paths</h2><p>MST, Kruskal's Algorithm, Dijkstra's Algorithm</p></div>
+      </div>
+      <div id="spanning" class="subsec">
+        <h3>Spanning Tree และ MST</h3>
+        <div class="def-box">
+          <h4>นิยาม: Spanning Tree และ MST</h4>
+          <ul>
+            <li><strong>Spanning tree:</strong> subgraph ที่เป็น tree และมีทุก vertex ($n$ vertices, $n-1$ edges)</li>
+            <li><strong>Minimum spanning tree (MST):</strong> spanning tree ที่ผลรวมน้ำหนัก edges น้อยที่สุด</li>
+          </ul>
+        </div>
+        <div class="key-box">
+          <h4>MST ใช้ทำอะไร?</h4>
+          <ul>
+            <li>วางสายโทรศัพท์/ไฟฟ้าเชื่อมทุกเมืองด้วยต้นทุนน้อยที่สุด</li>
+            <li>Cluster analysis ใน machine learning</li>
+            <li>Network routing protocols (OSPF, STP)</li>
+          </ul>
         </div>
       </div>
-
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>Spanning Tree</strong> ของกราฟ $G$ คือ subgraph ที่เป็น tree และมีจุดยอดครบทุกจุดของ $G$</p>
-        <p><strong>Minimum Spanning Tree (MST):</strong> Spanning Tree ที่น้ำหนักรวมของขอบน้อยที่สุด (สำหรับ weighted graph)</p>
-      </div>
-
-      <div class="subsec">
+      <div id="kruskal" class="subsec">
         <h3>Kruskal's Algorithm</h3>
-        <div class="info-box">เรียงขอบตามน้ำหนัก จากน้อยไปมาก เพิ่มขอบเข้า MST ทีละขอบหากไม่สร้าง cycle</div>
-
+        <div class="def-box">
+          <h4>อัลกอริทึม Kruskal (1956) &mdash; Greedy MST</h4>
+          <ol>
+            <li>เรียง edges ทุกเส้นตามน้ำหนักจากน้อยไปมาก</li>
+            <li>วน: เพิ่ม edge เบาที่สุดที่ยัง<em>ไม่ก่อ cycle</em>เข้า MST</li>
+            <li>หยุดเมื่อได้ $n-1$ edges</li>
+          </ol>
+          <p>ใช้ <strong>Union-Find</strong> ตรวจ cycle &mdash; $O(E\log E)$</p>
+        </div>
         <div class="example-box">
-          <div class="example-header"><span>ตัวอย่าง 10.7a</span> Kruskal บน weighted graph 5 จุด</div>
-          <p>ขอบทั้งหมด (เรียงตามน้ำหนัก): A-B:1, C-D:2, A-C:3, B-C:4, B-D:5, D-E:6</p>
-          <table class="step-table">
-            <tr><th>ขั้น</th><th>ขอบที่พิจารณา</th><th>น้ำหนัก</th><th>เพิ่ม MST?</th><th>เหตุผล</th></tr>
-            <tr><td>1</td><td>A–B</td><td>1</td><td>✅ ใช่</td><td>ไม่สร้าง cycle</td></tr>
-            <tr><td>2</td><td>C–D</td><td>2</td><td>✅ ใช่</td><td>ไม่สร้าง cycle</td></tr>
-            <tr><td>3</td><td>A–C</td><td>3</td><td>✅ ใช่</td><td>ไม่สร้าง cycle</td></tr>
-            <tr class="highlight"><td>4</td><td>B–C</td><td>4</td><td>❌ ไม่</td><td>A-B-C ทำให้เกิด cycle</td></tr>
-            <tr><td>5</td><td>D–E</td><td>6</td><td>✅ ใช่</td><td>ครบ 4 ขอบ = MST สมบูรณ์</td></tr>
+          <div class="example-header"><span>ตัวอย่าง 10.7.1</span> Kruskal บนกราฟ 5 จุดยอด</div>
+          <p>$V=\{A,B,C,D,E\}$, edges เรียงตามน้ำหนักแล้ว:</p>
+          <table class="algo-table">
+            <thead><tr><th>ขั้น</th><th>Edge</th><th>น้ำหนัก</th><th>ก่อ Cycle?</th><th>ผล</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>(A,B)</td><td>1</td><td>ไม่</td><td class="accepted">&#10003; เพิ่มเข้า MST</td></tr>
+              <tr><td>2</td><td>(B,C)</td><td>2</td><td>ไม่</td><td class="accepted">&#10003; เพิ่มเข้า MST</td></tr>
+              <tr><td>3</td><td>(A,C)</td><td>3</td><td>ใช่ (A&ndash;B&ndash;C&ndash;A)</td><td class="rejected">&#10007; ข้าม</td></tr>
+              <tr><td>4</td><td>(B,D)</td><td>4</td><td>ไม่</td><td class="accepted">&#10003; เพิ่มเข้า MST</td></tr>
+              <tr><td>5</td><td>(C,D)</td><td>5</td><td>ใช่ (B&ndash;C&ndash;D&ndash;B)</td><td class="rejected">&#10007; ข้าม</td></tr>
+              <tr><td>6</td><td>(C,E)</td><td>6</td><td>ไม่</td><td class="accepted">&#10003; เพิ่ม (ครบ 4 edges)</td></tr>
+            </tbody>
           </table>
-          <div class="solution">MST: {A-B, C-D, A-C, D-E} น้ำหนักรวม $= 1+2+3+6 = 12$</div>
+          <p><strong>MST:</strong> $(A,B),(B,C),(B,D),(C,E)$, น้ำหนักรวม $=1+2+4+6=13$</p>
         </div>
       </div>
-
-      <div class="subsec">
-        <h3>Dijkstra's Algorithm</h3>
-        <div class="info-box">หาเส้นทางสั้นที่สุดจาก source ไปยังจุดยอดอื่น ทำงานบน weighted graph ที่น้ำหนักไม่ติดลบ</div>
-
-        <ol class="algo-steps">
-          <li>กำหนดระยะ $d(s)=0$ สำหรับ source $s$ และ $d(v)=\infty$ ทุกจุดอื่น</li>
-          <li>เลือกจุดยอด $u$ ที่ยังไม่ได้ visit และมี $d(u)$ น้อยที่สุด</li>
-          <li>สำหรับทุก neighbor $v$ ของ $u$: ถ้า $d(u)+w(u,v) < d(v)$ แล้ว update $d(v)$</li>
-          <li>ทำเครื่องหมาย $u$ ว่า visited แล้วกลับขั้น 2</li>
-          <li>หยุดเมื่อ visited ทุกจุดหรือถึงจุดหมาย</li>
-        </ol>
-
+      <div id="dijkstra" class="subsec">
+        <h3>Dijkstra's Shortest Path Algorithm</h3>
+        <div class="def-box">
+          <h4>อัลกอริทึม Dijkstra (1959)</h4>
+          <ol>
+            <li>$d[s]=0$, $d[v]=\infty$ สำหรับ $v\ne s$</li>
+            <li>เลือก unvisited vertex $u$ ที่ $d[u]$ น้อยที่สุด</li>
+            <li>สำหรับ neighbor $v$: ถ้า $d[u]+w(u,v)&lt;d[v]$ &rarr; อัปเดต $d[v]$ (<strong>Relaxation</strong>)</li>
+            <li>ทำเครื่องหมาย $u$ visited แล้ววนซ้ำ</li>
+          </ol>
+          <p><strong>ความซับซ้อน:</strong> $O((V+E)\log V)$ ด้วย min-heap &nbsp;|&nbsp; <strong>ข้อจำกัด:</strong> ต้องการ edge weight &ge;0</p>
+        </div>
         <div class="example-box">
-          <div class="example-header"><span>ตัวอย่าง 10.7b</span> Dijkstra จาก A บน 4 จุดยอด</div>
-          <p>ขอบ: A-B:4, A-C:2, C-B:1, C-D:5, B-D:1</p>
+          <div class="example-header"><span>ตัวอย่าง 10.7.2</span> Dijkstra จาก $A$</div>
+          <p>Edges: $(A,B,4),(A,C,2),(B,D,3),(C,B,1),(C,D,5),(D,E,1)$</p>
           <table class="step-table">
-            <tr><th>Visit</th><th>d(A)</th><th>d(B)</th><th>d(C)</th><th>d(D)</th></tr>
-            <tr><td>เริ่มต้น</td><td>0</td><td>∞</td><td>∞</td><td>∞</td></tr>
-            <tr><td>A</td><td>0</td><td>4</td><td>2</td><td>∞</td></tr>
-            <tr><td>C</td><td>0</td><td>3</td><td>2</td><td>7</td></tr>
-            <tr class="highlight"><td>B</td><td>0</td><td>3</td><td>2</td><td>4</td></tr>
-            <tr><td>D</td><td>0</td><td>3</td><td>2</td><td>4</td></tr>
+            <thead><tr><th>Step</th><th>Visit</th><th>d[A]</th><th>d[B]</th><th>d[C]</th><th>d[D]</th><th>d[E]</th></tr></thead>
+            <tbody>
+              <tr><td>init</td><td>&mdash;</td><td class="current">0</td><td>&#x221E;</td><td>&#x221E;</td><td>&#x221E;</td><td>&#x221E;</td></tr>
+              <tr><td>1</td><td>A</td><td>0</td><td>4</td><td class="current">2</td><td>&#x221E;</td><td>&#x221E;</td></tr>
+              <tr><td>2</td><td>C</td><td>0</td><td class="current">3</td><td>2</td><td>7</td><td>&#x221E;</td></tr>
+              <tr><td>3</td><td>B</td><td>0</td><td>3</td><td>2</td><td class="current">6</td><td>&#x221E;</td></tr>
+              <tr><td>4</td><td>D</td><td>0</td><td>3</td><td>2</td><td>6</td><td class="current">7</td></tr>
+              <tr><td>5</td><td>E</td><td>0</td><td>3</td><td>2</td><td>6</td><td>7</td></tr>
+            </tbody>
           </table>
-          <div class="solution">
-            เส้นทางสั้นสุด: A→C→B→D มีระยะ $2+1+1=4$
-          </div>
+          <p><strong>เส้นทางสั้นสุด:</strong> $A\to C$ (2), $A\to C\to B$ (3), $A\to C\to B\to D$ (6), $A\to C\to B\to D\to E$ (7)</p>
+        </div>
+        <div class="highlight-box">
+          <strong>Kruskal vs Dijkstra:</strong>
+          Kruskal &rarr; <strong>MST</strong> (ต้นไม้แผ่ทั่วน้ำหนักน้อยสุด) &nbsp;|&nbsp;
+          Dijkstra &rarr; <strong>Shortest Path</strong> (เส้นทางสั้นสุดจากจุดเริ่มต้นหนึ่งจุด)
         </div>
       </div>
     </section>
 
-    <!-- SUMMARY -->
     <section id="summary" class="ch-section">
-      <h2 style="font-size:22px;font-weight:700;color:var(--primary);margin-bottom:20px">สรุปบทที่ 10</h2>
+      <h2 style="font-size:22px;font-weight:700;color:var(--primary);margin-bottom:24px">สรุปบทที่ 10</h2>
       <div class="summary-grid">
-        <div class="summary-card">
-          <h4>กราฟพื้นฐาน</h4>
-          <ul>
-            <li>$G=(V,E)$, $\deg(v)$, Handshaking Lemma</li>
-            <li>$K_n$, $K_{m,n}$, $C_n$</li>
-            <li>Adjacency Matrix: $n\times n$, symmetric</li>
-            <li>Isomorphism: $|V|$, $|E|$, degree sequence</li>
-          </ul>
-        </div>
-        <div class="summary-card">
-          <h4>เส้นทาง</h4>
-          <ul>
-            <li>Walk → Trail → Path</li>
-            <li>Euler circuit: connected + all even deg</li>
-            <li>Euler path: exactly 2 odd-deg vertices</li>
-            <li>Hamiltonian: NP-complete (ไม่มีเงื่อนไขง่าย)</li>
-          </ul>
-        </div>
-        <div class="summary-card">
-          <h4>ต้นไม้</h4>
-          <ul>
-            <li>Tree: connected + acyclic, $|E|=n-1$</li>
-            <li>Rooted tree: root, parent, child, leaf, height</li>
-            <li>Binary tree: child ≤ 2 ต่อจุด</li>
-            <li>MST: Kruskal (greedy ตามน้ำหนักขอบ)</li>
-            <li>Shortest path: Dijkstra (non-negative weights)</li>
-          </ul>
-        </div>
+        <div class="summary-card"><h4>10.1 Graph Basics</h4><ul><li>$G=(V,E)$, simple/multi/pseudo/digraph</li><li>Handshaking: $\sum\deg=2|E|$</li><li>$K_n, K_{m,n}, C_n, P_n$</li></ul></div>
+        <div class="summary-card"><h4>10.2 Trails &amp; Circuits</h4><ul><li>Path $\subset$ Trail $\subset$ Walk</li><li>Euler circuit &hArr; ทุก degree คู่</li><li>Hamiltonian = NP-complete</li></ul></div>
+        <div class="summary-card"><h4>10.3&ndash;10.4 Matrix &amp; Iso</h4><ul><li>Adjacency matrix $A$; $(A^k)_{ij}$ = walks ยาว $k$</li><li>Isomorphism: bijection อนุรักษ์ adjacency</li><li>Invariants: $|V|$, $|E|$, degree sequence</li></ul></div>
+        <div class="summary-card"><h4>10.5&ndash;10.6 Trees</h4><ul><li>Tree = connected + acyclic, $n-1$ edges</li><li>Full binary tree: $i$ internal &rarr; $i+1$ leaves</li><li>Preorder/Inorder/Postorder</li></ul></div>
+        <div class="summary-card"><h4>10.7 Algorithms</h4><ul><li>Kruskal: MST $O(E\log E)$</li><li>Dijkstra: shortest path $O((V+E)\log V)$</li><li>Dijkstra ต้องการ non-negative weights</li></ul></div>
       </div>
     </section>
 
-    <!-- EXERCISES -->
     <section id="exercises" class="ch-section">
       <h2 style="font-size:22px;font-weight:700;color:var(--primary);margin-bottom:20px">แบบฝึกหัดแนะนำ</h2>
       <div class="exercises-list">
-        <div class="exercise-item">
-          <div class="ex-num">10.1</div>
-          <div class="ex-content">กราฟ $G$ มีจุดยอด 6 จุด และ $\sum \deg(v) = 18$ จงหาจำนวนขอบของ $G$</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-num">10.2</div>
-          <div class="ex-content">กราฟ $K_5$ มีกี่ขอบ? และผลรวมดีกรีทั้งหมดเท่ากับเท่าไหร่?</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-num">10.3</div>
-          <div class="ex-content">กำหนด Adjacency Matrix ขนาด $4\times 4$ ให้เขียนกราฟออกมา และบอกว่ามี Euler Circuit หรือไม่ พร้อมเหตุผล</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-num">10.4</div>
-          <div class="ex-content">จงพิสูจน์ว่า ต้นไม้ที่มี $n$ จุดยอดมีขอบ $n-1$ ขอบ โดยใช้ Mathematical Induction</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-num">10.5</div>
-          <div class="ex-content">จงวาด Expression Tree สำหรับนิพจน์ $(x \cdot y) + (z - w)$ และเขียน Postorder traversal</div>
-        </div>
-        <div class="exercise-item">
-          <div class="ex-num">10.6</div>
-          <div class="ex-content">ใช้ Kruskal's Algorithm หา MST ของกราฟที่มีขอบ: A-B:7, A-D:5, B-C:8, B-D:9, B-E:7, C-E:5, D-E:15, D-F:6, E-F:8, E-G:9, F-G:11</div>
-        </div>
+        <div class="exercise-item"><div class="ex-num">10.1</div><div class="ex-content">กราฟ $G$ มี 6 จุดยอด degree sequence $(1,2,2,3,3,3)$ จงหาจำนวน edges และพิสูจน์ว่า degree sequence นี้เป็นไปได้หรือไม่</div></div>
+        <div class="exercise-item"><div class="ex-num">10.2</div><div class="ex-content">จงพิจารณาว่ากราฟต่อไปนี้มี Euler circuit, Euler path, หรือไม่มีทั้งคู่: (a) $K_5$ (b) $K_6$ (c) $K_{3,3}$ (d) $C_7$</div></div>
+        <div class="exercise-item"><div class="ex-num">10.3</div><div class="ex-content">เขียน adjacency matrix $A$ ของ $K_{3,3}$ และคำนวณ $A^2$ แล้วตีความว่า $(A^2)[i][j]$ หมายความว่าอะไร</div></div>
+        <div class="exercise-item"><div class="ex-num">10.4</div><div class="ex-content">$G_1$: $P_4$ (path graph 4 จุด) และ $G_2$: $V=\{a,b,c,d\}$, $E=\{(a,b),(b,d),(d,c)\}$ จงพิสูจน์หรือหักล้างว่า $G_1\cong G_2$</div></div>
+        <div class="exercise-item"><div class="ex-num">10.5</div><div class="ex-content">ใช้ Kruskal's algorithm หา MST ของกราฟ: $V=\{1,2,3,4,5\}$, edges $(1,2,6),(1,3,1),(2,3,5),(2,4,3),(3,4,4),(3,5,2),(4,5,7)$ แสดงขั้นตอนทุก step และน้ำหนักรวม</div></div>
+        <div class="exercise-item"><div class="ex-num">10.6</div><div class="ex-content">ใช้ Dijkstra's algorithm หาเส้นทางสั้นสุดจาก $S$ บนกราฟ: $V=\{S,A,B,C,D\}$, edges $(S,A,10),(S,B,3),(A,C,2),(B,A,4),(B,C,8),(C,D,5),(A,D,7)$ แสดงตาราง iteration ทุก step</div></div>
       </div>
     </section>
 
+    <div style="display:flex;justify-content:space-between;margin-top:40px">
+      <a href="chapter9.html" class="nav-btn prev-btn" style="text-decoration:none">&larr; บทที่ 9</a>
+      <a href="chapter11.html" class="nav-btn next-btn" style="text-decoration:none">บทที่ 11 &rarr;</a>
+    </div>
   </main>
 </div>
 
-<footer style="background:#1e293b;color:#94a3b8;text-align:center;padding:24px;font-size:14px;margin-top:40px">
-  <p>Discrete Mathematics · KMUTNB · 1/2569 &nbsp;|&nbsp; บทที่ 10: Graphs and Trees</p>
+<footer>
+  <p><strong>คณิตศาสตร์ไม่ต่อเนื่อง (Discrete Mathematics)</strong></p>
+  <p>รศ.ดร.อนุชิต จิตพัฒนกุล &middot; ภาควิชาคณิตศาสตร์ คณะวิทยาศาสตร์ประยุกต์ &middot; มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</p>
+  <p>ภาคการศึกษาที่ 1 ปีการศึกษา 2569 &middot; เนื้อหาจาก <em>Discrete Mathematics with Applications</em> &mdash; Susanna S. Epp</p>
 </footer>
-
 <script>
-  const menuToggle = document.getElementById('menu-toggle');
-  const sidebar = document.getElementById('ch-sidebar');
-  if (menuToggle && sidebar) {
-    menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
-    document.addEventListener('click', e => {
-      if (!sidebar.contains(e.target) && e.target !== menuToggle) sidebar.classList.remove('open');
-    });
-  }
-
-  // Sidebar active link on scroll
-  const sections = document.querySelectorAll('.ch-section[id]');
-  const tocLinks = document.querySelectorAll('.ch-toc a');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        tocLinks.forEach(a => a.classList.remove('active'));
-        const active = document.querySelector(`.ch-toc a[href="#${entry.target.id}"]`);
-        if (active) active.classList.add('active');
-      }
-    });
-  }, { rootMargin: '-20% 0px -70% 0px' });
-  sections.forEach(s => observer.observe(s));
+  document.getElementById('menu-toggle').addEventListener('click',()=>{document.getElementById('ch-sidebar').classList.toggle('open');});
+  const sections=document.querySelectorAll('.ch-section,.subsec');
+  const tocLinks=document.querySelectorAll('.ch-toc a');
+  window.addEventListener('scroll',()=>{
+    let current='';
+    sections.forEach(s=>{if(s.id&&window.scrollY>=s.getBoundingClientRect().top+window.scrollY-90)current=s.id;});
+    tocLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+current));
+  });
 </script>
-
 </body>
 </html>

@@ -15,13 +15,138 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
   <style>
-    .pascal-table { border-collapse:collapse; text-align:center; margin:16px auto; }
-    .pascal-table td { width:36px; height:36px; font-size:13px; font-weight:600; border-radius:50%; background:#fff7ed; color:#ea580c; }
-    .count-compare { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
-    .count-card { border:2px solid #ea580c; border-radius:10px; padding:14px; background:white; }
-    .count-card h5 { color:#ea580c; font-size:13px; font-weight:700; margin-bottom:6px; }
-    .count-card p { font-size:13px; line-height:1.6; }
-    .prob-formula { background:#fff7ed; border:1px solid #fed7aa; border-radius:8px; padding:12px 16px; margin:12px 0; font-size:15px; text-align:center; }
+    .proof-box {
+      background: #fff7ed;
+      border: 2px solid #ea580c;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 16px 0;
+    }
+    .proof-box .proof-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #c2410c;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proof-step {
+      margin: 10px 0;
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+    .proof-step.assume   { background: #f0fdf4; border-left: 4px solid #16a34a; }
+    .proof-step.derive   { background: #eff6ff; border-left: 4px solid #2563eb; }
+    .proof-step.conclude { background: #fff7ed; border-left: 4px solid #ea580c; }
+    .proof-step h5 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .proof-step.assume h5   { color: #15803d; }
+    .proof-step.derive h5   { color: #1d4ed8; }
+    .proof-step.conclude h5 { color: #c2410c; }
+    .proof-step p { font-size: 14px; line-height: 1.7; margin: 4px 0; }
+    .qed { text-align: right; font-style: italic; color: #c2410c; font-weight: 600; margin-top: 8px; }
+
+    /* Pascal's triangle */
+    .pascal-table {
+      border-collapse: separate;
+      border-spacing: 4px;
+      margin: 16px auto;
+      text-align: center;
+    }
+    .pascal-table td {
+      width: 44px; height: 44px;
+      background: #ea580c;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: 700;
+      vertical-align: middle;
+    }
+    .pascal-table td.p-gap {
+      background: transparent;
+      width: 10px;
+    }
+
+    /* count-compare table */
+    .count-compare {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 14px 0;
+    }
+    .count-compare th {
+      background: #ea580c;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .count-compare td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #fed7aa;
+      vertical-align: top;
+    }
+    .count-compare tr:nth-child(even) td { background: #fff7ed; }
+
+    /* count-card */
+    .count-card {
+      background: #fff;
+      border: 1px solid #fdba74;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 10px 0;
+      box-shadow: 0 2px 6px rgba(234,88,12,.08);
+    }
+    .count-card h5 { color: #c2410c; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+
+    /* prob-formula highlight */
+    .prob-formula {
+      background: #fff7ed;
+      border: 2px solid #fdba74;
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin: 14px 0;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    /* tree diagram */
+    .tree-diagram {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: #fff7ed;
+      border: 2px solid #ea580c;
+      border-radius: 10px;
+      padding: 18px 24px;
+      margin: 14px 0;
+      line-height: 1.9;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .tree-diagram .t-root   { color: #c2410c; font-weight: 700; }
+    .tree-diagram .t-branch { color: #ea580c; }
+    .tree-diagram .t-leaf   { color: #9a3412; }
+
+    /* generic chapter table */
+    .ch-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+    .ch-table th {
+      background: #ea580c;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .ch-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #fed7aa;
+      vertical-align: top;
+    }
+    .ch-table tr:nth-child(even) td { background: #fff7ed; }
   </style>
 </head>
 <body>
@@ -57,390 +182,1079 @@
 
 <div class="ch-layout">
 
+  <!-- ── SIDEBAR ── -->
   <aside class="ch-sidebar" id="ch-sidebar">
     <div class="ch-sidebar-inner">
       <h4>เนื้อหาบทนี้</h4>
       <ul class="ch-toc">
         <li><a href="#overview">ภาพรวม</a></li>
-        <li><a href="#sec91">9.1 Introduction</a></li>
-        <li><a href="#sec92">9.2 Multiplication Rule &amp; Permutations</a></li>
-        <li><a href="#sec93">9.3 Addition Rule</a></li>
-        <li><a href="#sec94">9.4 Pigeonhole Principle</a></li>
-        <li><a href="#sec95">9.5 Combinations</a></li>
-        <li><a href="#sec96">9.6 r-Combinations with Repetition</a></li>
-        <li><a href="#sec97">9.7 Pascal's Formula &amp; Binomial Theorem</a></li>
-        <li><a href="#sec98">9.8 Probability Axioms</a></li>
-        <li><a href="#sec99">9.9 Conditional Probability &amp; Bayes</a></li>
+        <li><a href="#sec91">9.1 Introduction</a>
+          <ul>
+            <li><a href="#sample-space">Sample Space และ Event</a></li>
+            <li><a href="#counting-intro">เทคนิคการนับเบื้องต้น</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec92">9.2 Possibility Trees &amp; Multiplication</a>
+          <ul>
+            <li><a href="#mult-rule">Multiplication Rule</a></li>
+            <li><a href="#permutations">Permutations P(n,r)</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec93">9.3 Addition Rule</a>
+          <ul>
+            <li><a href="#add-disjoint">Addition Rule (Disjoint)</a></li>
+            <li><a href="#incl-excl">Inclusion-Exclusion</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec94">9.4 Pigeonhole Principle</a>
+          <ul>
+            <li><a href="#pigeonhole-basic">หลักรังนก (Basic)</a></li>
+            <li><a href="#pigeonhole-gen">Generalized Pigeonhole</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec95">9.5 Combinations</a>
+          <ul>
+            <li><a href="#comb-def">C(n,r) — "n choose r"</a></li>
+            <li><a href="#comb-props">สมบัติของ C(n,r)</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec96">9.6 r-Combinations with Repetition</a>
+          <ul>
+            <li><a href="#multiset">Stars and Bars</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec97">9.7 Pascal's Formula &amp; Binomial Theorem</a>
+          <ul>
+            <li><a href="#pascal-id">Pascal's Identity</a></li>
+            <li><a href="#pascal-triangle">Pascal's Triangle</a></li>
+            <li><a href="#binomial-thm">Binomial Theorem</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec98">9.8 Probability &amp; Expected Value</a>
+          <ul>
+            <li><a href="#prob-axioms">Kolmogorov Axioms</a></li>
+            <li><a href="#expected-value">Expected Value E[X]</a></li>
+          </ul>
+        </li>
+        <li><a href="#sec99">9.9 Conditional Probability &amp; Bayes</a>
+          <ul>
+            <li><a href="#cond-prob">Conditional Probability</a></li>
+            <li><a href="#independence">Independence</a></li>
+            <li><a href="#bayes">Bayes' Theorem</a></li>
+          </ul>
+        </li>
         <li><a href="#summary">สรุปบทที่ 9</a></li>
         <li><a href="#exercises">แบบฝึกหัดแนะนำ</a></li>
       </ul>
     </div>
   </aside>
 
+  <!-- ── MAIN CONTENT ── -->
   <main class="ch-content">
 
     <!-- OVERVIEW -->
     <section id="overview" class="ch-section">
       <div class="overview-card">
         <h2>ภาพรวมบทที่ 9</h2>
-        <p>บทนี้ครอบคลุม <strong>การนับ (Counting)</strong> และ <strong>ความน่าจะเป็น (Probability)</strong> ซึ่งเป็นเครื่องมือสำคัญในการวิเคราะห์อัลกอริทึม การเข้ารหัส และ AI ตั้งแต่กฎการคูณ การเรียงสับเปลี่ยน การจัดหมู่ หลักรังนกพิราบ ทฤษฎีบททวินาม ไปจนถึงทฤษฎีความน่าจะเป็นและ Bayes</p>
+        <p>บทนี้ศึกษา <strong>การนับ (Counting / Combinatorics)</strong> และ <strong>ความน่าจะเป็น (Probability)</strong> ซึ่งเป็นพื้นฐานสำคัญของวิทยาการคอมพิวเตอร์ตั้งแต่การวิเคราะห์ความซับซ้อนของอัลกอริทึม การออกแบบ Hash Function ไปจนถึงการเรียนรู้ของเครื่อง เราเริ่มจาก Multiplication Rule และต้นไม้ความเป็นไปได้ แล้วขยับไปสู่ Permutations, Combinations, หลักรังนก, สูตร Binomial และปิดท้ายด้วยทฤษฎีความน่าจะเป็นและทฤษฎีบท Bayes</p>
         <div class="overview-grid">
           <div class="overview-item">
-            <span class="ov-icon">✖</span>
-            <strong>9.1–9.3 กฎการนับ</strong>
-            <p>กฎการคูณ กฎการบวก การเรียงสับเปลี่ยน $P(n,r)$</p>
+            <span class="ov-icon">×</span>
+            <strong>9.1–9.2 Counting Rules</strong>
+            <p>Multiplication Rule, Possibility Trees, Permutations $P(n,r) = \frac{n!}{(n-r)!}$</p>
           </div>
           <div class="overview-item">
-            <span class="ov-icon">🐦</span>
-            <strong>9.4–9.6 Pigeonhole &amp; Combinations</strong>
-            <p>หลักรังนกพิราบ $C(n,r)$ การจัดหมู่ซ้ำ $C(n+r-1,r)$</p>
+            <span class="ov-icon">∪</span>
+            <strong>9.3–9.4 Addition &amp; Pigeonhole</strong>
+            <p>Addition Rule, Inclusion-Exclusion $|A \cup B|$, หลักรังนก</p>
           </div>
           <div class="overview-item">
-            <span class="ov-icon">△</span>
-            <strong>9.7 Pascal &amp; Binomial</strong>
-            <p>สามเหลี่ยม Pascal ทฤษฎีบททวินาม $(x+y)^n$</p>
+            <span class="ov-icon">C</span>
+            <strong>9.5–9.7 Combinations</strong>
+            <p>$C(n,r)$, Multisets, Pascal's Identity, Binomial Theorem</p>
           </div>
           <div class="overview-item">
-            <span class="ov-icon">𝑃</span>
+            <span class="ov-icon">P</span>
             <strong>9.8–9.9 Probability</strong>
-            <p>Axioms ความน่าจะเป็น ค่าคาดหวัง Bayes' Theorem</p>
+            <p>Kolmogorov Axioms, $E[X]$, Conditional Probability, Bayes</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 9.1 -->
+    <!-- ═══ 9.1 ═══════════════════════════════════════════════════ -->
     <section id="sec91" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">9.1</span>
         <div>
           <h2>Introduction to Counting</h2>
-          <p>แนวคิดเบื้องต้น: sample space และ events</p>
+          <p>Sample Space, Event และเทคนิคการนับเบื้องต้น</p>
         </div>
       </div>
 
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>Sample Space (ปริภูมิตัวอย่าง)</strong> $\Omega$ คือเซตของผลลัพธ์ทั้งหมดที่เป็นไปได้ของการทดลอง <strong>Event (เหตุการณ์)</strong> $A$ คือเซตย่อย $A \subseteq \Omega$ การนับพื้นฐานตอบคำถามว่า "มีวิธีทั้งหมดกี่แบบ?"</p>
+      <div id="sample-space" class="subsec">
+        <h3>Sample Space และ Event</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Sample Space และ Event</h4>
+          <p>ในการทดลองสุ่ม (Random Experiment) ใดๆ เราให้</p>
+          <ul>
+            <li><strong>Sample Space $\Omega$:</strong> เซตของผลลัพธ์ (Outcome) ทั้งหมดที่เป็นไปได้</li>
+            <li><strong>Event $A$:</strong> สับเซตใดๆ ของ $\Omega$ กล่าวคือ $A \subseteq \Omega$</li>
+            <li><strong>Elementary Event:</strong> เซตซิงเกิลตัน $\{\omega\}$ สำหรับ $\omega \in \Omega$</li>
+          </ul>
+          <p>ขนาดของ Sample Space $|\Omega|$ คือจำนวนผลลัพธ์ที่เป็นไปได้ทั้งหมด ซึ่งเป็นคำถามหลักของ Combinatorics</p>
+        </div>
+
+        <p>ตัวอย่างเช่น โยนเหรียญ 2 ครั้ง: $\Omega = \{\mathrm{HH, HT, TH, TT}\}$, $|\Omega| = 4$ Event "ได้หัวอย่างน้อย 1 ครั้ง" $= \{\mathrm{HH, HT, TH}\}$</p>
       </div>
 
-      <div class="example-box">
-        <div class="example-header" style="background:#ea580c">ตัวอย่าง: โยนลูกเต๋า</div>
-        <div class="example-body">
-          <p>โยนลูกเต๋า 1 ลูก: $\Omega = \{1,2,3,4,5,6\}$, $|\Omega|=6$</p>
-          <p>เหตุการณ์ "ออกเลขคู่": $A = \{2,4,6\}$, $|A|=3$</p>
+      <div id="counting-intro" class="subsec">
+        <h3>เทคนิคการนับเบื้องต้น</h3>
+
+        <p>เทคนิคการนับที่จะศึกษาในบทนี้ได้แก่</p>
+        <ul>
+          <li><strong>Multiplication Rule:</strong> นับผลลัพธ์ของการทดลองหลายขั้นตอน</li>
+          <li><strong>Addition Rule &amp; Inclusion-Exclusion:</strong> นับ union ของเซต</li>
+          <li><strong>Pigeonhole Principle:</strong> พิสูจน์ว่าต้องมีการซ้ำกัน</li>
+          <li><strong>Permutations:</strong> จัดเรียงสิ่งของโดยคำนึงถึงลำดับ</li>
+          <li><strong>Combinations:</strong> เลือกสิ่งของโดยไม่คำนึงถึงลำดับ</li>
+          <li><strong>Stars and Bars:</strong> นับการเลือกพร้อมอนุญาตซ้ำ</li>
+        </ul>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.1.1</span> จัดเรียงหนังสือ 3 เล่มบนชั้น</div>
+          <p>มีหนังสือ 3 เล่มที่ต่างกัน ชื่อ $A$, $B$, $C$ จะวางบนชั้นวางหนังสือได้กี่แบบ?</p>
+          <div class="solution">
+            <p>ลงรายการทุกกรณี (เรียงตามลำดับซ้าย → ขวา):</p>
+            <p style="font-family:monospace; background:#fff7ed; padding:8px 14px; border-radius:6px; display:inline-block;">
+              ABC, ACB, BAC, BCA, CAB, CBA
+            </p>
+            <p>รวม <strong>6 แบบ</strong> ตรงกับ $3! = 3 \times 2 \times 1 = 6$</p>
+            <p>หลักการ: ตำแหน่งแรกเลือกได้ 3 เล่ม → ตำแหน่งสองเลือกได้ 2 เล่ม → ตำแหน่งสุดท้ายเหลือ 1 เล่ม</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 9.2 -->
+    <!-- ═══ 9.2 ═══════════════════════════════════════════════════ -->
     <section id="sec92" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">9.2</span>
         <div>
-          <h2>Multiplication Rule &amp; Permutations</h2>
-          <p>กฎการคูณและการเรียงสับเปลี่ยน</p>
+          <h2>Possibility Trees and the Multiplication Rule</h2>
+          <p>ต้นไม้ความเป็นไปได้และหลักการคูณ</p>
         </div>
       </div>
 
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>กฎการคูณ:</strong> ถ้างานมี $k$ ขั้นตอน โดยขั้นที่ $i$ ทำได้ $n_i$ วิธี จำนวนวิธีทั้งหมด $= n_1 \times n_2 \times \cdots \times n_k$</p>
-        <p style="margin-top:10px"><strong>Permutation (การเรียงสับเปลี่ยน):</strong> $P(n,r) = \dfrac{n!}{(n-r)!}$ คือจำนวนวิธีเลือก $r$ จาก $n$ แบบ <em>คำนึงถึงลำดับ</em></p>
+      <div id="mult-rule" class="subsec">
+        <h3>Multiplication Rule (กฎการคูณ)</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Multiplication Rule</h4>
+          <p>ถ้าการทดลองประกอบด้วย $k$ ขั้นตอนอิสระต่อกัน โดยที่ขั้นตอนที่ $i$ มี $n_i$ ทางเลือก แล้วจำนวนผลลัพธ์ทั้งหมดคือ:</p>
+          $$n_1 \times n_2 \times \cdots \times n_k$$
+        </div>
+
+        <p>วิธีที่ดีในการแสดง Multiplication Rule คือ <strong>Possibility Tree</strong> — แต่ละระดับแสดงขั้นตอนหนึ่ง และ branch ที่ระดับนั้นแสดงทางเลือก</p>
+
+        <div class="tree-diagram"><span class="t-root">เริ่ม</span>
+├─ <span class="t-branch">เหรียญ: H</span>
+│   ├─ <span class="t-leaf">ลูกเต๋า: 1 → (H,1)</span>
+│   ├─ <span class="t-leaf">ลูกเต๋า: 2 → (H,2)</span>
+│   ├─ <span class="t-leaf">ลูกเต๋า: 3 → (H,3)</span>
+│   ├─ <span class="t-leaf">ลูกเต๋า: 4 → (H,4)</span>
+│   ├─ <span class="t-leaf">ลูกเต๋า: 5 → (H,5)</span>
+│   └─ <span class="t-leaf">ลูกเต๋า: 6 → (H,6)</span>
+└─ <span class="t-branch">เหรียญ: T</span>
+    ├─ <span class="t-leaf">ลูกเต๋า: 1 → (T,1)</span>
+    ├─ <span class="t-leaf">ลูกเต๋า: 2 → (T,2)</span>
+    ├─ <span class="t-leaf">ลูกเต๋า: 3 → (T,3)</span>
+    ├─ <span class="t-leaf">ลูกเต๋า: 4 → (T,4)</span>
+    ├─ <span class="t-leaf">ลูกเต๋า: 5 → (T,5)</span>
+    └─ <span class="t-leaf">ลูกเต๋า: 6 → (T,6)</span></div>
+        <p style="text-align:center;font-size:13px;color:#c2410c;">โยนเหรียญ (2 ทางเลือก) × โยนลูกเต๋า (6 ทางเลือก) = <strong>12 ผลลัพธ์</strong></p>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.2.1</span> รหัส PIN 4 หลัก</div>
+          <p>รหัส PIN ที่ประกอบด้วยตัวเลข 4 หลัก (แต่ละหลักเลือกจาก 0–9 อนุญาตซ้ำ) มีทั้งหมดกี่รหัส?</p>
+          <div class="solution">
+            <p>แต่ละหลักมี 10 ทางเลือก โดย Multiplication Rule:</p>
+            $$10 \times 10 \times 10 \times 10 = 10^4 = \mathbf{10{,}000} \text{ รหัส}$$
+          </div>
+        </div>
       </div>
 
-      <div class="example-box">
-        <div class="example-header" style="background:#ea580c">ตัวอย่าง: PIN 3 หลัก</div>
-        <div class="example-body">
-          <p>PIN 3 หลัก (แต่ละหลัก 0–9): $10 \times 10 \times 10 = 10^3 = 1000$ แบบ</p>
-          <p>เรียงตัวอักษร 3 จาก 26 ตัว (ไม่ซ้ำ): $P(26,3) = 26 \times 25 \times 24 = 15600$ แบบ</p>
+      <div id="permutations" class="subsec">
+        <h3>Permutations (การเรียงสับเปลี่ยน)</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Permutation $P(n,r)$</h4>
+          <p><strong>Permutation</strong> คือการจัดเรียงสมาชิกโดยคำนึงถึงลำดับ จำนวน permutation ของสมาชิก $r$ ตัวที่เลือกจาก $n$ ตัว (ไม่ซ้ำ) คือ:</p>
+          $$P(n,r) = \frac{n!}{(n-r)!} = n(n-1)(n-2)\cdots(n-r+1)$$
+          <p>กรณีพิเศษ: $P(n,n) = n!$ คือจำนวนการเรียงสับเปลี่ยนทั้งหมดของ $n$ สมาชิก และ $P(n,0) = 1$</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">⊢ การอธิบายสูตร $P(n,r)$ ด้วย Multiplication Rule</div>
+          <div class="proof-step assume">
+            <h5>สถานการณ์</h5>
+            <p>มีสมาชิก $n$ ตัวที่แตกต่างกัน ต้องการเลือกมา $r$ ตัว ($r \le n$) แล้วจัดเรียงเป็นลำดับ</p>
+          </div>
+          <div class="proof-step derive">
+            <h5>นับตำแหน่งละตำแหน่ง</h5>
+            <p>ตำแหน่งที่ 1: มี $n$ ทางเลือก</p>
+            <p>ตำแหน่งที่ 2: มี $n-1$ ทางเลือก (ใช้ไปแล้ว 1 ตัว)</p>
+            <p>ตำแหน่งที่ 3: มี $n-2$ ทางเลือก</p>
+            <p>$\vdots$</p>
+            <p>ตำแหน่งที่ $r$: มี $n-r+1$ ทางเลือก</p>
+          </div>
+          <div class="proof-step conclude">
+            <h5>ผลโดย Multiplication Rule</h5>
+            <p>$P(n,r) = n(n-1)\cdots(n-r+1) = \dfrac{n!}{(n-r)!}$</p>
+          </div>
+          <div class="qed">■</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.2.2</span> $P(5,3)$ — เลือกและเรียงหนังสือ 3 เล่มจาก 5 เล่ม</div>
+          <p>มีหนังสือ 5 เล่มที่ต่างกัน จะเลือก 3 เล่มมาเรียงบนชั้นได้กี่แบบ?</p>
+          <div class="solution">
+            $$P(5,3) = \frac{5!}{(5-3)!} = \frac{120}{2} = 5 \times 4 \times 3 = \mathbf{60} \text{ แบบ}$$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.2.3</span> สตริง 3 ตัวอักษรจาก {A,B,C,D} ไม่ซ้ำ</div>
+          <p>จะสร้างสตริงความยาว 3 จากตัวอักษร $\{A, B, C, D\}$ โดยห้ามซ้ำตัวอักษรได้กี่สตริง?</p>
+          <div class="solution">
+            <p>ลำดับสำคัญและห้ามซ้ำ — ใช้ Permutation:</p>
+            $$P(4,3) = \frac{4!}{1!} = \frac{24}{1} = \mathbf{24} \text{ สตริง}$$
+            <p>ตัวอย่างบางส่วน: ABC, ABD, ACB, ACD, BAC, BAD, BCA, BCD, CAB, CAD, CBA, CBD, DAB, DAC, DBA, DBC, …</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 9.3 -->
+    <!-- ═══ 9.3 ═══════════════════════════════════════════════════ -->
     <section id="sec93" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">9.3</span>
         <div>
-          <h2>Addition Rule</h2>
-          <p>กฎการบวกและหลักการรวม-แยก</p>
+          <h2>The Addition Rule</h2>
+          <p>กฎการบวกและ Inclusion-Exclusion</p>
         </div>
       </div>
 
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>Inclusion-Exclusion:</strong> $|A \cup B| = |A| + |B| - |A \cap B|$</p>
-        <p style="margin-top:8px">ถ้า $A$ และ $B$ disjoint (ไม่มีส่วนร่วม): $|A \cup B| = |A| + |B|$</p>
+      <div id="add-disjoint" class="subsec">
+        <h3>Addition Rule สำหรับเซต Disjoint</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Addition Rule</h4>
+          <p>ถ้า $A$ และ $B$ เป็นเซต <strong>Disjoint</strong> ($A \cap B = \emptyset$) แล้ว:</p>
+          $$|A \cup B| = |A| + |B|$$
+          <p>โดยทั่วไปสำหรับ $k$ เซตที่ pairwise disjoint:</p>
+          $$|A_1 \cup A_2 \cup \cdots \cup A_k| = |A_1| + |A_2| + \cdots + |A_k|$$
+          <p>หลักการ: ถ้าทำสิ่งหนึ่งได้ด้วยวิธีที่ 1 จำนวน $|A|$ วิธี หรือวิธีที่ 2 จำนวน $|B|$ วิธี (แต่ไม่สามารถทั้งสองพร้อมกัน) แล้วมีวิธีทั้งหมด $|A|+|B|$ วิธี</p>
+        </div>
       </div>
 
-      <div class="example-box">
-        <div class="example-header" style="background:#ea580c">ตัวอย่าง: รหัสผ่าน 8 ตัวอักษร</div>
-        <div class="example-body">
-          <p>รหัสผ่านที่ <em>ขึ้นต้นด้วยสระ</em> หรือ <em>ลงท้ายด้วยตัวเลข</em>:</p>
-          <ul style="font-size:14px; line-height:2; padding-left:20px">
-            <li>$|A|$ = ขึ้นต้นสระ (5 ตัว): $5 \times 62^7$</li>
-            <li>$|B|$ = ลงท้ายตัวเลข (10 ตัว): $62^7 \times 10$</li>
-            <li>$|A \cap B|$ = ทั้งคู่: $5 \times 62^6 \times 10$</li>
-            <li>$|A \cup B| = |A| + |B| - |A \cap B|$</li>
-          </ul>
+      <div id="incl-excl" class="subsec">
+        <h3>Inclusion-Exclusion Principle</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Inclusion-Exclusion (2 เซต)</h4>
+          <p>สำหรับเซต $A$ และ $B$ ใดๆ:</p>
+          $$|A \cup B| = |A| + |B| - |A \cap B|$$
+          <p><strong>เหตุผล:</strong> เมื่อบวก $|A|$ และ $|B|$ เราได้นับสมาชิกใน $A \cap B$ สองครั้ง จึงต้องลบออก 1 ครั้ง</p>
+        </div>
+
+        <div class="def-box">
+          <h4>นิยาม: Inclusion-Exclusion (3 เซต)</h4>
+          <p>สำหรับเซต $A$, $B$, $C$:</p>
+          $$|A \cup B \cup C| = |A|+|B|+|C| - |A \cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C|$$
+          <p>รูปแบบทั่วไป: บวกขนาดเซตเดี่ยว, ลบ intersection คู่, บวก intersection สาม, ลบสี่, … สลับกันไป</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.3.1</span> รหัสผ่านที่ขึ้นต้นด้วยสระ หรือลงท้ายด้วยตัวเลข</div>
+          <p>รหัสผ่านความยาว 6 อักขระจาก a–z (26 ตัว) และ 0–9 (10 ตัว) รวม 36 ตัว กี่รหัสที่ขึ้นต้นด้วยสระ (a,e,i,o,u) <strong>หรือ</strong> ลงท้ายด้วยตัวเลข?</p>
+          <div class="solution">
+            <p>ให้ $A$ = รหัสขึ้นต้นด้วยสระ, $B$ = รหัสลงท้ายด้วยตัวเลข</p>
+            <ul>
+              <li>$|A| = 5 \times 36^5$ (ตัวแรก 5 ทาง, ที่เหลือ 5 ตำแหน่ง แต่ละตำแหน่ง 36 ทาง)</li>
+              <li>$|B| = 36^5 \times 10$ (ตัวสุดท้าย 10 ทาง, ที่เหลือ 5 ตำแหน่ง)</li>
+              <li>$|A \cap B| = 5 \times 36^4 \times 10$ (ขึ้นต้นสระ AND ลงท้ายตัวเลข)</li>
+            </ul>
+            $$|A \cup B| = 5 \cdot 36^5 + 10 \cdot 36^5 - 50 \cdot 36^4 = 36^4(5\cdot 36 + 10\cdot 36 - 50) = 36^4 \times 490$$
+            $$= 1{,}679{,}616 \times 490 = \mathbf{822{,}911{,}840}$$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.3.2</span> จำนวนเต็ม 1–100 ที่หารด้วย 3 หรือ 5 ลงตัว</div>
+          <p>จำนวนเต็มในช่วง $1$ ถึง $100$ ที่หารด้วย $3$ หรือ $5$ ลงตัวมีกี่จำนวน?</p>
+          <div class="solution">
+            <p>ให้ $A = \{n \le 100 : 3 \mid n\}$, $B = \{n \le 100 : 5 \mid n\}$</p>
+            <ul>
+              <li>$|A| = \lfloor 100/3 \rfloor = 33$</li>
+              <li>$|B| = \lfloor 100/5 \rfloor = 20$</li>
+              <li>$|A \cap B|$ = หารด้วย $\mathrm{lcm}(3,5) = 15$ ลงตัว $= \lfloor 100/15 \rfloor = 6$</li>
+            </ul>
+            $$|A \cup B| = 33 + 20 - 6 = \mathbf{47}$$
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 9.4 -->
+    <!-- ═══ 9.4 ═══════════════════════════════════════════════════ -->
     <section id="sec94" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">9.4</span>
         <div>
-          <h2>Pigeonhole Principle</h2>
-          <p>หลักรังนกพิราบ</p>
+          <h2>The Pigeonhole Principle</h2>
+          <p>หลักรังนก — เครื่องมือพิสูจน์ว่าต้องมีการซ้ำ</p>
         </div>
       </div>
 
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>Pigeonhole Principle:</strong> ถ้ามีของ $n+1$ ชิ้นใส่ใน $n$ กล่อง มีอย่างน้อย 1 กล่องที่มีของ $\geq 2$ ชิ้น</p>
-        <p style="margin-top:8px"><strong>รูปแบบทั่วไป:</strong> ถ้ามีของ $N$ ชิ้นใส่ใน $k$ กล่อง มีกล่องหนึ่งที่มีของอย่างน้อย $\left\lceil N/k \right\rceil$ ชิ้น</p>
+      <div id="pigeonhole-basic" class="subsec">
+        <h3>หลักรังนก (Basic Pigeonhole)</h3>
+
+        <div class="def-box">
+          <h4>ทฤษฎีบท: Pigeonhole Principle (หลักรังนก)</h4>
+          <p>ถ้า <strong>วัตถุ $n+1$ ชิ้น</strong> ถูกใส่ใน <strong>กล่อง $n$ กล่อง</strong> แล้วต้องมีกล่องอย่างน้อย 1 กล่องที่มีวัตถุ <strong>อย่างน้อย 2 ชิ้น</strong></p>
+          <p>เป็นทางการ: ถ้า $f: A \to B$ เป็นฟังก์ชันและ $|A| > |B|$ แล้ว $f$ ไม่ใช่ Injection</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">⊢ พิสูจน์โดย Contradiction</div>
+          <div class="proof-step assume">
+            <h5>สมมติตรงกันข้าม</h5>
+            <p>สมมติว่าทุกกล่องมีวัตถุไม่เกิน 1 ชิ้น</p>
+          </div>
+          <div class="proof-step derive">
+            <h5>นับวัตถุรวม</h5>
+            <p>ถ้าแต่ละกล่องมีวัตถุไม่เกิน 1 ชิ้น และมี $n$ กล่อง แล้ววัตถุรวมทั้งหมดมีได้ไม่เกิน $n$ ชิ้น</p>
+          </div>
+          <div class="proof-step conclude">
+            <h5>ขัดแย้ง</h5>
+            <p>แต่เรามีวัตถุ $n+1 > n$ ชิ้น — ขัดแย้ง ดังนั้นต้องมีกล่องที่มีวัตถุอย่างน้อย 2 ชิ้น</p>
+          </div>
+          <div class="qed">■</div>
+        </div>
       </div>
 
-      <div class="example-box">
-        <div class="example-header" style="background:#ea580c">ตัวอย่าง: 13 คน 12 เดือน</div>
-        <div class="example-body">
-          <p>ในกลุ่ม 13 คน ต้องมีอย่างน้อย 2 คนที่เกิดในเดือนเดียวกัน เพราะ $\left\lceil 13/12 \right\rceil = 2$</p>
-          <p>ในกลุ่ม 367 คน ต้องมีอย่างน้อย 2 คนที่เกิดวันเดียวกัน (365 วัน + อธิกสุรทิน)</p>
+      <div id="pigeonhole-gen" class="subsec">
+        <h3>Generalized Pigeonhole Principle</h3>
+
+        <div class="def-box">
+          <h4>ทฤษฎีบท: Generalized Pigeonhole Principle</h4>
+          <p>ถ้า <strong>วัตถุ $N$ ชิ้น</strong> ถูกใส่ใน <strong>กล่อง $k$ กล่อง</strong> แล้วต้องมีกล่องอย่างน้อย 1 กล่องที่มีวัตถุอย่างน้อย $\lceil N/k \rceil$ ชิ้น</p>
+          <p><strong>พิสูจน์:</strong> สมมติว่าทุกกล่องมีวัตถุ $\le \lceil N/k \rceil - 1$ ชิ้น แล้ววัตถุรวมทั้งหมด $\le k\left(\lceil N/k \rceil - 1\right) &lt; k \cdot (N/k) = N$ — ขัดแย้ง</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.4.1</span> 13 คนต้องมี 2 คนเกิดเดือนเดียวกัน</div>
+          <p>ในกลุ่ม 13 คน ต้องมีอย่างน้อย 2 คนที่เกิดในเดือนเดียวกัน จงพิสูจน์</p>
+          <div class="solution">
+            <p>มี 12 เดือน (กล่อง 12 กล่อง) และมีคน 13 คน (วัตถุ 13 ชิ้น)</p>
+            <p>เนื่องจาก $13 > 12$ โดย Pigeonhole Principle ต้องมีเดือนหนึ่งที่มีคนเกิดอย่างน้อย 2 คน $\blacksquare$</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.4.2</span> 5 จุดใน 2×2 square ต้องมี 2 จุดที่ห่างกัน ≤ √2</div>
+          <p>ถ้าเลือก 5 จุดภายในหรือบนขอบของสี่เหลี่ยมจัตุรัส $2 \times 2$ จงพิสูจน์ว่าต้องมีสองจุดที่ห่างกันไม่เกิน $\sqrt{2}$</p>
+          <div class="solution">
+            <p><strong>แบ่งกล่อง:</strong> แบ่งสี่เหลี่ยม $2 \times 2$ ออกเป็น 4 สี่เหลี่ยมจัตุรัส $1 \times 1$ (กล่อง 4 กล่อง)</p>
+            <p>มี 5 จุด (วัตถุ 5 ชิ้น) ใส่ใน 4 กล่อง โดย Pigeonhole ต้องมีกล่องหนึ่งที่มีอย่างน้อย 2 จุด</p>
+            <p>ภายในสี่เหลี่ยม $1 \times 1$ ระยะห่างสูงสุดระหว่างสองจุดคือเส้นทแยงมุม $\sqrt{1^2 + 1^2} = \sqrt{2}$</p>
+            <p>ดังนั้นสองจุดที่อยู่ในกล่องเดียวกันมีระยะห่างไม่เกิน $\sqrt{2}$ $\blacksquare$</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.4.3</span> ลำดับ $n^2+1$ จำนวนต้องมี Monotone Subsequence ยาว $n+1$</div>
+          <p>ในลำดับจำนวนจริง $n^2+1$ จำนวนที่แตกต่างกัน ต้องมี subsequence ที่เพิ่มขึ้นอย่างเดียว หรือลดลงอย่างเดียว ยาวอย่างน้อย $n+1$ (ทฤษฎีบท Erdős–Szekeres)</p>
+          <div class="solution">
+            <p>ให้ลำดับคือ $a_1, a_2, \ldots, a_{n^2+1}$ สำหรับตำแหน่ง $i$ แต่ละตำแหน่ง กำหนด</p>
+            <ul>
+              <li>$d_i$ = ความยาวของ increasing subsequence ที่ยาวที่สุดที่เริ่มจาก $a_i$</li>
+              <li>$e_i$ = ความยาวของ decreasing subsequence ที่ยาวที่สุดที่เริ่มจาก $a_i$</li>
+            </ul>
+            <p>สมมติว่า $d_i \le n$ และ $e_i \le n$ สำหรับทุก $i$ แล้วคู่ $(d_i, e_i) \in \{1,\ldots,n\}^2$ มี $n^2$ คู่ที่เป็นไปได้ แต่มี $n^2+1$ ตำแหน่ง — โดย Pigeonhole ต้องมี $i &lt; j$ ที่ $(d_i,e_i)=(d_j,e_j)$ แต่เนื่องจาก $a_i \neq a_j$ (ไม่ว่าจะ $a_i &lt; a_j$ หรือ $a_i > a_j$ ก็จะขัดแย้งกับนิยามของ $d_i$ หรือ $e_i$) $\blacksquare$</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 9.5 -->
+    <!-- ═══ 9.5 ═══════════════════════════════════════════════════ -->
     <section id="sec95" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">9.5</span>
         <div>
           <h2>Combinations</h2>
-          <p>การจัดหมู่ — เลือกโดยไม่คำนึงถึงลำดับ</p>
+          <p>การเลือกโดยไม่คำนึงถึงลำดับ</p>
         </div>
       </div>
 
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>Combination:</strong> $C(n,r) = \binom{n}{r} = \dfrac{n!}{r!(n-r)!}$ คือจำนวนวิธีเลือก $r$ จาก $n$ แบบ <em>ไม่คำนึงถึงลำดับ</em></p>
+      <div id="comb-def" class="subsec">
+        <h3>C(n,r) — "n choose r"</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Combination</h4>
+          <p><strong>Combination</strong> คือการเลือกสมาชิก $r$ ตัวจาก $n$ ตัว <em>โดยไม่คำนึงถึงลำดับ</em> จำนวน combination เขียนว่า $C(n,r)$ หรือ $\binom{n}{r}$ และคำนวณโดย:</p>
+          $$C(n,r) = \binom{n}{r} = \frac{n!}{r!\,(n-r)!}$$
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">⊢ ความสัมพันธ์ $P(n,r) = C(n,r) \times r!$</div>
+          <div class="proof-step assume">
+            <h5>แนวคิด</h5>
+            <p>วิธีหนึ่งในการได้ $r$-permutation จาก $n$ ตัว: (1) เลือก $r$ ตัวมาก่อน แล้ว (2) เรียงลำดับ $r$ ตัวนั้น</p>
+          </div>
+          <div class="proof-step derive">
+            <h5>นับ</h5>
+            <p>ขั้น (1): $C(n,r)$ วิธี &nbsp; ขั้น (2): $r!$ วิธี</p>
+            <p>โดย Multiplication Rule: $P(n,r) = C(n,r) \times r!$</p>
+          </div>
+          <div class="proof-step conclude">
+            <h5>แก้หา $C(n,r)$</h5>
+            <p>$C(n,r) = \dfrac{P(n,r)}{r!} = \dfrac{n!}{r!\,(n-r)!}$</p>
+          </div>
+          <div class="qed">■</div>
+        </div>
       </div>
 
-      <div class="count-compare">
-        <div class="count-card">
-          <h5>Permutation P(n,r)</h5>
-          <p>เลือก $r$ จาก $n$ — <strong>ลำดับสำคัญ</strong><br>เช่น AB ≠ BA<br>$P(n,r)=\dfrac{n!}{(n-r)!}$</p>
-        </div>
-        <div class="count-card">
-          <h5>Combination C(n,r)</h5>
-          <p>เลือก $r$ จาก $n$ — <strong>ลำดับไม่สำคัญ</strong><br>เช่น AB = BA<br>$C(n,r)=\dfrac{n!}{r!(n-r)!}$</p>
-        </div>
-      </div>
+      <div id="comb-props" class="subsec">
+        <h3>สมบัติของ Combinations</h3>
 
-      <div class="example-box">
-        <div class="example-header" style="background:#ea580c">ตัวอย่าง: เลือก 3 จาก 10</div>
-        <div class="example-body">
-          <p>เลือกนักเรียน 3 คนจาก 10 คน (ไม่สนว่าใครถูกเลือกก่อน):</p>
-          <p>$$C(10,3) = \frac{10!}{3! \cdot 7!} = \frac{10 \times 9 \times 8}{3 \times 2 \times 1} = 120 \text{ วิธี}$$</p>
+        <div class="def-box">
+          <h4>สมบัติสำคัญของ $C(n,r)$</h4>
+          <ul>
+            <li>$C(n,0) = C(n,n) = 1$</li>
+            <li>$C(n,1) = C(n,n-1) = n$</li>
+            <li><strong>Symmetry:</strong> $C(n,r) = C(n,n-r)$ — เลือก $r$ ตัวที่รับ ≡ เลือก $n-r$ ตัวที่ทิ้ง</li>
+            <li><strong>Pascal's Identity:</strong> $C(n+1,r) = C(n,r-1) + C(n,r)$</li>
+          </ul>
+        </div>
+
+        <table class="count-compare">
+          <thead>
+            <tr>
+              <th>ลักษณะ</th>
+              <th>Permutation $P(n,r)$</th>
+              <th>Combination $C(n,r)$</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>ลำดับสำคัญ?</td><td>ใช่ (AB ≠ BA)</td><td>ไม่ ({A,B} = {B,A})</td></tr>
+            <tr><td>สูตร</td><td>$n!/(n-r)!$</td><td>$n!/[r!(n-r)!]$</td></tr>
+            <tr><td>ค่า $n=5, r=3$</td><td>$P(5,3) = 60$</td><td>$C(5,3) = 10$</td></tr>
+            <tr><td>อัตราส่วน</td><td colspan="2" style="text-align:center;">$P(n,r) = C(n,r) \times r!$</td></tr>
+            <tr><td>ตัวอย่าง</td><td>รหัส PIN, การแข่ง 1/2/3</td><td>คณะกรรมการ, จับฉลาก</td></tr>
+          </tbody>
+        </table>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.5.1</span> เลือกคณะกรรมการ 3 คนจาก 10 คน</div>
+          <p>มีผู้สมัคร 10 คน จะเลือกคณะกรรมการ 3 คนได้กี่แบบ?</p>
+          <div class="solution">
+            <p>ลำดับไม่สำคัญ (คณะกรรมการ $\{A,B,C\} = \{C,A,B\}$) ดังนั้นใช้ Combination:</p>
+            $$C(10,3) = \frac{10!}{3!\cdot 7!} = \frac{10 \times 9 \times 8}{6} = \frac{720}{6} = \mathbf{120} \text{ แบบ}$$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.5.2</span> มือไพ่ Poker 5 ใบจาก 52 ใบ</div>
+          <p>ไพ่ป๊อกเกอร์มาตรฐาน 52 ใบ จะจั่วมือ 5 ใบได้กี่มือที่แตกต่างกัน?</p>
+          <div class="solution">
+            $$C(52,5) = \frac{52 \times 51 \times 50 \times 49 \times 48}{5!} = \frac{311{,}875{,}200}{120} = \mathbf{2{,}598{,}960} \text{ มือ}$$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.5.3</span> ล็อตเตอรี่ 6/49</div>
+          <p>ในล็อตเตอรี่ 6/49 เลือกตัวเลข 6 ตัวจาก 1–49 มีรูปแบบการเลือกกี่แบบ?</p>
+          <div class="solution">
+            $$C(49,6) = \frac{49 \times 48 \times 47 \times 46 \times 45 \times 44}{720} = \mathbf{13{,}983{,}816} \text{ แบบ}$$
+            <p>ความน่าจะเป็นถูกรางวัลใหญ่ $= \dfrac{1}{13{,}983{,}816} \approx 7.15 \times 10^{-8}$</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 9.6 -->
+    <!-- ═══ 9.6 ═══════════════════════════════════════════════════ -->
     <section id="sec96" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">9.6</span>
         <div>
           <h2>r-Combinations with Repetition</h2>
-          <p>การจัดหมู่ซ้ำ (Stars and Bars)</p>
+          <p>การเลือกพร้อมอนุญาตซ้ำ — Stars and Bars</p>
         </div>
       </div>
 
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>การจัดหมู่ซ้ำ:</strong> จำนวนวิธีเลือก $r$ ชิ้นจาก $n$ ประเภท โดยซ้ำได้และไม่คำนึงลำดับ:</p>
-        <p style="text-align:center; margin-top:8px">$$C(n+r-1,\, r) = \binom{n+r-1}{r}$$</p>
-        <p style="margin-top:8px">วิธีคิด: ใช้ "ดาว" $r$ ดวงและ "คั่น" $n-1$ แท่ง รวม $n+r-1$ ตำแหน่ง</p>
-      </div>
+      <div id="multiset" class="subsec">
+        <h3>Multiset Coefficient และ Stars and Bars</h3>
 
-      <div class="example-box">
-        <div class="example-header" style="background:#ea580c">ตัวอย่าง: ไอศครีม 3 ลูก 5 รส</div>
-        <div class="example-body">
-          <p>เลือกไอศครีม 3 ลูกจาก 5 รสชาติ (เลือกซ้ำรสได้):</p>
-          <p>$$C(5+3-1,\, 3) = C(7,3) = \frac{7!}{3!\cdot 4!} = 35 \text{ วิธี}$$</p>
+        <div class="def-box">
+          <h4>นิยาม: r-Combinations with Repetition</h4>
+          <p>จำนวนวิธีเลือกสมาชิก $r$ ตัวจากเซต $n$ ประเภท <strong>โดยอนุญาตให้ซ้ำ</strong> และไม่คำนึงถึงลำดับ คือ:</p>
+          $$\binom{n+r-1}{r} = C(n+r-1,\, r)$$
+          <p>เรียกว่า <strong>Multiset Coefficient</strong> เขียนด้วยสัญลักษณ์ $\left(\!\!\binom{n}{r}\!\!\right)$</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">⊢ Stars and Bars — การพิสูจน์สูตร</div>
+          <div class="proof-step assume">
+            <h5>แบบจำลอง</h5>
+            <p>เลือก $r$ สิ่งจาก $n$ ประเภท แสดงจำนวนที่เลือกจากประเภทที่ $i$ ด้วย "ดาว ★" จำนวน $x_i$ ดาว คั่นระหว่างประเภทด้วย "แท่ง |" จำนวน $n-1$ แท่ง</p>
+          </div>
+          <div class="proof-step derive">
+            <h5>ตัวอย่างการเข้ารหัส ($n=5,\, r=3$)</h5>
+            <p>★★|★|||| → เลือกประเภทที่ 1 จำนวน 2 ครั้ง + ประเภทที่ 2 จำนวน 1 ครั้ง (อื่นๆ ศูนย์)</p>
+            <p>แต่ละลำดับที่แตกต่างกันของ 3 ดาวและ 4 แท่ง (รวม 7 สัญลักษณ์) แทนการเลือกที่แตกต่างกัน</p>
+          </div>
+          <div class="proof-step conclude">
+            <h5>นับ</h5>
+            <p>จัดเรียง $r$ ดาวและ $n-1$ แท่ง รวม $n+r-1$ ตำแหน่ง เลือก $r$ ตำแหน่งให้เป็นดาว: $C(n+r-1, r)$</p>
+          </div>
+          <div class="qed">■</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.6.1</span> ไอศกรีม 3 สกู๊ปจาก 5 รสชาติ</div>
+          <p>ซื้อไอศกรีม 3 สกู๊ปจาก 5 รสชาติ (ซ้ำได้ ไม่สนใจลำดับ) มีกี่แบบ?</p>
+          <div class="solution">
+            $$C(5+3-1,\,3) = C(7,3) = \frac{7 \times 6 \times 5}{6} = \mathbf{35} \text{ แบบ}$$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.6.2</span> จำนวนคำตอบจำนวนเต็มไม่ลบของ $x_1+x_2+x_3=10$</div>
+          <p>หาจำนวนคำตอบจำนวนเต็มไม่ลบของ $x_1 + x_2 + x_3 = 10$</p>
+          <div class="solution">
+            <p>เทียบเท่ากับเลือก $r=10$ หน่วยจาก $n=3$ ตัวแปร (ซ้ำได้):</p>
+            $$C(3+10-1,\,10) = C(12,10) = C(12,2) = \frac{12 \times 11}{2} = \mathbf{66} \text{ คำตอบ}$$
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 9.7 -->
+    <!-- ═══ 9.7 ═══════════════════════════════════════════════════ -->
     <section id="sec97" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">9.7</span>
         <div>
-          <h2>Pascal's Formula and Binomial Theorem</h2>
-          <p>สูตร Pascal และทฤษฎีบททวินาม</p>
+          <h2>Pascal's Formula and the Binomial Theorem</h2>
+          <p>สูตร Pascal, สามเหลี่ยม Pascal และทฤษฎีบท Binomial</p>
         </div>
       </div>
 
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>Pascal's Formula:</strong> $\displaystyle\binom{n+1}{r} = \binom{n}{r-1} + \binom{n}{r}$</p>
-        <p style="margin-top:10px"><strong>Binomial Theorem:</strong> $(x+y)^n = \displaystyle\sum_{k=0}^{n} \binom{n}{k} x^k y^{n-k}$</p>
+      <div id="pascal-id" class="subsec">
+        <h3>Pascal's Identity</h3>
+
+        <div class="def-box">
+          <h4>ทฤษฎีบท: Pascal's Identity</h4>
+          <p>สำหรับจำนวนเต็ม $n \ge 1$ และ $1 \le r \le n$:</p>
+          $$C(n+1,\,r) = C(n,\,r-1) + C(n,\,r)$$
+          <p><strong>การตีความ:</strong> เลือก $r$ คนจาก $n+1$ คน แบ่งเป็นสองกรณีตามคนคนหนึ่ง (คน $X$): (1) รวม $X$ แล้วเลือก $r-1$ จาก $n$ คนที่เหลือ = $C(n,r-1)$ หรือ (2) ไม่รวม $X$ แล้วเลือก $r$ จาก $n$ คนที่เหลือ = $C(n,r)$</p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">⊢ พิสูจน์พีชคณิต</div>
+          <div class="proof-step derive">
+            <h5>คำนวณผลบวก</h5>
+            <p>$C(n,r-1) + C(n,r) = \dfrac{n!}{(r-1)!(n-r+1)!} + \dfrac{n!}{r!(n-r)!}$</p>
+            <p>$= \dfrac{n!\cdot r + n!\cdot(n-r+1)}{r!(n-r+1)!} = \dfrac{n!(r+n-r+1)}{r!(n-r+1)!} = \dfrac{(n+1)!}{r!(n+1-r)!}$</p>
+          </div>
+          <div class="proof-step conclude">
+            <h5>ผล</h5>
+            <p>$= C(n+1,r)$ ✓</p>
+          </div>
+          <div class="qed">■</div>
+        </div>
       </div>
 
-      <p style="font-size:14px; color:#64748b; margin-bottom:4px; text-align:center">สามเหลี่ยม Pascal (แถว 0–5)</p>
-      <table class="pascal-table">
-        <tr><td></td><td></td><td></td><td></td><td></td><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td>1</td><td></td><td>1</td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td>1</td><td></td><td>2</td><td></td><td>1</td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td>1</td><td></td><td>3</td><td></td><td>3</td><td></td><td>1</td><td></td><td></td></tr>
-        <tr><td></td><td>1</td><td></td><td>4</td><td></td><td>6</td><td></td><td>4</td><td></td><td>1</td><td></td></tr>
-        <tr><td>1</td><td></td><td>5</td><td></td><td>10</td><td></td><td>10</td><td></td><td>5</td><td></td><td>1</td></tr>
-      </table>
+      <div id="pascal-triangle" class="subsec">
+        <h3>สามเหลี่ยม Pascal (Pascal's Triangle)</h3>
+        <p>สามเหลี่ยม Pascal สร้างโดยวาง $C(n,r)$ ในแถวที่ $n$ ตำแหน่งที่ $r$ (นับจาก 0) แต่ละสมาชิกเท่ากับผลบวกของสองสมาชิกข้างบน</p>
 
-      <div class="example-box">
-        <div class="example-header" style="background:#ea580c">ตัวอย่าง: ขยาย $(x+y)^4$</div>
-        <div class="example-body">
-          <p>$(x+y)^4 = \binom{4}{0}x^4 + \binom{4}{1}x^3y + \binom{4}{2}x^2y^2 + \binom{4}{3}xy^3 + \binom{4}{4}y^4$</p>
-          <p>$= x^4 + 4x^3y + 6x^2y^2 + 4xy^3 + y^4$</p>
+        <div style="overflow-x:auto; margin:16px 0;">
+          <table class="pascal-table">
+            <tr>
+              <td colspan="6" style="background:transparent;"></td>
+              <td>1</td>
+              <td colspan="6" style="background:transparent;"></td>
+            </tr>
+            <tr>
+              <td colspan="5" style="background:transparent;"></td>
+              <td>1</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>1</td>
+              <td colspan="5" style="background:transparent;"></td>
+            </tr>
+            <tr>
+              <td colspan="4" style="background:transparent;"></td>
+              <td>1</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>2</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>1</td>
+              <td colspan="4" style="background:transparent;"></td>
+            </tr>
+            <tr>
+              <td colspan="3" style="background:transparent;"></td>
+              <td>1</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>3</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>3</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>1</td>
+              <td colspan="3" style="background:transparent;"></td>
+            </tr>
+            <tr>
+              <td colspan="2" style="background:transparent;"></td>
+              <td>1</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>4</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>6</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>4</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>1</td>
+              <td colspan="2" style="background:transparent;"></td>
+            </tr>
+            <tr>
+              <td colspan="1" style="background:transparent;"></td>
+              <td>1</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>5</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>10</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>10</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>5</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>1</td>
+              <td colspan="1" style="background:transparent;"></td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>6</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>15</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>20</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>15</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>6</td>
+              <td class="p-gap" style="background:transparent;"></td>
+              <td>1</td>
+            </tr>
+          </table>
+        </div>
+        <p style="text-align:center;font-size:13px;color:#c2410c;">สามเหลี่ยม Pascal แถวที่ 0–6: แต่ละวงกลมสีส้มคือ $C(n,r)$ อ่านซ้าย→ขวา</p>
+      </div>
+
+      <div id="binomial-thm" class="subsec">
+        <h3>Binomial Theorem</h3>
+
+        <div class="def-box">
+          <h4>ทฤษฎีบท: Binomial Theorem</h4>
+          <p>สำหรับ $n \ge 0$ จำนวนเต็มและ $x, y$ ใดๆ:</p>
+          $$(x+y)^n = \sum_{k=0}^{n} \binom{n}{k}\, x^k\, y^{n-k}$$
+          <p>สัมประสิทธิ์ $\binom{n}{k}$ คือสมาชิกของสามเหลี่ยม Pascal เรียกว่า <strong>Binomial Coefficients</strong></p>
+        </div>
+
+        <div class="proof-box">
+          <div class="proof-title">⊢ แนวคิดการพิสูจน์</div>
+          <div class="proof-step assume">
+            <h5>ขยาย $(x+y)^n$</h5>
+            <p>$(x+y)^n = \underbrace{(x+y)(x+y)\cdots(x+y)}_{n \text{ วงเล็บ}}$</p>
+          </div>
+          <div class="proof-step derive">
+            <h5>สมาชิก $x^k y^{n-k}$</h5>
+            <p>เกิดเมื่อเลือก $x$ จาก $k$ วงเล็บ และ $y$ จาก $n-k$ วงเล็บที่เหลือ จำนวนวิธี $= C(n,k)$</p>
+          </div>
+          <div class="proof-step conclude">
+            <h5>ดังนั้น</h5>
+            <p>สัมประสิทธิ์ของ $x^k y^{n-k}$ คือ $\binom{n}{k}$ ✓</p>
+          </div>
+          <div class="qed">■</div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.7.1</span> ขยาย $(x+y)^4$</div>
+          <p>ขยาย $(x+y)^4$ โดยใช้ Binomial Theorem</p>
+          <div class="solution">
+            $$(x+y)^4 = \binom{4}{0}y^4 + \binom{4}{1}xy^3 + \binom{4}{2}x^2y^2 + \binom{4}{3}x^3y + \binom{4}{4}x^4$$
+            $$= y^4 + 4xy^3 + 6x^2y^2 + 4x^3y + x^4$$
+            <p>สัมประสิทธิ์ 1, 4, 6, 4, 1 คือแถวที่ 4 ของสามเหลี่ยม Pascal</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.7.2</span> ขยาย $(2x-1)^3$</div>
+          <p>ขยาย $(2x-1)^3$</p>
+          <div class="solution">
+            <p>แทน $a = 2x$, $b = -1$:</p>
+            $$(2x-1)^3 = \binom{3}{0}(-1)^3 + \binom{3}{1}(2x)(-1)^2 + \binom{3}{2}(2x)^2(-1) + \binom{3}{3}(2x)^3$$
+            $$= -1 + 3(2x)(1) + 3(4x^2)(-1) + 8x^3 = 8x^3 - 12x^2 + 6x - 1$$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.7.3</span> สัมประสิทธิ์ของ $x^3$ ใน $(x+2)^7$</div>
+          <p>หาสัมประสิทธิ์ของ $x^3$ ใน $(x+2)^7$</p>
+          <div class="solution">
+            <p>สมาชิกทั่วไปคือ $\binom{7}{k} x^k \cdot 2^{7-k}$ ต้องการ $k=3$:</p>
+            $$\binom{7}{3} \cdot 2^{4} = 35 \times 16 = \mathbf{560}$$
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 9.8 -->
+    <!-- ═══ 9.8 ═══════════════════════════════════════════════════ -->
     <section id="sec98" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">9.8</span>
         <div>
-          <h2>Probability Axioms</h2>
-          <p>สัจพจน์ความน่าจะเป็นและค่าคาดหวัง</p>
+          <h2>Probability Axioms and Expected Value</h2>
+          <p>สัจพจน์ Kolmogorov และค่าคาดหวัง</p>
         </div>
       </div>
 
-      <div class="def-formal">
-        <span class="def-label">นิยาม: Kolmogorov Axioms</span>
-        <ol style="padding-left:20px; font-size:15px; line-height:2">
-          <li>$P(A) \geq 0$ สำหรับทุกเหตุการณ์ $A$</li>
-          <li>$P(\Omega) = 1$ (ความน่าจะเป็นรวมทั้งหมด = 1)</li>
-          <li>ถ้า $A \cap B = \emptyset$ แล้ว $P(A \cup B) = P(A) + P(B)$</li>
-        </ol>
-        <p style="margin-top:8px"><strong>ผลที่ตามมา:</strong> $P(A^c) = 1 - P(A)$</p>
-        <p style="margin-top:8px"><strong>Expected Value:</strong> $E[X] = \displaystyle\sum_i x_i \cdot p(x_i)$</p>
+      <div id="prob-axioms" class="subsec">
+        <h3>Probability Space และ Kolmogorov Axioms</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Probability Space (Kolmogorov, 1933)</h4>
+          <p><strong>Probability Space</strong> คือ Triple $(\Omega,\, \mathcal{F},\, P)$ โดยที่</p>
+          <ul>
+            <li>$\Omega$ — <strong>Sample Space:</strong> เซตของผลลัพธ์ทั้งหมด</li>
+            <li>$\mathcal{F}$ — <strong>Event Space ($\sigma$-algebra):</strong> คอลเลกชันของ event ที่นิยามไว้</li>
+            <li>$P: \mathcal{F} \to [0,1]$ — <strong>Probability Measure</strong></li>
+          </ul>
+          <p>โดย $P$ ต้องสอดคล้องกับ <strong>Kolmogorov Axioms</strong> 3 ข้อ:</p>
+          <ol>
+            <li><strong>Non-negativity:</strong> $P(A) \ge 0$ สำหรับทุก $A \in \mathcal{F}$</li>
+            <li><strong>Normalization:</strong> $P(\Omega) = 1$</li>
+            <li><strong>Countable Additivity:</strong> ถ้า $A_1, A_2, \ldots$ pairwise disjoint แล้ว $P\!\left(\bigcup_{i} A_i\right) = \sum_{i} P(A_i)$</li>
+          </ol>
+        </div>
+
+        <div class="count-card">
+          <h5>สมบัติที่ตามมาจาก Axioms</h5>
+          <ul>
+            <li>$P(\emptyset) = 0$</li>
+            <li>$P(A^c) = 1 - P(A)$</li>
+            <li>$P(A \cup B) = P(A) + P(B) - P(A \cap B)$ (Inclusion-Exclusion)</li>
+            <li>ถ้า $A \subseteq B$ แล้ว $P(A) \le P(B)$ (Monotonicity)</li>
+          </ul>
+        </div>
+
+        <p>สำหรับ <strong>Uniform Probability Space</strong>: $|\Omega| = N$ แล้ว $P(\omega) = 1/N$ สำหรับทุก $\omega$ และ $P(A) = |A|/|\Omega|$</p>
       </div>
 
-      <div class="example-box">
-        <div class="example-header" style="background:#ea580c">ตัวอย่าง: ลูกเต๋า 6 หน้า</div>
-        <div class="example-body">
-          <p>$E[X] = 1\cdot\tfrac{1}{6} + 2\cdot\tfrac{1}{6} + 3\cdot\tfrac{1}{6} + 4\cdot\tfrac{1}{6} + 5\cdot\tfrac{1}{6} + 6\cdot\tfrac{1}{6} = \dfrac{21}{6} = 3.5$</p>
+      <div id="expected-value" class="subsec">
+        <h3>Random Variable และ Expected Value</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Random Variable และ Expected Value</h4>
+          <p><strong>Random Variable</strong> $X$ คือฟังก์ชัน $X: \Omega \to \mathbb{R}$ กำหนดตัวเลขให้กับแต่ละผลลัพธ์</p>
+          <p><strong>Expected Value (ค่าคาดหวัง)</strong> ของ Discrete Random Variable $X$:</p>
+          $$E[X] = \sum_{x} x \cdot P(X = x)$$
+          <p>คือค่าเฉลี่ยถ่วงน้ำหนักด้วยความน่าจะเป็น</p>
+          <p><strong>Linearity of Expectation:</strong> $E[aX + bY] = aE[X] + bE[Y]$ เสมอ (แม้ $X$, $Y$ ไม่ independent)</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.8.1</span> ลูกเต๋าสมดุล — P(X=k) และ E[X]</div>
+          <p>โยนลูกเต๋า 6 หน้าสมดุล ให้ $X$ = ตาที่ออก หา $E[X]$</p>
+          <div class="solution">
+            <p>$P(X=k) = 1/6$ สำหรับ $k=1,2,3,4,5,6$</p>
+            $$E[X] = \sum_{k=1}^{6} k \cdot \frac{1}{6} = \frac{1+2+3+4+5+6}{6} = \frac{21}{6} = \mathbf{3.5}$$
+            <p>ค่าคาดหวัง 3.5 ไม่ใช่ค่าที่เป็นไปได้จริงๆ แต่คือ "ค่าเฉลี่ยระยาว" หากโยนหลายครั้ง</p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.8.2</span> โยนเหรียญสมดุล 3 ครั้ง — Distribution ของ $X$</div>
+          <p>โยนเหรียญสมดุล 3 ครั้ง ให้ $X$ = จำนวนหัว หา $P(X=k)$ สำหรับ $k=0,1,2,3$ และ $E[X]$</p>
+          <div class="solution">
+            <table class="ch-table">
+              <thead><tr><th>$k$</th><th>ผลลัพธ์</th><th>$P(X=k)$</th><th>$k \cdot P(X=k)$</th></tr></thead>
+              <tbody>
+                <tr><td>0</td><td>TTT</td><td>$1/8$</td><td>$0$</td></tr>
+                <tr><td>1</td><td>HTT, THT, TTH</td><td>$3/8$</td><td>$3/8$</td></tr>
+                <tr><td>2</td><td>HHT, HTH, THH</td><td>$3/8$</td><td>$6/8$</td></tr>
+                <tr><td>3</td><td>HHH</td><td>$1/8$</td><td>$3/8$</td></tr>
+              </tbody>
+            </table>
+            <p>$P(X=k) = \dbinom{3}{k}/8$ (Binomial Distribution $n=3$, $p=1/2$)</p>
+            $$E[X] = 0 + \frac{3}{8} + \frac{6}{8} + \frac{3}{8} = \frac{12}{8} = \mathbf{1.5}$$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.8.3</span> ค่าคาดหวังของล็อตเตอรี่ 6/49</div>
+          <p>ราคาตั๋วล็อตเตอรี่ 6/49 ใบละ 100 บาท รางวัลใหญ่ 10 ล้านบาท ค่าคาดหวังของผลกำไรต่อตั๋วคือเท่าใด?</p>
+          <div class="solution">
+            <p>ความน่าจะเป็นถูกรางวัล $p = 1/13{,}983{,}816$</p>
+            <p>ค่าคาดหวังของรายรับ $= 10{,}000{,}000 \times p \approx 0.715$ บาท</p>
+            <p>ผลกำไรคาดหวัง $= 0.715 - 100 \approx \mathbf{-99.29}$ บาท</p>
+            <p>โดยเฉลี่ยขาดทุนประมาณ 99 บาทต่อตั๋ว — ล็อตเตอรี่ให้ผลตอบแทนเชิงลบต่อผู้ซื้อเสมอ</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- 9.9 -->
+    <!-- ═══ 9.9 ═══════════════════════════════════════════════════ -->
     <section id="sec99" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">9.9</span>
         <div>
           <h2>Conditional Probability and Bayes' Theorem</h2>
-          <p>ความน่าจะเป็นมีเงื่อนไขและทฤษฎีบทของ Bayes</p>
+          <p>ความน่าจะเป็นเงื่อนไขและทฤษฎีบท Bayes</p>
         </div>
       </div>
 
-      <div class="def-formal">
-        <span class="def-label">นิยาม</span>
-        <p><strong>Conditional Probability:</strong> $P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}$ เมื่อ $P(B) > 0$</p>
-        <p style="margin-top:8px"><strong>Independence:</strong> $A$ และ $B$ เป็นอิสระกัน ก็ต่อเมื่อ $P(A \cap B) = P(A)\cdot P(B)$</p>
-        <p style="margin-top:8px"><strong>Bayes' Theorem:</strong> $P(A \mid B) = \dfrac{P(B \mid A)\,P(A)}{P(B)}$</p>
+      <div id="cond-prob" class="subsec">
+        <h3>Conditional Probability</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Conditional Probability</h4>
+          <p><strong>ความน่าจะเป็นเงื่อนไข</strong> ของ $A$ given $B$ เขียนว่า $P(A \mid B)$:</p>
+          $$P(A \mid B) = \frac{P(A \cap B)}{P(B)} \quad (P(B) > 0)$$
+          <p>การตีความ: ถ้าทราบว่า $B$ เกิดขึ้น ปรับ Sample Space ให้เป็น $B$ แล้วหาสัดส่วนที่ $A$ เกิดภายใน $B$</p>
+        </div>
+
+        <div class="def-box">
+          <h4>กฎการคูณ (Multiplication Rule for Probability)</h4>
+          $$P(A \cap B) = P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A)$$
+        </div>
       </div>
 
-      <div class="example-box">
-        <div class="example-header" style="background:#ea580c">ตัวอย่าง: การทดสอบโรค (Medical Test)</div>
-        <div class="example-body">
-          <p>กำหนดให้: ความชุกของโรค $P(D)=0.01$, ความไวของการทดสอบ $P(+|D)=0.99$, อัตรา False Positive $P(+|D^c)=0.01$</p>
-          <p>$$P(+) = P(+|D)P(D) + P(+|D^c)P(D^c) = 0.99(0.01)+0.01(0.99) = 0.0198$$</p>
-          <p>$$P(D|+) = \frac{P(+|D)\,P(D)}{P(+)} = \frac{0.99 \times 0.01}{0.0198} \approx 0.5$$</p>
-          <p class="highlight-box" style="margin-top:10px">แม้ผลเป็น "บวก" แต่ความน่าจะเป็นที่จริงเป็นโรคมีเพียง ~50% เพราะโรคหายาก (1%)</p>
+      <div id="independence" class="subsec">
+        <h3>Independence และ Law of Total Probability</h3>
+
+        <div class="def-box">
+          <h4>นิยาม: Independence</h4>
+          <p>Events $A$ และ $B$ เป็น <strong>Independent</strong> ก็ต่อเมื่อ:</p>
+          $$P(A \cap B) = P(A) \cdot P(B)$$
+          <p>เทียบเท่า: $P(A \mid B) = P(A)$ — การรู้ว่า $B$ เกิดไม่เปลี่ยนความน่าจะเป็นของ $A$</p>
+        </div>
+
+        <div class="def-box">
+          <h4>ทฤษฎีบท: Law of Total Probability</h4>
+          <p>ถ้า $B_1, B_2, \ldots, B_n$ เป็น partition ของ $\Omega$ (pairwise disjoint และ $\bigcup B_i = \Omega$) และ $P(B_i) > 0$ แล้ว:</p>
+          $$P(A) = \sum_{i=1}^{n} P(A \mid B_i) \cdot P(B_i)$$
+        </div>
+      </div>
+
+      <div id="bayes" class="subsec">
+        <h3>Bayes' Theorem</h3>
+
+        <div class="def-box">
+          <h4>ทฤษฎีบท: Bayes' Theorem</h4>
+          <p>สำหรับ Events $A$ และ $B$ ที่ $P(B) > 0$:</p>
+          $$P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)}$$
+          <p>รูปแบบขยาย (ใช้ partition $\{A, A^c\}$):</p>
+          $$P(A \mid B) = \frac{P(B \mid A)\cdot P(A)}{P(B \mid A)\cdot P(A)\;+\;P(B \mid A^c)\cdot P(A^c)}$$
+          <table class="ch-table" style="margin-top:12px;">
+            <thead><tr><th>คำศัพท์</th><th>ความหมาย</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Prior</strong> $P(A)$</td><td>ความน่าจะเป็นก่อนรับข้อมูล</td></tr>
+              <tr><td><strong>Likelihood</strong> $P(B \mid A)$</td><td>ความน่าจะเป็นของหลักฐาน $B$ ถ้า $A$ เป็นจริง</td></tr>
+              <tr><td><strong>Posterior</strong> $P(A \mid B)$</td><td>ความน่าจะเป็นหลังรับข้อมูล $B$</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.9.1</span> ปัญหาลูกบอลสองกระปุก</div>
+          <p>กระปุก 1: แดง 3, น้ำเงิน 2 &nbsp;|&nbsp; กระปุก 2: แดง 1, น้ำเงิน 4 &nbsp;|&nbsp; เลือกกระปุกแบบสุ่ม (50-50) แล้วหยิบลูก 1 ลูก ถ้าได้สีแดง ความน่าจะเป็นว่ามาจากกระปุก 1 คือเท่าใด?</p>
+          <div class="solution">
+            <p>ให้ $U_1$ = เลือกกระปุก 1, $R$ = หยิบได้สีแดง</p>
+            <p>$P(R \mid U_1) = 3/5$,&nbsp; $P(R \mid U_2) = 1/5$</p>
+            <p>Law of Total Probability: $P(R) = \dfrac{3}{5}\cdot\dfrac{1}{2} + \dfrac{1}{5}\cdot\dfrac{1}{2} = \dfrac{3}{10}+\dfrac{1}{10} = \dfrac{2}{5}$</p>
+            $$P(U_1 \mid R) = \frac{(3/5)(1/2)}{2/5} = \frac{3/10}{2/5} = \frac{3}{10}\cdot\frac{5}{2} = \mathbf{\frac{3}{4}}$$
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.9.2</span> การทดสอบโรค — False Positive Problem</div>
+          <p>โรคมีอัตราเกิด 1%, Sensitivity 99%, Specificity 95% ถ้า test บวก ความน่าจะเป็นป่วยจริงคือเท่าไร?</p>
+          <div class="solution">
+            <p>ให้ $D$ = ป่วย, $T^+$ = ผล test บวก</p>
+            <ul>
+              <li>$P(D) = 0.01$, $P(D^c) = 0.99$</li>
+              <li>$P(T^+ \mid D) = 0.99$ (Sensitivity)</li>
+              <li>$P(T^+ \mid D^c) = 0.05$ (False Positive Rate = $1 -$ Specificity)</li>
+            </ul>
+            $$P(T^+) = 0.99 \times 0.01 + 0.05 \times 0.99 = 0.0099 + 0.0495 = 0.0594$$
+            $$P(D \mid T^+) = \frac{0.0099}{0.0594} \approx \mathbf{0.167} \approx 16.7\%$$
+            <p>แม้ test จะดีมาก แต่เนื่องจากโรคหายาก ผู้ที่ test บวกส่วนใหญ่ยังเป็น False Positive — นี่คือ <em>Base Rate Fallacy</em></p>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="example-header"><span>ตัวอย่าง 9.9.3</span> Monty Hall Problem</div>
+          <p>มีประตู 3 บาน หลังหนึ่งมีรถ ผู้แข่งขันเลือกประตูที่ 1 พิธีกรเปิดประตูที่ 3 (มีแพะ) ควรเปลี่ยนไปประตูที่ 2 หรือไม่?</p>
+          <div class="solution">
+            <p>ให้ $C_i$ = รถอยู่หลังประตู $i$, $H_3$ = พิธีกรเปิดประตูที่ 3</p>
+            <p><strong>Prior:</strong> $P(C_1) = P(C_2) = P(C_3) = 1/3$</p>
+            <p><strong>Likelihood:</strong> $P(H_3 \mid C_1) = 1/2$,&nbsp; $P(H_3 \mid C_2) = 1$,&nbsp; $P(H_3 \mid C_3) = 0$</p>
+            <p>$P(H_3) = \dfrac{1}{2}\cdot\dfrac{1}{3} + 1\cdot\dfrac{1}{3} + 0 = \dfrac{1}{2}$</p>
+            $$P(C_1 \mid H_3) = \frac{(1/2)(1/3)}{1/2} = \mathbf{\frac{1}{3}} \qquad P(C_2 \mid H_3) = \frac{(1)(1/3)}{1/2} = \mathbf{\frac{2}{3}}$$
+            <p><strong>ควรเปลี่ยนเป็นประตูที่ 2!</strong> ความน่าจะเป็นชนะถ้าเปลี่ยน $= 2/3$ ถ้าไม่เปลี่ยน $= 1/3$</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- SUMMARY -->
+    <!-- ═══ SUMMARY ════════════════════════════════════════════════ -->
     <section id="summary" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
-        <span class="sec-num">∑</span>
+        <span class="sec-num">✓</span>
         <div>
           <h2>สรุปบทที่ 9</h2>
-          <p>Counting and Probability — จุดสำคัญ</p>
+          <p>จุดสำคัญที่ต้องจำ</p>
         </div>
       </div>
 
-      <div class="key-box">
-        <h4>สูตรที่ต้องจำ</h4>
-        <ul>
-          <li><strong>กฎการคูณ:</strong> $n_1 \times n_2 \times \cdots \times n_k$</li>
-          <li><strong>Permutation:</strong> $P(n,r) = n!/(n-r)!$</li>
-          <li><strong>Combination:</strong> $C(n,r) = n!/(r!(n-r)!)$</li>
-          <li><strong>Repetition:</strong> $C(n+r-1, r)$</li>
-          <li><strong>Pigeonhole:</strong> $n+1$ ใน $n$ กล่อง → กล่องหนึ่งมี $\geq 2$</li>
-          <li><strong>Binomial:</strong> $(x+y)^n = \sum_{k=0}^n \binom{n}{k}x^k y^{n-k}$</li>
-          <li><strong>Bayes:</strong> $P(A|B) = P(B|A)P(A)/P(B)$</li>
-        </ul>
+      <div class="overview-card">
+        <h3>สรุปสูตรและหลักการสำคัญ</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; margin:16px 0;">
+          <div class="count-card">
+            <h5>Multiplication &amp; Addition</h5>
+            <ul style="font-size:14px;line-height:1.9;">
+              <li>Multiplication Rule: $n_1 \times \cdots \times n_k$</li>
+              <li>Addition (disjoint): $|A|+|B|$</li>
+              <li>Inclusion-Exclusion: $|A|+|B|-|A\cap B|$</li>
+            </ul>
+          </div>
+          <div class="count-card">
+            <h5>Permutations &amp; Combinations</h5>
+            <ul style="font-size:14px;line-height:1.9;">
+              <li>$P(n,r) = n!/(n-r)!$ (ลำดับสำคัญ)</li>
+              <li>$C(n,r) = n!/[r!(n-r)!]$ (ลำดับไม่สำคัญ)</li>
+              <li>Multiset: $C(n+r-1,r)$ (ซ้ำได้)</li>
+            </ul>
+          </div>
+          <div class="count-card">
+            <h5>Pascal &amp; Binomial</h5>
+            <ul style="font-size:14px;line-height:1.9;">
+              <li>$C(n+1,r)=C(n,r-1)+C(n,r)$</li>
+              <li>$(x+y)^n = \sum_{k=0}^{n}\binom{n}{k}x^k y^{n-k}$</li>
+              <li>$\sum_{k=0}^{n}\binom{n}{k} = 2^n$</li>
+            </ul>
+          </div>
+          <div class="count-card">
+            <h5>Probability &amp; Bayes</h5>
+            <ul style="font-size:14px;line-height:1.9;">
+              <li>$P \ge 0$, $P(\Omega)=1$, Additivity</li>
+              <li>$E[X] = \sum x_i P(X=x_i)$</li>
+              <li>$P(A|B) = P(A\cap B)/P(B)$</li>
+              <li>Bayes: $P(A|B) = P(B|A)P(A)/P(B)$</li>
+            </ul>
+          </div>
+        </div>
+        <div class="prob-formula">
+          <strong>Pigeonhole:</strong> &nbsp; $n+1$ วัตถุใน $n$ กล่อง &nbsp;$\Rightarrow$&nbsp; มีกล่องที่มีวัตถุ $\ge 2$ ชิ้น &nbsp;|&nbsp; <strong>Generalized:</strong> &nbsp; $N$ วัตถุใน $k$ กล่อง &nbsp;$\Rightarrow$&nbsp; มีกล่องที่มีวัตถุ $\ge \lceil N/k \rceil$ ชิ้น
+        </div>
       </div>
     </section>
 
-    <!-- EXERCISES -->
+    <!-- ═══ EXERCISES ═════════════════════════════════════════════ -->
     <section id="exercises" class="ch-section">
       <div class="section-header" style="--ch-color:#ea580c">
         <span class="sec-num">✏</span>
         <div>
           <h2>แบบฝึกหัดแนะนำ</h2>
+          <p>ฝึกทักษะการนับและความน่าจะเป็น</p>
         </div>
       </div>
 
-      <ol style="font-size:15px; line-height:2.2; padding-left:24px">
-        <li>มีรหัสผ่านกี่แบบที่ใช้ตัวอักษรพิมพ์ใหญ่ 2 ตัว ตัวเลข 1 ตัว และสัญลักษณ์พิเศษ 1 ตัว (26 ตัวใหญ่, 10 เลข, 10 สัญลักษณ์) โดยลำดับสำคัญ</li>
-        <li>พิสูจน์ว่าในนักศึกษา 25 คน ต้องมีอย่างน้อย 3 คนที่เกิดในเดือนเดียวกัน</li>
-        <li>คณะกรรมการ 4 คนจาก 9 คน มีกี่วิธี? ถ้าต้องมีประธาน 1 คนด้วยล่ะ?</li>
-        <li>หาสัมประสิทธิ์ของ $x^3 y^5$ ใน $(x+y)^8$</li>
-        <li>โยนเหรียญ 3 ครั้ง สร้าง sample space และคำนวณ $P(\text{หัวอย่างน้อย 2 ครั้ง})$</li>
-        <li>โรคมีความชุก 5% การทดสอบมี sensitivity 95% และ specificity 90% ถ้าผลบวก ความน่าจะเป็นที่เป็นโรคจริงเท่าใด? (ใช้ Bayes' Theorem)</li>
-      </ol>
+      <div class="exercise-list">
+
+        <div class="exercise-item">
+          <div class="ex-num">9.1</div>
+          <div class="ex-body">
+            <p>ป้ายทะเบียนรถประกอบด้วยตัวอักษรภาษาอังกฤษ 2 ตัว (A–Z) ตามด้วยตัวเลข 4 หลัก (0–9) (ก) ถ้าอนุญาตให้ซ้ำ มีป้ายทะเบียนได้กี่แบบ? (ข) ถ้าห้ามซ้ำทั้งตัวอักษรและตัวเลข มีกี่แบบ?</p>
+          </div>
+        </div>
+
+        <div class="exercise-item">
+          <div class="ex-num">9.2</div>
+          <div class="ex-body">
+            <p>จำนวนเต็มบวกตั้งแต่ 1 ถึง 1000 ที่หารด้วย 4, 6, หรือ 10 ลงตัวมีกี่จำนวน? (ใช้ Inclusion-Exclusion 3 เซตพร้อมคำนวณ $|A \cap B \cap C|$ ด้วย)</p>
+          </div>
+        </div>
+
+        <div class="exercise-item">
+          <div class="ex-num">9.3</div>
+          <div class="ex-body">
+            <p>ใน class มีนักเรียน 30 คน จงพิสูจน์โดยใช้ Generalized Pigeonhole Principle ว่าต้องมีนักเรียนอย่างน้อย 5 คนที่เกิดในวันเดียวกันของสัปดาห์ (จันทร์–อาทิตย์)</p>
+          </div>
+        </div>
+
+        <div class="exercise-item">
+          <div class="ex-num">9.4</div>
+          <div class="ex-body">
+            <p>มีทีมฟุตบอล 8 ทีม (ก) จัด Round-Robin มีคู่แข่งขันทั้งหมดกี่คู่? (ข) ถ้าต้องจัดอันดับ 1, 2, 3 จะมีผลลัพธ์กี่แบบ? (ค) ถ้าต้องเลือก Top-3 โดยไม่สนใจลำดับมีกี่แบบ?</p>
+          </div>
+        </div>
+
+        <div class="exercise-item">
+          <div class="ex-num">9.5</div>
+          <div class="ex-body">
+            <p>พิสูจน์ว่า $\displaystyle\sum_{k=0}^{n} \binom{n}{k} = 2^n$ โดยใช้ Binomial Theorem (แทน $x=y=1$) และให้การตีความเชิง Combinatorial: เชื่อมโยงสูตรนี้กับจำนวนสับเซตของเซตขนาด $n$</p>
+          </div>
+        </div>
+
+        <div class="exercise-item">
+          <div class="ex-num">9.6</div>
+          <div class="ex-body">
+            <p>กระเป๋า A มีลูกแก้วแดง 4 น้ำเงิน 6 ลูก; กระเป๋า B มีลูกแก้วแดง 7 น้ำเงิน 3 ลูก เลือกกระเป๋า A ด้วยความน่าจะเป็น $1/3$ และ B ด้วยความน่าจะเป็น $2/3$ แล้วหยิบลูกแก้ว 1 ลูก ถ้าได้สีแดง ความน่าจะเป็นว่ามาจากกระเป๋า B คือเท่าใด? ใช้ Bayes' Theorem</p>
+          </div>
+        </div>
+
+      </div>
     </section>
 
   </main>
 </div>
 
-<footer style="background:#0f172a; color:#94a3b8; text-align:center; padding:32px 24px; font-size:14px; margin-top:40px">
-  <p>Discrete Mathematics · KMUTNB · ภาคเรียนที่ 1/2569</p>
-  <p style="margin-top:6px"><a href="chapter8.html" style="color:#ea580c; text-decoration:none">← บทที่ 8</a> &nbsp;|&nbsp; <a href="../index.html" style="color:#ea580c; text-decoration:none">หน้าหลัก</a> &nbsp;|&nbsp; <a href="chapter10.html" style="color:#ea580c; text-decoration:none">บทที่ 10 →</a></p>
+<footer>
+  <div class="container">
+    <p>Discrete Mathematics · KMUTNB · 1/2569 · <a href="../index.html">กลับหน้าหลัก</a></p>
+  </div>
 </footer>
 
 <script>
-  // Sidebar toggle for mobile
-  const toggle = document.getElementById('menu-toggle');
+  const menuBtn = document.getElementById('menu-toggle');
   const sidebar = document.getElementById('ch-sidebar');
-  if (toggle && sidebar) {
-    toggle.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-    });
+  if (menuBtn && sidebar) {
+    menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
   }
-
-  // Highlight active TOC link on scroll
-  const sections = document.querySelectorAll('.ch-section');
   const tocLinks = document.querySelectorAll('.ch-toc a');
-  const observer = new IntersectionObserver((entries) => {
+  const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        const id = entry.target.id;
-        tocLinks.forEach(link => {
-          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
-        });
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.ch-toc a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
       }
     });
   }, { rootMargin: '-20% 0px -70% 0px' });
-  sections.forEach(s => observer.observe(s));
+  document.querySelectorAll('.ch-section[id]').forEach(sec => observer.observe(sec));
 </script>
 
 </body>
